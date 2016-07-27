@@ -7,7 +7,7 @@
     <result column="touserid" property="touserid" jdbcType="INTEGER" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="commenttime" property="commenttime" jdbcType="TIMESTAMP" />
-  </resultMap>
+  </resultMap> 
   <insert id="insert" parameterType="com.cn.ucoon.pojo.CommentChild" >
     insert into comment_child (commentid, fromuserid, touserid, 
       content, commenttime)
