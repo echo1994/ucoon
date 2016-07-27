@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.EvaluateMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Evaluate" >
+    <result column="missionid" property="missionid" jdbcType="INTEGER" />
+    <result column="publishid" property="publishid" jdbcType="INTEGER" />
+    <result column="executorid" property="executorid" jdbcType="INTEGER" />
+    <result column="publish_evaluate" property="publishEvaluate" jdbcType="VARCHAR" />
+    <result column="executor_evaluate" property="executorEvaluate" jdbcType="VARCHAR" />
+    <result column="publish_score" property="publishScore" jdbcType="REAL" />
+    <result column="executor_score" property="executorScore" jdbcType="REAL" />
+    <result column="evaluatetime" property="evaluatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Evaluate" >
+    insert into evaluate (missionid, publishid, executorid, 
+      publish_evaluate, executor_evaluate, publish_score, 
+      executor_score, evaluatetime)
+    values (#{missionid,jdbcType=INTEGER}, #{publishid,jdbcType=INTEGER}, #{executorid,jdbcType=INTEGER}, 
+      #{publishEvaluate,jdbcType=VARCHAR}, #{executorEvaluate,jdbcType=VARCHAR}, #{publishScore,jdbcType=REAL}, 
+      #{executorScore,jdbcType=REAL}, #{evaluatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select missionid, publishid, executorid, publish_evaluate, executor_evaluate, publish_score, 
+    executor_score, evaluatetime
+    from evaluate
+  </select>
+</mapper>

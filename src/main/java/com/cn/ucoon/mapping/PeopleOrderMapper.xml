@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.PeopleOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.PeopleOrder" >
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="orderid" property="orderid" jdbcType="INTEGER" />
+    <result column="taketime" property="taketime" jdbcType="TIMESTAMP" />
+    <result column="takestate" property="takestate" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.PeopleOrder" >
+    insert into people_order (userid, orderid, taketime, 
+      takestate)
+    values (#{userid,jdbcType=INTEGER}, #{orderid,jdbcType=INTEGER}, #{taketime,jdbcType=TIMESTAMP}, 
+      #{takestate,jdbcType=INTEGER})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select userid, orderid, taketime, takestate
+    from people_order
+  </select>
+</mapper>

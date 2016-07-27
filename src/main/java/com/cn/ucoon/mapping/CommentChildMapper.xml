@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.CommentChildMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.CommentChild" >
+    <result column="commentid" property="commentid" jdbcType="INTEGER" />
+    <result column="fromuserid" property="fromuserid" jdbcType="INTEGER" />
+    <result column="touserid" property="touserid" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="commenttime" property="commenttime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.CommentChild" >
+    insert into comment_child (commentid, fromuserid, touserid, 
+      content, commenttime)
+    values (#{commentid,jdbcType=INTEGER}, #{fromuserid,jdbcType=INTEGER}, #{touserid,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{commenttime,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select commentid, fromuserid, touserid, content, commenttime
+    from comment_child
+  </select>
+</mapper>

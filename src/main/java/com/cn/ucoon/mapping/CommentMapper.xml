@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.CommentMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Comment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="missionid" property="missionid" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="commenttime" property="commenttime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from comment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Comment" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into comment (id, userid, missionid, 
+      content, commenttime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{missionid,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{commenttime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Comment" >
+    update comment
+    set userid = #{userid,jdbcType=INTEGER},
+      missionid = #{missionid,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      commenttime = #{commenttime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, userid, missionid, content, commenttime
+    from comment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, userid, missionid, content, commenttime
+    from comment
+  </select>
+</mapper>

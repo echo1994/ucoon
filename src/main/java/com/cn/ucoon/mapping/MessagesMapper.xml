@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.MessagesMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Messages" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="postmessages" property="postmessages" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="messagestypeid" property="messagestypeid" jdbcType="INTEGER" />
+    <result column="fromuserid" property="fromuserid" jdbcType="INTEGER" />
+    <result column="touserid" property="touserid" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from messages
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Messages" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into messages (id, postmessages, status, 
+      time, messagestypeid, fromuserid, 
+      touserid)
+    values (#{id,jdbcType=INTEGER}, #{postmessages,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{time,jdbcType=TIMESTAMP}, #{messagestypeid,jdbcType=INTEGER}, #{fromuserid,jdbcType=INTEGER}, 
+      #{touserid,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Messages" >
+    update messages
+    set postmessages = #{postmessages,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      messagestypeid = #{messagestypeid,jdbcType=INTEGER},
+      fromuserid = #{fromuserid,jdbcType=INTEGER},
+      touserid = #{touserid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, postmessages, status, time, messagestypeid, fromuserid, touserid
+    from messages
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, postmessages, status, time, messagestypeid, fromuserid, touserid
+    from messages
+  </select>
+</mapper>
