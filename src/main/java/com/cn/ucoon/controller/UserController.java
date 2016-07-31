@@ -8,13 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cn.ucoon.pojo.User;
-import com.cn.ucoon.service.IUserService;
+import com.cn.ucoon.service.UserService;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 	@Resource
-	private IUserService userService;
+	private UserService userService;
 	
 	@RequestMapping("/showUser")
 	public String toIndex(HttpServletRequest request,Model model){

@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSON;
 import com.cn.ucoon.pojo.User;
-import com.cn.ucoon.service.IUserService;
+import com.cn.ucoon.service.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)		//表示继承了SpringJUnit4ClassRunner类
 @ContextConfiguration(locations = {"classpath:spring-mybatis.xml"})
@@ -20,7 +20,7 @@ public class TestMyBatisAndSpring {
 	private static Logger logger = Logger.getLogger(TestMyBatisAndSpring.class);
 //	private ApplicationContext ac = null;
 	@Resource
-	private IUserService userService = null;
+	private UserService userService = null;
 
 //	@Before
 //	public void before() {
