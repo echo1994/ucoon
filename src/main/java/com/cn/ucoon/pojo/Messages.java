@@ -3,73 +3,73 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class Messages {
-    private Integer id;
+    private Integer messageId;
 
-    private String postmessages;
+    private String messageDetail;
 
-    private Integer status;
+    private Integer messageStatus;
 
-    private Date time;
+    private Date postTime;
 
-    private Integer messagestypeid;
+    private Integer messageType;
 
-    private Integer fromuserid;
+    private Integer fromUserId;
 
-    private Integer touserid;
+    private Integer toUserId;
 
-    public Integer getId() {
-        return id;
+    public Integer getMessageId() {
+        return messageId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMessageId(Integer messageId) {
+        this.messageId = messageId;
     }
 
-    public String getPostmessages() {
-        return postmessages;
+    public String getMessageDetail() {
+        return messageDetail;
     }
 
-    public void setPostmessages(String postmessages) {
-        this.postmessages = postmessages == null ? null : postmessages.trim();
+    public void setMessageDetail(String messageDetail) {
+        this.messageDetail = messageDetail == null ? null : messageDetail.trim();
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getMessageStatus() {
+        return messageStatus;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setMessageStatus(Integer messageStatus) {
+        this.messageStatus = messageStatus;
     }
 
-    public Date getTime() {
-        return time;
+    public Date getPostTime() {
+        return postTime;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setPostTime(Date postTime) {
+        this.postTime = postTime;
     }
 
-    public Integer getMessagestypeid() {
-        return messagestypeid;
+    public Integer getMessageType() {
+        return messageType;
     }
 
-    public void setMessagestypeid(Integer messagestypeid) {
-        this.messagestypeid = messagestypeid;
+    public void setMessageType(Integer messageType) {
+        this.messageType = messageType;
     }
 
-    public Integer getFromuserid() {
-        return fromuserid;
+    public Integer getFromUserId() {
+        return fromUserId;
     }
 
-    public void setFromuserid(Integer fromuserid) {
-        this.fromuserid = fromuserid;
+    public void setFromUserId(Integer fromUserId) {
+        this.fromUserId = fromUserId;
     }
 
-    public Integer getTouserid() {
-        return touserid;
+    public Integer getToUserId() {
+        return toUserId;
     }
 
-    public void setTouserid(Integer touserid) {
-        this.touserid = touserid;
+    public void setToUserId(Integer toUserId) {
+        this.toUserId = toUserId;
     }
 }

@@ -4,11 +4,11 @@ import com.cn.ucoon.pojo.MissionType;
 import java.util.List;
 
 public interface MissionTypeMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer missionTypeId);
 
     int insert(MissionType record);
 
-    MissionType selectByPrimaryKey(Integer id);
+    MissionType selectByPrimaryKey(Integer missionTypeId);
 
     List<MissionType> selectAll();
 

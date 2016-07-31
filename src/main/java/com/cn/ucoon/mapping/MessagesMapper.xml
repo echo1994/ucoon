@@ -2,46 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.MessagesMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Messages" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="postmessages" property="postmessages" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="time" property="time" jdbcType="TIMESTAMP" />
-    <result column="messagestypeid" property="messagestypeid" jdbcType="INTEGER" />
-    <result column="fromuserid" property="fromuserid" jdbcType="INTEGER" />
-    <result column="touserid" property="touserid" jdbcType="INTEGER" />
+    <id column="message_id" property="messageId" jdbcType="INTEGER" />
+    <result column="message_detail" property="messageDetail" jdbcType="VARCHAR" />
+    <result column="message_status" property="messageStatus" jdbcType="INTEGER" />
+    <result column="post_time" property="postTime" jdbcType="TIMESTAMP" />
+    <result column="message_type" property="messageType" jdbcType="INTEGER" />
+    <result column="from_user_id" property="fromUserId" jdbcType="INTEGER" />
+    <result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from messages
-    where id = #{id,jdbcType=INTEGER}
+    where message_id = #{messageId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Messages" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into messages (id, postmessages, status, 
-      time, messagestypeid, fromuserid, 
-      touserid)
-    values (#{id,jdbcType=INTEGER}, #{postmessages,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{time,jdbcType=TIMESTAMP}, #{messagestypeid,jdbcType=INTEGER}, #{fromuserid,jdbcType=INTEGER}, 
-      #{touserid,jdbcType=INTEGER})
+    insert into messages (message_id, message_detail, message_status, 
+      post_time, message_type, from_user_id, 
+      to_user_id)
+    values (#{messageId,jdbcType=INTEGER}, #{messageDetail,jdbcType=VARCHAR}, #{messageStatus,jdbcType=INTEGER}, 
+      #{postTime,jdbcType=TIMESTAMP}, #{messageType,jdbcType=INTEGER}, #{fromUserId,jdbcType=INTEGER}, 
+      #{toUserId,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Messages" >
     update messages
-    set postmessages = #{postmessages,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      time = #{time,jdbcType=TIMESTAMP},
-      messagestypeid = #{messagestypeid,jdbcType=INTEGER},
-      fromuserid = #{fromuserid,jdbcType=INTEGER},
-      touserid = #{touserid,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    set message_detail = #{messageDetail,jdbcType=VARCHAR},
+      message_status = #{messageStatus,jdbcType=INTEGER},
+      post_time = #{postTime,jdbcType=TIMESTAMP},
+      message_type = #{messageType,jdbcType=INTEGER},
+      from_user_id = #{fromUserId,jdbcType=INTEGER},
+      to_user_id = #{toUserId,jdbcType=INTEGER}
+    where message_id = #{messageId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, postmessages, status, time, messagestypeid, fromuserid, touserid
+    select message_id, message_detail, message_status, post_time, message_type, from_user_id, 
+    to_user_id
     from messages
-    where id = #{id,jdbcType=INTEGER}
+    where message_id = #{messageId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, postmessages, status, time, messagestypeid, fromuserid, touserid
+    select message_id, message_detail, message_status, post_time, message_type, from_user_id, 
+    to_user_id
     from messages
   </select>
 </mapper>

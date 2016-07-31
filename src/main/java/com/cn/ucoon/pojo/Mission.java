@@ -3,64 +3,64 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class Mission {
-    private Integer id;
+    private Integer missionId;
 
-    private Integer missiontypeid;
+    private Integer missionTypeId;
 
-    private String title;
+    private String missionTitle;
 
-    private String describe;
+    private String missionDescribe;
 
     private String pictures;
 
-    private Integer peoplenum;
+    private Integer peopleCount;
 
     private String place;
 
-    private Date starttime;
+    private Date startTime;
 
-    private Date endtime;
+    private Date endTime;
 
-    private Date publishtime;
+    private Date publishTime;
 
-    private Integer userid;
+    private Integer userId;
 
-    private Integer orderid;
+    private Integer orderId;
 
-    private Integer views;
+    private Integer viewCount;
 
-    private String leavemessage;
+    private String leaveMessage;
 
-    public Integer getId() {
-        return id;
+    public Integer getMissionId() {
+        return missionId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMissionId(Integer missionId) {
+        this.missionId = missionId;
     }
 
-    public Integer getMissiontypeid() {
-        return missiontypeid;
+    public Integer getMissionTypeId() {
+        return missionTypeId;
     }
 
-    public void setMissiontypeid(Integer missiontypeid) {
-        this.missiontypeid = missiontypeid;
+    public void setMissionTypeId(Integer missionTypeId) {
+        this.missionTypeId = missionTypeId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getMissionTitle() {
+        return missionTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+    public void setMissionTitle(String missionTitle) {
+        this.missionTitle = missionTitle == null ? null : missionTitle.trim();
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getMissionDescribe() {
+        return missionDescribe;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe == null ? null : describe.trim();
+    public void setMissionDescribe(String missionDescribe) {
+        this.missionDescribe = missionDescribe == null ? null : missionDescribe.trim();
     }
 
     public String getPictures() {
@@ -71,12 +71,12 @@ public class Mission {
         this.pictures = pictures == null ? null : pictures.trim();
     }
 
-    public Integer getPeoplenum() {
-        return peoplenum;
+    public Integer getPeopleCount() {
+        return peopleCount;
     }
 
-    public void setPeoplenum(Integer peoplenum) {
-        this.peoplenum = peoplenum;
+    public void setPeopleCount(Integer peopleCount) {
+        this.peopleCount = peopleCount;
     }
 
     public String getPlace() {
@@ -87,59 +87,59 @@ public class Mission {
         this.place = place == null ? null : place.trim();
     }
 
-    public Date getStarttime() {
-        return starttime;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setStarttime(Date starttime) {
-        this.starttime = starttime;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public Date getEndtime() {
-        return endtime;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void setEndtime(Date endtime) {
-        this.endtime = endtime;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
-    public Date getPublishtime() {
-        return publishtime;
+    public Date getPublishTime() {
+        return publishTime;
     }
 
-    public void setPublishtime(Date publishtime) {
-        this.publishtime = publishtime;
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
     }
 
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getOrderid() {
-        return orderid;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setOrderid(Integer orderid) {
-        this.orderid = orderid;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public Integer getViews() {
-        return views;
+    public Integer getViewCount() {
+        return viewCount;
     }
 
-    public void setViews(Integer views) {
-        this.views = views;
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
     }
 
-    public String getLeavemessage() {
-        return leavemessage;
+    public String getLeaveMessage() {
+        return leaveMessage;
     }
 
-    public void setLeavemessage(String leavemessage) {
-        this.leavemessage = leavemessage == null ? null : leavemessage.trim();
+    public void setLeaveMessage(String leaveMessage) {
+        this.leaveMessage = leaveMessage == null ? null : leaveMessage.trim();
     }
 }

@@ -2,19 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.PeopleOrderMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.PeopleOrder" >
-    <result column="userid" property="userid" jdbcType="INTEGER" />
-    <result column="orderid" property="orderid" jdbcType="INTEGER" />
-    <result column="taketime" property="taketime" jdbcType="TIMESTAMP" />
-    <result column="takestate" property="takestate" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="take_time" property="takeTime" jdbcType="TIMESTAMP" />
+    <result column="take_state" property="takeState" jdbcType="INTEGER" />
   </resultMap>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.PeopleOrder" >
-    insert into people_order (userid, orderid, taketime, 
-      takestate)
-    values (#{userid,jdbcType=INTEGER}, #{orderid,jdbcType=INTEGER}, #{taketime,jdbcType=TIMESTAMP}, 
-      #{takestate,jdbcType=INTEGER})
+    insert into people_order (user_id, order_id, take_time, 
+      take_state)
+    values (#{userId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{takeTime,jdbcType=TIMESTAMP}, 
+      #{takeState,jdbcType=INTEGER})
   </insert>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select userid, orderid, taketime, takestate
+    select user_id, order_id, take_time, take_state
     from people_order
   </select>
 </mapper>

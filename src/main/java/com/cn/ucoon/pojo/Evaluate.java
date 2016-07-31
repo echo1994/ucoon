@@ -3,11 +3,11 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class Evaluate {
-    private Integer missionid;
+    private Integer missionId;
 
-    private Integer publishid;
+    private Integer publishId;
 
-    private Integer executorid;
+    private Integer executorId;
 
     private String publishEvaluate;
 
@@ -17,30 +17,30 @@ public class Evaluate {
 
     private Float executorScore;
 
-    private Date evaluatetime;
+    private Date evaluateTime;
 
-    public Integer getMissionid() {
-        return missionid;
+    public Integer getMissionId() {
+        return missionId;
     }
 
-    public void setMissionid(Integer missionid) {
-        this.missionid = missionid;
+    public void setMissionId(Integer missionId) {
+        this.missionId = missionId;
     }
 
-    public Integer getPublishid() {
-        return publishid;
+    public Integer getPublishId() {
+        return publishId;
     }
 
-    public void setPublishid(Integer publishid) {
-        this.publishid = publishid;
+    public void setPublishId(Integer publishId) {
+        this.publishId = publishId;
     }
 
-    public Integer getExecutorid() {
-        return executorid;
+    public Integer getExecutorId() {
+        return executorId;
     }
 
-    public void setExecutorid(Integer executorid) {
-        this.executorid = executorid;
+    public void setExecutorId(Integer executorId) {
+        this.executorId = executorId;
     }
 
     public String getPublishEvaluate() {
@@ -75,11 +75,11 @@ public class Evaluate {
         this.executorScore = executorScore;
     }
 
-    public Date getEvaluatetime() {
-        return evaluatetime;
+    public Date getEvaluateTime() {
+        return evaluateTime;
     }
 
-    public void setEvaluatetime(Date evaluatetime) {
-        this.evaluatetime = evaluatetime;
+    public void setEvaluateTime(Date evaluateTime) {
+        this.evaluateTime = evaluateTime;
     }
 }

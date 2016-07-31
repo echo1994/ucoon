@@ -3,38 +3,38 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class CommentChild {
-    private Integer commentid;
+    private Integer commentId;
 
-    private Integer fromuserid;
+    private Integer fromuserId;
 
-    private Integer touserid;
+    private Integer touserId;
 
     private String content;
 
-    private Date commenttime;
+    private Date commentTime;
 
-    public Integer getCommentid() {
-        return commentid;
+    public Integer getCommentId() {
+        return commentId;
     }
 
-    public void setCommentid(Integer commentid) {
-        this.commentid = commentid;
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
     }
 
-    public Integer getFromuserid() {
-        return fromuserid;
+    public Integer getFromuserId() {
+        return fromuserId;
     }
 
-    public void setFromuserid(Integer fromuserid) {
-        this.fromuserid = fromuserid;
+    public void setFromuserId(Integer fromuserId) {
+        this.fromuserId = fromuserId;
     }
 
-    public Integer getTouserid() {
-        return touserid;
+    public Integer getTouserId() {
+        return touserId;
     }
 
-    public void setTouserid(Integer touserid) {
-        this.touserid = touserid;
+    public void setTouserId(Integer touserId) {
+        this.touserId = touserId;
     }
 
     public String getContent() {
@@ -45,11 +45,11 @@ public class CommentChild {
         this.content = content == null ? null : content.trim();
     }
 
-    public Date getCommenttime() {
-        return commenttime;
+    public Date getCommentTime() {
+        return commentTime;
     }
 
-    public void setCommenttime(Date commenttime) {
-        this.commenttime = commenttime;
+    public void setCommentTime(Date commentTime) {
+        this.commentTime = commentTime;
     }
 }

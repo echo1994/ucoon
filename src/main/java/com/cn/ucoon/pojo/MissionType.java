@@ -1,23 +1,23 @@
 package com.cn.ucoon.pojo;
 
 public class MissionType {
-    private Integer id;
+    private Integer missionTypeId;
 
-    private String name;
+    private String missionTypeName;
 
-    public Integer getId() {
-        return id;
+    public Integer getMissionTypeId() {
+        return missionTypeId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMissionTypeId(Integer missionTypeId) {
+        this.missionTypeId = missionTypeId;
     }
 
-    public String getName() {
-        return name;
+    public String getMissionTypeName() {
+        return missionTypeName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setMissionTypeName(String missionTypeName) {
+        this.missionTypeName = missionTypeName == null ? null : missionTypeName.trim();
     }
 }

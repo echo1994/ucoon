@@ -2,32 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.MessagesTypeMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.MessagesType" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
+    <id column="message_type_id" property="messageTypeId" jdbcType="INTEGER" />
+    <result column="message_type_name" property="messageTypeName" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from messages_type
-    where id = #{id,jdbcType=INTEGER}
+    where message_type_id = #{messageTypeId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.MessagesType" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into messages_type (id, name)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
+    insert into messages_type (message_type_id, message_type_name)
+    values (#{messageTypeId,jdbcType=INTEGER}, #{messageTypeName,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.MessagesType" >
     update messages_type
-    set name = #{name,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    set message_type_name = #{messageTypeName,jdbcType=VARCHAR}
+    where message_type_id = #{messageTypeId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, name
+    select message_type_id, message_type_name
     from messages_type
-    where id = #{id,jdbcType=INTEGER}
+    where message_type_id = #{messageTypeId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, name
+    select message_type_id, message_type_name
     from messages_type
   </select>
 </mapper>

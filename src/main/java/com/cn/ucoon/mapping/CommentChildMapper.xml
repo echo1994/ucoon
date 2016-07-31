@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.CommentChildMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.CommentChild" >
-    <result column="commentid" property="commentid" jdbcType="INTEGER" />
-    <result column="fromuserid" property="fromuserid" jdbcType="INTEGER" />
-    <result column="touserid" property="touserid" jdbcType="INTEGER" />
+    <result column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <result column="fromuser_id" property="fromuserId" jdbcType="INTEGER" />
+    <result column="touser_id" property="touserId" jdbcType="INTEGER" />
     <result column="content" property="content" jdbcType="VARCHAR" />
-    <result column="commenttime" property="commenttime" jdbcType="TIMESTAMP" />
-  </resultMap> 
+    <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
+  </resultMap>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.CommentChild" >
-    insert into comment_child (commentid, fromuserid, touserid, 
-      content, commenttime)
-    values (#{commentid,jdbcType=INTEGER}, #{fromuserid,jdbcType=INTEGER}, #{touserid,jdbcType=INTEGER}, 
-      #{content,jdbcType=VARCHAR}, #{commenttime,jdbcType=TIMESTAMP})
+    insert into comment_child (comment_id, fromuser_id, touser_id, 
+      content, comment_time)
+    values (#{commentId,jdbcType=INTEGER}, #{fromuserId,jdbcType=INTEGER}, #{touserId,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP})
   </insert>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select commentid, fromuserid, touserid, content, commenttime
+    select comment_id, fromuser_id, touser_id, content, comment_time
     from comment_child
   </select>
 </mapper>

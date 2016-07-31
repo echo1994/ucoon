@@ -4,11 +4,11 @@ import com.cn.ucoon.pojo.User;
 import java.util.List;
 
 public interface UserMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer userId);
 
     int insert(User record);
 
-    User selectByPrimaryKey(Integer id);
+    User selectByPrimaryKey(Integer userId);
 
     List<User> selectAll();
 

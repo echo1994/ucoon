@@ -2,26 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.EvaluateMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Evaluate" >
-    <result column="missionid" property="missionid" jdbcType="INTEGER" />
-    <result column="publishid" property="publishid" jdbcType="INTEGER" />
-    <result column="executorid" property="executorid" jdbcType="INTEGER" />
+    <result column="mission_id" property="missionId" jdbcType="INTEGER" />
+    <result column="publish_id" property="publishId" jdbcType="INTEGER" />
+    <result column="executor_id" property="executorId" jdbcType="INTEGER" />
     <result column="publish_evaluate" property="publishEvaluate" jdbcType="VARCHAR" />
     <result column="executor_evaluate" property="executorEvaluate" jdbcType="VARCHAR" />
     <result column="publish_score" property="publishScore" jdbcType="REAL" />
     <result column="executor_score" property="executorScore" jdbcType="REAL" />
-    <result column="evaluatetime" property="evaluatetime" jdbcType="TIMESTAMP" />
+    <result column="evaluate_time" property="evaluateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Evaluate" >
-    insert into evaluate (missionid, publishid, executorid, 
+    insert into evaluate (mission_id, publish_id, executor_id, 
       publish_evaluate, executor_evaluate, publish_score, 
-      executor_score, evaluatetime)
-    values (#{missionid,jdbcType=INTEGER}, #{publishid,jdbcType=INTEGER}, #{executorid,jdbcType=INTEGER}, 
+      executor_score, evaluate_time)
+    values (#{missionId,jdbcType=INTEGER}, #{publishId,jdbcType=INTEGER}, #{executorId,jdbcType=INTEGER}, 
       #{publishEvaluate,jdbcType=VARCHAR}, #{executorEvaluate,jdbcType=VARCHAR}, #{publishScore,jdbcType=REAL}, 
-      #{executorScore,jdbcType=REAL}, #{evaluatetime,jdbcType=TIMESTAMP})
+      #{executorScore,jdbcType=REAL}, #{evaluateTime,jdbcType=TIMESTAMP})
   </insert>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select missionid, publishid, executorid, publish_evaluate, executor_evaluate, publish_score, 
-    executor_score, evaluatetime
+    select mission_id, publish_id, executor_id, publish_evaluate, executor_evaluate, 
+    publish_score, executor_score, evaluate_time
     from evaluate
   </select>
 </mapper>

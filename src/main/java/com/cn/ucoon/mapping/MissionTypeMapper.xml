@@ -2,32 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.MissionTypeMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.MissionType" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
+    <id column="mission_type_id" property="missionTypeId" jdbcType="INTEGER" />
+    <result column="mission_type_name" property="missionTypeName" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mission_type
-    where id = #{id,jdbcType=INTEGER}
+    where mission_type_id = #{missionTypeId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.MissionType" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into mission_type (id, name)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
+    insert into mission_type (mission_type_id, mission_type_name)
+    values (#{missionTypeId,jdbcType=INTEGER}, #{missionTypeName,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.MissionType" >
     update mission_type
-    set name = #{name,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    set mission_type_name = #{missionTypeName,jdbcType=VARCHAR}
+    where mission_type_id = #{missionTypeId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, name
+    select mission_type_id, mission_type_name
     from mission_type
-    where id = #{id,jdbcType=INTEGER}
+    where mission_type_id = #{missionTypeId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, name
+    select mission_type_id, mission_type_name
     from mission_type
   </select>
 </mapper>

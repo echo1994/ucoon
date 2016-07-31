@@ -2,46 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.OrderMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Order" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="orderid" property="orderid" jdbcType="INTEGER" />
-    <result column="userid" property="userid" jdbcType="INTEGER" />
-    <result column="missionid" property="missionid" jdbcType="INTEGER" />
+    <id column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="mission_id" property="missionId" jdbcType="INTEGER" />
     <result column="price" property="price" jdbcType="REAL" />
-    <result column="finishtime" property="finishtime" jdbcType="TIMESTAMP" />
+    <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
     <result column="state" property="state" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from order
-    where id = #{id,jdbcType=INTEGER}
+    where order_id = #{orderId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Order" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into order (id, orderid, userid, 
-      missionid, price, finishtime, 
+    insert into order (order_id, order_num, user_id, 
+      mission_id, price, finish_time, 
       state)
-    values (#{id,jdbcType=INTEGER}, #{orderid,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, 
-      #{missionid,jdbcType=INTEGER}, #{price,jdbcType=REAL}, #{finishtime,jdbcType=TIMESTAMP}, 
+    values (#{orderId,jdbcType=INTEGER}, #{orderNum,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{missionId,jdbcType=INTEGER}, #{price,jdbcType=REAL}, #{finishTime,jdbcType=TIMESTAMP}, 
       #{state,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Order" >
     update order
-    set orderid = #{orderid,jdbcType=INTEGER},
-      userid = #{userid,jdbcType=INTEGER},
-      missionid = #{missionid,jdbcType=INTEGER},
+    set order_num = #{orderNum,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      mission_id = #{missionId,jdbcType=INTEGER},
       price = #{price,jdbcType=REAL},
-      finishtime = #{finishtime,jdbcType=TIMESTAMP},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
+    where order_id = #{orderId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, orderid, userid, missionid, price, finishtime, state
+    select order_id, order_num, user_id, mission_id, price, finish_time, state
     from order
-    where id = #{id,jdbcType=INTEGER}
+    where order_id = #{orderId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, orderid, userid, missionid, price, finishtime, state
+    select order_id, order_num, user_id, mission_id, price, finish_time, state
     from order
   </select>
 </mapper>

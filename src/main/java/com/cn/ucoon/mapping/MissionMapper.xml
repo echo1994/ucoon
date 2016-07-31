@@ -2,66 +2,63 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.MissionMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Mission" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="missiontypeid" property="missiontypeid" jdbcType="INTEGER" />
-    <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="describe" property="describe" jdbcType="VARCHAR" />
+    <id column="mission_id" property="missionId" jdbcType="INTEGER" />
+    <result column="mission_type_id" property="missionTypeId" jdbcType="INTEGER" />
+    <result column="mission_title" property="missionTitle" jdbcType="VARCHAR" />
+    <result column="mission_describe" property="missionDescribe" jdbcType="VARCHAR" />
     <result column="pictures" property="pictures" jdbcType="VARCHAR" />
-    <result column="peoplenum" property="peoplenum" jdbcType="INTEGER" />
+    <result column="people_count" property="peopleCount" jdbcType="INTEGER" />
     <result column="place" property="place" jdbcType="VARCHAR" />
-    <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
-    <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
-    <result column="publishtime" property="publishtime" jdbcType="TIMESTAMP" />
-    <result column="userid" property="userid" jdbcType="INTEGER" />
-    <result column="orderid" property="orderid" jdbcType="INTEGER" />
-    <result column="views" property="views" jdbcType="INTEGER" />
-    <result column="leavemessage" property="leavemessage" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
+    <result column="leave_message" property="leaveMessage" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mission
-    where id = #{id,jdbcType=INTEGER}
+    where mission_id = #{missionId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Mission" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into mission (id, missiontypeid, title, 
-      describe, pictures, peoplenum, 
-      place, starttime, endtime, 
-      publishtime, userid, orderid, 
-      views, leavemessage)
-    values (#{id,jdbcType=INTEGER}, #{missiontypeid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
-      #{describe,jdbcType=VARCHAR}, #{pictures,jdbcType=VARCHAR}, #{peoplenum,jdbcType=INTEGER}, 
-      #{place,jdbcType=VARCHAR}, #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, 
-      #{publishtime,jdbcType=TIMESTAMP}, #{userid,jdbcType=INTEGER}, #{orderid,jdbcType=INTEGER}, 
-      #{views,jdbcType=INTEGER}, #{leavemessage,jdbcType=VARCHAR})
+    insert into mission (mission_id, mission_type_id, mission_title, 
+      mission_describe, pictures, people_count, 
+      place, start_time, end_time, 
+      publish_time, user_id, order_id, 
+      view_count, leave_message)
+    values (#{missionId,jdbcType=INTEGER}, #{missionTypeId,jdbcType=INTEGER}, #{missionTitle,jdbcType=VARCHAR}, 
+      #{missionDescribe,jdbcType=VARCHAR}, #{pictures,jdbcType=VARCHAR}, #{peopleCount,jdbcType=INTEGER}, 
+      #{place,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{publishTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
+      #{viewCount,jdbcType=INTEGER}, #{leaveMessage,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Mission" >
     update mission
-    set missiontypeid = #{missiontypeid,jdbcType=INTEGER},
-      title = #{title,jdbcType=VARCHAR},
-      describe = #{describe,jdbcType=VARCHAR},
+    set mission_type_id = #{missionTypeId,jdbcType=INTEGER},
+      mission_title = #{missionTitle,jdbcType=VARCHAR},
+      mission_describe = #{missionDescribe,jdbcType=VARCHAR},
       pictures = #{pictures,jdbcType=VARCHAR},
-      peoplenum = #{peoplenum,jdbcType=INTEGER},
+      people_count = #{peopleCount,jdbcType=INTEGER},
       place = #{place,jdbcType=VARCHAR},
-      starttime = #{starttime,jdbcType=TIMESTAMP},
-      endtime = #{endtime,jdbcType=TIMESTAMP},
-      publishtime = #{publishtime,jdbcType=TIMESTAMP},
-      userid = #{userid,jdbcType=INTEGER},
-      orderid = #{orderid,jdbcType=INTEGER},
-      views = #{views,jdbcType=INTEGER},
-      leavemessage = #{leavemessage,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=INTEGER},
+      view_count = #{viewCount,jdbcType=INTEGER},
+      leave_message = #{leaveMessage,jdbcType=VARCHAR}
+    where mission_id = #{missionId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, missiontypeid, title, describe, pictures, peoplenum, place, starttime, 
-    endtime, publishtime, userid, orderid, views, leavemessage
+    select mission_id, mission_type_id, mission_title, mission_describe, pictures, people_count, 
+    place, start_time, end_time, publish_time, user_id, order_id, view_count, leave_message
     from mission
-    where id = #{id,jdbcType=INTEGER}
+    where mission_id = #{missionId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, missiontypeid, title, describe, pictures, peoplenum, place, starttime, 
-    endtime, publishtime, userid, orderid, views, leavemessage
+    select mission_id, mission_type_id, mission_title, mission_describe, pictures, people_count, 
+    place, start_time, end_time, publish_time, user_id, order_id, view_count, leave_message
     from mission
   </select>
 </mapper>

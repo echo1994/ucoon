@@ -4,11 +4,11 @@ import com.cn.ucoon.pojo.MessagesType;
 import java.util.List;
 
 public interface MessagesTypeMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer messageTypeId);
 
     int insert(MessagesType record);
 
-    MessagesType selectByPrimaryKey(Integer id);
+    MessagesType selectByPrimaryKey(Integer messageTypeId);
 
     List<MessagesType> selectAll();
 

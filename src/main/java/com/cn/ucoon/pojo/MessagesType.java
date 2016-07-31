@@ -1,23 +1,23 @@
 package com.cn.ucoon.pojo;
 
 public class MessagesType {
-    private Integer id;
+    private Integer messageTypeId;
 
-    private String name;
+    private String messageTypeName;
 
-    public Integer getId() {
-        return id;
+    public Integer getMessageTypeId() {
+        return messageTypeId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMessageTypeId(Integer messageTypeId) {
+        this.messageTypeId = messageTypeId;
     }
 
-    public String getName() {
-        return name;
+    public String getMessageTypeName() {
+        return messageTypeName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setMessageTypeName(String messageTypeName) {
+        this.messageTypeName = messageTypeName == null ? null : messageTypeName.trim();
     }
 }

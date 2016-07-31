@@ -3,50 +3,50 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class Order {
-    private Integer id;
+    private Integer orderId;
 
-    private Integer orderid;
+    private Integer orderNum;
 
-    private Integer userid;
+    private Integer userId;
 
-    private Integer missionid;
+    private Integer missionId;
 
     private Float price;
 
-    private Date finishtime;
+    private Date finishTime;
 
     private Integer state;
 
-    public Integer getId() {
-        return id;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public Integer getOrderid() {
-        return orderid;
+    public Integer getOrderNum() {
+        return orderNum;
     }
 
-    public void setOrderid(Integer orderid) {
-        this.orderid = orderid;
+    public void setOrderNum(Integer orderNum) {
+        this.orderNum = orderNum;
     }
 
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getMissionid() {
-        return missionid;
+    public Integer getMissionId() {
+        return missionId;
     }
 
-    public void setMissionid(Integer missionid) {
-        this.missionid = missionid;
+    public void setMissionId(Integer missionId) {
+        this.missionId = missionId;
     }
 
     public Float getPrice() {
@@ -57,12 +57,12 @@ public class Order {
         this.price = price;
     }
 
-    public Date getFinishtime() {
-        return finishtime;
+    public Date getFinishTime() {
+        return finishTime;
     }
 
-    public void setFinishtime(Date finishtime) {
-        this.finishtime = finishtime;
+    public void setFinishTime(Date finishTime) {
+        this.finishTime = finishTime;
     }
 
     public Integer getState() {

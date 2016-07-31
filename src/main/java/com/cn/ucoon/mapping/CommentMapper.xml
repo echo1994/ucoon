@@ -2,40 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.CommentMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Comment" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="userid" property="userid" jdbcType="INTEGER" />
-    <result column="missionid" property="missionid" jdbcType="INTEGER" />
+    <id column="comment_id" property="commentId" jdbcType="INTEGER" />
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <id column="mission_id" property="missionId" jdbcType="INTEGER" />
     <result column="content" property="content" jdbcType="VARCHAR" />
-    <result column="commenttime" property="commenttime" jdbcType="TIMESTAMP" />
+    <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
   </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="map" >
     delete from comment
-    where id = #{id,jdbcType=INTEGER}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=INTEGER}
+      and mission_id = #{missionId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Comment" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into comment (id, userid, missionid, 
-      content, commenttime)
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{missionid,jdbcType=INTEGER}, 
-      #{content,jdbcType=VARCHAR}, #{commenttime,jdbcType=TIMESTAMP})
+    insert into comment (comment_id, user_id, mission_id, 
+      content, comment_time)
+    values (#{commentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Comment" >
     update comment
-    set userid = #{userid,jdbcType=INTEGER},
-      missionid = #{missionid,jdbcType=INTEGER},
-      content = #{content,jdbcType=VARCHAR},
-      commenttime = #{commenttime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    set content = #{content,jdbcType=VARCHAR},
+      comment_time = #{commentTime,jdbcType=TIMESTAMP}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=INTEGER}
+      and mission_id = #{missionId,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, userid, missionid, content, commenttime
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
+    select comment_id, user_id, mission_id, content, comment_time
     from comment
-    where id = #{id,jdbcType=INTEGER}
+    where comment_id = #{commentId,jdbcType=INTEGER}
+      and user_id = #{userId,jdbcType=INTEGER}
+      and mission_id = #{missionId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, userid, missionid, content, commenttime
+    select comment_id, user_id, mission_id, content, comment_time
     from comment
   </select>
 </mapper>

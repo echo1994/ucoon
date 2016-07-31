@@ -3,13 +3,13 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class User {
-    private Integer id;
+    private Integer userId;
 
-    private String openid;
+    private String openId;
 
-    private String nickname;
+    private String nickName;
 
-    private String weixinid;
+    private String weixinId;
 
     private Integer sex;
 
@@ -21,13 +21,13 @@ public class User {
 
     private String name;
 
-    private String headimgurl;
+    private String headImgUrl;
 
     private String intro;
 
     private Float credit;
 
-    private Date registtime;
+    private Date registTime;
 
     private String country;
 
@@ -37,36 +37,36 @@ public class User {
 
     private Integer state;
 
-    public Integer getId() {
-        return id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getOpenid() {
-        return openid;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setOpenid(String openid) {
-        this.openid = openid == null ? null : openid.trim();
+    public void setOpenId(String openId) {
+        this.openId = openId == null ? null : openId.trim();
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname == null ? null : nickname.trim();
+    public void setNickName(String nickName) {
+        this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public String getWeixinid() {
-        return weixinid;
+    public String getWeixinId() {
+        return weixinId;
     }
 
-    public void setWeixinid(String weixinid) {
-        this.weixinid = weixinid == null ? null : weixinid.trim();
+    public void setWeixinId(String weixinId) {
+        this.weixinId = weixinId == null ? null : weixinId.trim();
     }
 
     public Integer getSex() {
@@ -109,12 +109,12 @@ public class User {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getHeadimgurl() {
-        return headimgurl;
+    public String getHeadImgUrl() {
+        return headImgUrl;
     }
 
-    public void setHeadimgurl(String headimgurl) {
-        this.headimgurl = headimgurl == null ? null : headimgurl.trim();
+    public void setHeadImgUrl(String headImgUrl) {
+        this.headImgUrl = headImgUrl == null ? null : headImgUrl.trim();
     }
 
     public String getIntro() {
@@ -133,12 +133,12 @@ public class User {
         this.credit = credit;
     }
 
-    public Date getRegisttime() {
-        return registtime;
+    public Date getRegistTime() {
+        return registTime;
     }
 
-    public void setRegisttime(Date registtime) {
-        this.registtime = registtime;
+    public void setRegistTime(Date registTime) {
+        this.registTime = registTime;
     }
 
     public String getCountry() {
