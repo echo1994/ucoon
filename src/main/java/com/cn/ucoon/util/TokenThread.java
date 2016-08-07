@@ -13,16 +13,13 @@ import com.cn.ucoon.pojo.wx.AccessToken;
  */
 public class TokenThread implements Runnable {
 	private static Logger log = LoggerFactory.getLogger(TokenThread.class);
-	// 第三方用户唯一凭证
-	public static String appid = "";
-	// 第三方用户唯一凭证密钥
-	public static String appsecret = "";
+	
 	public static AccessToken accessToken = null;
 
 	public void run() {
 		while (true) {
 			try {
-				accessToken = WeixinUtil.getAccessToken(appid, appsecret);
+				accessToken = WeixinUtil.getAccessToken(WeixinUtil.appid, WeixinUtil.appsecret);
 				if (null != accessToken) {
 					log.info("获取access_token成功，有效时长{}秒 token:{}", accessToken.getExpiresIn(), accessToken.getToken());
 					// 休眠7000秒

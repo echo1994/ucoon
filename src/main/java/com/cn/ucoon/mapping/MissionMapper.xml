@@ -13,9 +13,8 @@
     <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
     <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
-    <result column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="view_count" property="viewCount" jdbcType="INTEGER" />
-    <result column="leave_message" property="leaveMessage" jdbcType="VARCHAR" />
+    <result column="mission_price" property="missionPrice" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mission
@@ -25,13 +24,13 @@
     insert into mission (mission_id, mission_type_id, mission_title, 
       mission_describe, pictures, people_count, 
       place, start_time, end_time, 
-      publish_time, user_id, order_id, 
-      view_count, leave_message)
+      publish_time, user_id, view_count, 
+      mission_price)
     values (#{missionId,jdbcType=INTEGER}, #{missionTypeId,jdbcType=INTEGER}, #{missionTitle,jdbcType=VARCHAR}, 
       #{missionDescribe,jdbcType=VARCHAR}, #{pictures,jdbcType=VARCHAR}, #{peopleCount,jdbcType=INTEGER}, 
       #{place,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{publishTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, 
-      #{viewCount,jdbcType=INTEGER}, #{leaveMessage,jdbcType=VARCHAR})
+      #{publishTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, 
+      #{missionPrice,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Mission" >
     update mission
@@ -45,20 +44,19 @@
       end_time = #{endTime,jdbcType=TIMESTAMP},
       publish_time = #{publishTime,jdbcType=TIMESTAMP},
       user_id = #{userId,jdbcType=INTEGER},
-      order_id = #{orderId,jdbcType=INTEGER},
       view_count = #{viewCount,jdbcType=INTEGER},
-      leave_message = #{leaveMessage,jdbcType=VARCHAR}
+      mission_price = #{missionPrice,jdbcType=INTEGER}
     where mission_id = #{missionId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select mission_id, mission_type_id, mission_title, mission_describe, pictures, people_count, 
-    place, start_time, end_time, publish_time, user_id, order_id, view_count, leave_message
+    place, start_time, end_time, publish_time, user_id, view_count, mission_price
     from mission
     where mission_id = #{missionId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select mission_id, mission_type_id, mission_title, mission_describe, pictures, people_count, 
-    place, start_time, end_time, publish_time, user_id, order_id, view_count, leave_message
+    place, start_time, end_time, publish_time, user_id, view_count, mission_price
     from mission
   </select>
 </mapper>

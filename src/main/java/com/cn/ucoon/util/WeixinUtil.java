@@ -9,11 +9,13 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -30,24 +32,41 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.pojo.wx.AccessToken;
+import com.cn.ucoon.pojo.wx.JsApiTicket;
 import com.cn.ucoon.pojo.wx.Menu;
 
 /**
- * 通用接口工具类
+ * 内部开发通用接口工具类
  */
 public class WeixinUtil {
+	
+	// 第三方用户唯一凭证
+	public static String appid = "wx7687c14ac73b051b";
+	// 第三方用户唯一凭证密钥
+	public static String appsecret = "58761104834ed5a2a617443a5b838568";
+	
+	
 	// 菜单创建（POST） 限100（次/天）
 	public static String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 
 	// 获取access_token的接口地址（GET） 限200（次/天）
 	public final static String access_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	
+	//获取网页access_token
+	public final static String auth_access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code"; 
+	
+	//拉取用户信息
+	public final static String get_userinfo_url = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+	
+	//获取网页jsapi_ticket
+	public final static String jsapi_ticket_url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
+	
 	private static Logger log = LoggerFactory.getLogger(WeixinUtil.class);
 
 	
 	/**
 	 * 
-	 * 获取用户openid
+	 * 获取公众号全部用户openid
 	 * 
 	 * @param nextOpenID
 	 * @return
@@ -222,7 +241,77 @@ public class WeixinUtil {
 		return accessToken;
 	}
 
+	/**
+	 * 获取网页access_token
+	 * 
+	 * @param appid
+	 *            凭证
+	 * @param appsecret
+	 *            密钥
+	 * @return json
+	 */
+	public static JSONObject getAuthAccessToken(String appid, String appsecret,String code) {
 
+		String requestUrl = auth_access_token_url.replace("APPID", appid).replace(
+				"SECRET", appsecret).replace("CODE", code);
+		JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+		// 如果请求成功
+		if (null == jsonObject) {
+			System.out.println("网页请求失败");
+			log.error("获取token失败 errcode:{} errmsg:{}",
+						jsonObject.getIntValue("errcode"),
+						jsonObject.getString("errmsg"));
+		}
+		return jsonObject;
+	}
+	
+	/**
+	 * 获取网页jsapi_ticket
+	 * 
+	 * @param appsecret
+	 *            密钥
+	 * @return json
+	 */
+	public static JsApiTicket getJsApiTicket(String accessToken) {
+
+		JsApiTicket jsApiTicket = null; 
+		String requestUrl = jsapi_ticket_url.replace("ACCESS_TOKEN", accessToken);
+		JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+		// 如果请求成功  
+        if (null != jsonObject) {  
+            try {  
+                jsApiTicket = new JsApiTicket();  
+                jsApiTicket.setTicket(jsonObject.getString("ticket"));  
+                jsApiTicket.setExpiresIn(jsonObject.getIntValue("expires_in"));  
+            } catch (JSONException e) {  
+                accessToken = null;  
+                // 获取jsApiTicket失败  
+                log.error("获取jsApiTicket失败 errcode:{} errmsg:{}", jsonObject.getIntValue("errcode"), jsonObject.getString("errmsg"));  
+            }  
+        }  
+		return jsApiTicket;
+	}
+	
+	
+
+	
+	
+	public static JSONObject getUserInfo(String access_token, String open_id) {
+		//lang默认简体即： zh_CN
+		
+		String requestUrl = get_userinfo_url.replace("ACCESS_TOKEN", access_token).replace(
+				"OPENID", open_id);
+		JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+		// 如果请求成功
+		if (null == jsonObject) {
+			System.out.println("网页请求失败");
+			log.error("获取用户信息失败 errcode:{} errmsg:{}",
+						jsonObject.getIntValue("errcode"),
+						jsonObject.getString("errmsg"));
+		}
+		return jsonObject;
+	}
+	
 	/**
 	 * 创建菜单
 	 * 
@@ -249,4 +338,25 @@ public class WeixinUtil {
 
 		return result;
 	}
+	
+	//获取缓存的token
+	public static AccessToken  getAccessToken() {  
+        return (AccessToken) ServletContextUtil.get().getAttribute("access_token");  
+    }  
+	
+	//获取缓存的ticket
+	public static JsApiTicket  getJsApiTicket() {  
+        return (JsApiTicket) ServletContextUtil.get().getAttribute("jsapi_ticket");  
+    }  
+	
+	public static Map<String, String> getJSSDK(String url) {  
+        JsApiTicket jsApiTicket = getJsApiTicket();
+        if(null != jsApiTicket) {  
+            String ticket = jsApiTicket.getTicket();  
+            Map<String, String> ret = Sign.sign(ticket, url);  
+            ret.put("appId", appid);  
+            return ret;  
+        }  
+        return null;  
+    };  
 }

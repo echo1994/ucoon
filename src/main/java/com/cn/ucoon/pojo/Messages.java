@@ -9,7 +9,7 @@ public class Messages {
 
     private Integer messageStatus;
 
-    private Date postTime;
+    private Date psotTime;
 
     private Integer messageType;
 
@@ -41,12 +41,12 @@ public class Messages {
         this.messageStatus = messageStatus;
     }
 
-    public Date getPostTime() {
-        return postTime;
+    public Date getPsotTime() {
+        return psotTime;
     }
 
-    public void setPostTime(Date postTime) {
-        this.postTime = postTime;
+    public void setPsotTime(Date psotTime) {
+        this.psotTime = psotTime;
     }
 
     public Integer getMessageType() {

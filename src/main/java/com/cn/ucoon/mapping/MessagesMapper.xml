@@ -5,7 +5,7 @@
     <id column="message_id" property="messageId" jdbcType="INTEGER" />
     <result column="message_detail" property="messageDetail" jdbcType="VARCHAR" />
     <result column="message_status" property="messageStatus" jdbcType="INTEGER" />
-    <result column="post_time" property="postTime" jdbcType="TIMESTAMP" />
+    <result column="psot_time" property="psotTime" jdbcType="TIMESTAMP" />
     <result column="message_type" property="messageType" jdbcType="INTEGER" />
     <result column="from_user_id" property="fromUserId" jdbcType="INTEGER" />
     <result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
@@ -16,30 +16,30 @@
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Messages" >
     insert into messages (message_id, message_detail, message_status, 
-      post_time, message_type, from_user_id, 
+      psot_time, message_type, from_user_id, 
       to_user_id)
     values (#{messageId,jdbcType=INTEGER}, #{messageDetail,jdbcType=VARCHAR}, #{messageStatus,jdbcType=INTEGER}, 
-      #{postTime,jdbcType=TIMESTAMP}, #{messageType,jdbcType=INTEGER}, #{fromUserId,jdbcType=INTEGER}, 
+      #{psotTime,jdbcType=TIMESTAMP}, #{messageType,jdbcType=INTEGER}, #{fromUserId,jdbcType=INTEGER}, 
       #{toUserId,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Messages" >
     update messages
     set message_detail = #{messageDetail,jdbcType=VARCHAR},
       message_status = #{messageStatus,jdbcType=INTEGER},
-      post_time = #{postTime,jdbcType=TIMESTAMP},
+      psot_time = #{psotTime,jdbcType=TIMESTAMP},
       message_type = #{messageType,jdbcType=INTEGER},
       from_user_id = #{fromUserId,jdbcType=INTEGER},
       to_user_id = #{toUserId,jdbcType=INTEGER}
     where message_id = #{messageId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select message_id, message_detail, message_status, post_time, message_type, from_user_id, 
+    select message_id, message_detail, message_status, psot_time, message_type, from_user_id, 
     to_user_id
     from messages
     where message_id = #{messageId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select message_id, message_detail, message_status, post_time, message_type, from_user_id, 
+    select message_id, message_detail, message_status, psot_time, message_type, from_user_id, 
     to_user_id
     from messages
   </select>

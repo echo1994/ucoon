@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.WebSocketHandler;
 
 /**
@@ -28,11 +27,11 @@ public class HandshakeInterceptor implements  org.springframework.web.socket.ser
             
          
             //进入聊天
-            String userID = servletRequest.getParameter("userid");      
-            System.out.println("userid" + userID);
+            String fromuserid = servletRequest.getParameter("fromuserid");    
+            System.out.println("fromuserid" + fromuserid);
                 //使用userName区分WebSocketHandler，以便定向发送消息
 //                String userName = (String) session.getAttribute("WEBSOCKET_USERNAME");
-                map.put("USERID",userID);//存入数据，方便在hander中获取，这里只是在方便在webSocket中存储了数据，并不是在正常的httpSession中存储哦，想要在平时使用的session中获得这里的数据，需要使用session 来存储一下
+                map.put("FROMUSERID",fromuserid);
                 //servletRequest.getSession().setAttribute("USERID", userID); 
         }
         return true;

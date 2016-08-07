@@ -31,11 +31,12 @@ public class WebSocketHander implements WebSocketHandler {
 
     	System.out.println("链接成功");
     	users.add(session);
-        String userID = (String) session.getAttributes().get("USERID");
-        if(userID!= null){
+        String toUserID = (String) session.getAttributes().get("TOUSERID");
+        String fromUserID = (String) session.getAttributes().get("FROMUSERID");
+        if(fromUserID!= null){
             //查询未读消息
-            int count = 5;
-            session.sendMessage(new TextMessage(count + ""));
+//            int count = 5;
+//            session.sendMessage(new TextMessage(count + ""));
         }
     }
 
@@ -47,9 +48,9 @@ public class WebSocketHander implements WebSocketHandler {
     	System.out.println(webSocketMessage.getPayload());
     	
     	//转化为json,需要try catch 判断json是否转化成功
-//    	JSONObject message = JSON.parseObject(webSocketMessage.getPayload() + "");
-//    	sendMessageToUser(message.getString("to_user_id"),new TextMessage(webSocketMessage.getPayload() + ""));
-    	sendMessageToUsers(new TextMessage(webSocketMessage.getPayload() + ""));
+    	JSONObject message = JSON.parseObject(webSocketMessage.getPayload() + "");
+    	sendMessageToUser(message.getString("to_user_id"),new TextMessage(webSocketMessage.getPayload() + ""));
+    	//sendMessageToUsers(new TextMessage(webSocketMessage.getPayload() + ""));
 
     }
 
@@ -100,7 +101,7 @@ public class WebSocketHander implements WebSocketHandler {
     public void sendMessageToUser(String userID, TextMessage message) {
         for (WebSocketSession user : users) {
         	System.out.println(user);
-            if (user.getAttributes().get("USERID").equals(userID)) {
+            if (user.getAttributes().get("FROMUSERID").equals(userID)) {
                 try {
                     if (user.isOpen()) {
                         user.sendMessage(message);

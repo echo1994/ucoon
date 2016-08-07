@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.AdminMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Admin" >
+    <id column="admin_id" property="adminId" jdbcType="INTEGER" />
+    <result column="admin_name" property="adminName" jdbcType="VARCHAR" />
+    <result column="admin_psw" property="adminPsw" jdbcType="VARCHAR" />
+    <result column="admin_rank" property="adminRank" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from admin
+    where admin_id = #{adminId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Admin" >
+    insert into admin (admin_id, admin_name, admin_psw, 
+      admin_rank)
+    values (#{adminId,jdbcType=INTEGER}, #{adminName,jdbcType=VARCHAR}, #{adminPsw,jdbcType=VARCHAR}, 
+      #{adminRank,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Admin" >
+    update admin
+    set admin_name = #{adminName,jdbcType=VARCHAR},
+      admin_psw = #{adminPsw,jdbcType=VARCHAR},
+      admin_rank = #{adminRank,jdbcType=INTEGER}
+    where admin_id = #{adminId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select admin_id, admin_name, admin_psw, admin_rank
+    from admin
+    where admin_id = #{adminId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select admin_id, admin_name, admin_psw, admin_rank
+    from admin
+  </select>
+</mapper>

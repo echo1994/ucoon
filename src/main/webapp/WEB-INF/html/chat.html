@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/mui.imageviewer.css" rel="stylesheet" />
+		<link href="../css/chat.css" rel="stylesheet" />
+	</head>
+
+	<body contextmenu="return false;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">用户名称</h1>
+		</header>
+		<pre id='h'></pre>
+		<script id='msg-template' type="text/template">
+			<% for(var i in record){ var item=record[i]; %>
+			<div class="msg-item <%= (item.sender=='self'?' msg-item-self':'') %>" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'>
+				<% if(item.sender=='self' ) { %>
+				<i class="msg-user mui-icon mui-icon-person"></i>
+				<% } else { %>
+				<img class="msg-user-img" src="../images/logo.png" alt="" />
+				<% } %>
+				<div class="msg-content">
+					<div class="msg-content-inner">
+						<% if(item.type=='text' ) { %>
+						<%=( item.content|| '&nbsp;&nbsp;') %>
+						<% } else if(item.type=='image' ) { %>
+						<img class="msg-content-image" src="<%=(item.content)%>" style="max-width: 100px;" />
+						<% } else if(item.type=='sound' ) { %>
+						<span class="mui-icon mui-icon-mic" style="font-size: 18px;font-weight: bold;"></span>
+						<span class="play-state">点击播放</span>
+						<% } %>
+					</div>
+					<div class="msg-content-arrow"></div>
+				</div>
+				<div class="mui-item-clear"></div>
+			</div>
+			<% } %>
+		</script>
+		<div class="mui-content">
+			<div id='msg-list'>
+			</div>
+		</div>
+		<footer>
+			<div class="footer-left">
+				<i id='msg-image' class="mui-icon mui-icon-camera" style="font-size: 28px;"></i>
+			</div>
+			<div class="footer-center">
+				<textarea id='msg-text' type="text" class='input-text'></textarea>
+				<button id='msg-sound' type="button" class='input-sound' style="display: none;">按住说话</button>
+			</div>
+			<label for="" class="footer-right">
+				<i id='msg-type' class="mui-icon mui-icon-mic"></i> 
+			</label>
+		</footer>
+		<div id='sound-alert' class="rprogress">
+			<div class="rschedule"></div>
+			<div class="r-sigh">!</div>
+			<div id="audio_tips" class="rsalert">手指上滑，取消发送</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.imageViewer.js"></script>
+		<script src="../js/arttmpl.js"></script>
+		<script src="http://cdn.bootcss.com/sockjs-client/1.1.1/sockjs.min.js"></script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+		<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var URL = window.location.href.split('#')[0]; //获取当前页面的url
+			URL = encodeURIComponent(URL);
+			
+			var appid,nonceStr,signature,timestamp;
+			//ajax同步更新全局变量，异步无法更新
+			$.ajax({
+			    url: "/ucoon/wx/sign?url="+URL,
+			    success: function(result){
+			    	appid = result.appId;
+			    	timestamp=result.timestamp;
+			    	nonceStr=result.nonceStr;
+			    	signature=result.signature;
+			    },
+			  	dataType: "json",
+			  	async:false
+			});
+			
+			wx.config({
+			    debug: false,
+			    appId: appid,
+			    timestamp: timestamp,
+			    nonceStr: nonceStr,
+			    signature: signature,
+			    jsApiList: [
+			      'checkJsApi',
+			      'translateVoice',
+			      'startRecord',
+			      'stopRecord',
+			      'onVoiceRecordEnd',
+			      'playVoice',
+			      'onVoicePlayEnd',
+			      'pauseVoice',
+			      'stopVoice',
+			      'uploadVoice',
+			      'downloadVoice',
+			      'chooseImage',
+			      'previewImage',
+			      'uploadImage',
+			      'downloadImage',
+			    ]
+			});
+			
+		</script>
+		<script type="text/javascript" charset="utf-8">
+			(function($, doc) {
+				wx.ready(function () {
+					//页面加载时调用
+					wx.checkJsApi({
+					    jsApiList: [
+					      'chooseImage',
+					      'previewImage',
+					      'uploadImage',
+					      'startRecord'
+					    ],
+					    success: function (res) {
+					      alert(JSON.stringify(res));
+					    }
+					 });
+				});		
+			
+				$.init({
+					gestureConfig: {
+						tap: true, //默认为true
+						doubletap: true, //默认为false
+						longtap: true, //默认为false
+						swipe: true, //默认为true
+						drag: true, //默认为true
+						hold: true, //默认为false，不监听
+						release: true //默认为false，不监听
+					}
+				});
+				//关闭默认转义,模板引擎默认数据包含的 HTML 字符进行转义以避免 XSS 漏洞
+				template.config('escape', false);
+				
+				
+				
+				
+				//存放聊天消息
+				var record = [];
+
+
+
+				var ui = {
+					body: doc.querySelector('body'),
+					footer: doc.querySelector('footer'),
+					footerRight: doc.querySelector('.footer-right'),
+					footerLeft: doc.querySelector('.footer-left'),
+					btnMsgType: doc.querySelector('#msg-type'),
+					boxMsgText: doc.querySelector('#msg-text'),
+					boxMsgSound: doc.querySelector('#msg-sound'),
+					btnMsgImage: doc.querySelector('#msg-image'),
+					areaMsgList: doc.querySelector('#msg-list'),
+					boxSoundAlert: doc.querySelector('#sound-alert'),
+					h: doc.querySelector('#h'),
+					content: doc.querySelector('.mui-content')
+				};
+				
+				
+				var url = window.location.href; //获取当前页面的url
+				var fromuserid;
+				var touserid;		
+				
+				
+				
+				//地址栏目取参数
+				var GetArgsFromHref = function(url){
+					var args    = url.split("?");
+					var retval = "";
+					/*参数为空*/
+					if(args[0] == url) {
+						return false; /*无需做任何处理*/
+					}  
+					var str = args[1];
+					args0 = str.split("&");
+					var str1 = args0[0];
+					var str2 = args0[1];
+					var arg1 = str1.split("=");
+					fromuserid = arg1[1];
+					var arg2 = str2.split("=");
+					touserid = arg2[1];
+					return true;
+				}
+				/* var GetHeadUrl = function(userId,headImgUrl){
+					$.get("/user/getHeadUrl?userId" + userId,function(data){
+						alert(data);
+					})
+				} */
+						
+				GetArgsFromHref(url,fromuserid,touserid);
+				var websocket;
+				if ('WebSocket' in window) {  
+					mui.alert('连接方式：WebSocket', '系统消息', function() {});
+					websocket = new WebSocket("ws://dq7kesuqpw.proxy.qqbrowser.cc:8000/ucoon/echo?fromuserid=" + fromuserid);
+				} else if ('MozWebSocket' in window) {
+					mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
+					websocket = new MozWebSocket("ws://ucoon/echo");
+				} else {
+					mui.alert('连接方式：SockJS', '系统消息', function() {});
+					websocket = new SockJS("http://dq7kesuqpw.proxy.qqbrowser.cc:8000/ucoon/sockjs/echo");
+				}
+				websocket.onopen = function(evnt) {
+					mui.alert('连接服务器成功!', '系统消息', function() {});
+				};
+				websocket.onmessage = function(evnt) {
+					
+					mui.alert('收到消息：' + evnt.data, '提示', function() {});
+					var str = evnt.data;
+					
+					var obj = eval('(' + str + ')');
+					alert(obj.message_detail);
+					//接收消息
+					/* 
+					{
+						"from_user_id": "发送方",
+					    "to_user_id": "接收方",
+					    "message_type": "消息类型",
+					    "post_time": "发送时间（时间戳）",
+					    "message_detail": "消息内容"
+					} 
+					 */ 
+					record.push({
+							sender: 'echo',
+							type: 'text',
+							content: obj.message_detail
+					});
+					bindMsgList();
+				};
+				websocket.onerror = function(evnt) {
+					mui.alert('服务器出错了-》' + evnt.data, '系统消息', function() {});
+				};
+				websocket.onclose = function(evnt) {
+					mui.alert('与服务器断开了链接!', '系统消息', function() {});
+				}
+				ui.h.style.width = ui.boxMsgText.offsetWidth + 'px';
+				//alert(ui.boxMsgText.offsetWidth );
+			
+				//  智能接口
+				var voice = {
+				    localId: '',
+				    serverId: ''
+				};
+			
+				var footerPadding = ui.footer.offsetHeight - ui.boxMsgText.offsetHeight;
+				var msgItemTap = function(msgItem, event) {
+					var msgType = msgItem.getAttribute('msg-type');
+					var msgContent = msgItem.getAttribute('msg-content')
+					if(msgType == 'sound') {
+						var playState = msgItem.querySelector('.play-state');
+						playState.innerText = '正在播放...';
+						wx.playVoice({
+					      localId: msgContent
+					    });
+					    
+					    //  停止播放音频
+					   /*  wx.stopVoice({
+						     localId: voice.localId
+						}); */
+					    
+					    //  监听录音播放停止
+						wx.onVoicePlayEnd({
+						    complete: function (res) {
+						      playState.innerText = '点击播放';
+						    }
+						});
+					}
+				};
+				var imageViewer = new $.ImageViewer('.msg-content-image', {
+					dbl: false
+				});
+				var bindMsgList = function() {
+					//绑定数据:
+					ui.areaMsgList.innerHTML = template('msg-template', {
+						"record": record
+					});
+					var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
+					[].forEach.call(msgItems, function(item, index) {
+						item.addEventListener('tap', function(event) {
+							msgItemTap(item, event);
+						}, false);
+					});
+					imageViewer.findAllImage();
+					ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+				};
+				bindMsgList();
+				window.addEventListener('resize', function() {
+					ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+				}, false);
+				var send = function(msg) {
+					//发送消息
+					/* 
+					{
+						"from_user_id": "发送方",
+					    "to_user_id": "接收方",
+					    "message_type": "消息类型",
+					    "post_time": "发送时间（时间戳）",
+					    "message_detail": "消息内容"
+					} 
+					 */ 
+					if (websocket != null) {
+						record.push(msg);
+						bindMsgList();
+						var timestamp = new Date().getTime();
+						var message_content = '{"from_user_id":"' + fromuserid
+								+ '","to_user_id":"' + touserid + '","message_type":"text"'
+								+ ',"post_time":"' + timestamp + '","message_detail":"'
+								+ msg.content + '"}';
+						websocket.send(message_content);
+					} else {
+						mui.alert('未与服务器链接!', '系统消息', function() {});
+					}
+					
+				};
+				
+
+				function msgTextFocus() {
+					ui.boxMsgText.focus();
+					setTimeout(function() {
+						ui.boxMsgText.focus();
+					}, 150);
+				}
+				//解决长按“发送”按钮，导致键盘关闭的问题；
+				ui.footerRight.addEventListener('touchstart', function(event) {
+					if(ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+						msgTextFocus();
+						event.preventDefault();
+					}
+				});
+				//解决长按“发送”按钮，导致键盘关闭的问题；
+				ui.footerRight.addEventListener('touchmove', function(event) {
+					if(ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+						msgTextFocus();
+						event.preventDefault();
+					}
+				});
+				//					ui.footerRight.addEventListener('touchcancel', function(event) {
+				//						if (ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+				//							msgTextFocus();
+				//							event.preventDefault();
+				//						}
+				//					});
+				//					ui.footerRight.addEventListener('touchend', function(event) {
+				//						if (ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+				//							msgTextFocus();
+				//							event.preventDefault();
+				//						}
+				//					});
+				ui.footerRight.addEventListener('release', function(event) {
+					if(ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+						//showKeyboard();
+						ui.boxMsgText.focus();
+						setTimeout(function() {
+							ui.boxMsgText.focus();
+						}, 150);
+						//							event.detail.gesture.preventDefault();
+						send({
+							sender: 'self',
+							type: 'text',
+							content: ui.boxMsgText.value.replace(new RegExp('\n', 'gm'), '<br/>')
+						});
+						ui.boxMsgText.value = '';
+						$.trigger(ui.boxMsgText, 'input', null);
+					} else if(ui.btnMsgType.classList.contains('mui-icon-mic')) {
+						ui.btnMsgType.classList.add('mui-icon-compose');
+						ui.btnMsgType.classList.remove('mui-icon-mic');
+						ui.boxMsgText.style.display = 'none';
+						ui.boxMsgSound.style.display = 'block';
+						ui.boxMsgText.blur();
+						document.body.focus();
+					} else if(ui.btnMsgType.classList.contains('mui-icon-compose')) {
+						ui.btnMsgType.classList.add('mui-icon-mic');
+						ui.btnMsgType.classList.remove('mui-icon-compose');
+						ui.boxMsgSound.style.display = 'none';
+						ui.boxMsgText.style.display = 'block';
+						//--
+						//showKeyboard();
+						ui.boxMsgText.focus();
+						setTimeout(function() {
+							ui.boxMsgText.focus();
+						}, 150);
+					}
+				}, false);
+				ui.footerLeft.addEventListener('tap', function(event) {
+					
+					var localId;
+					wx.chooseImage({
+					    count: 1, // 默认9
+					    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+					    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+					    success: function (res) {
+					        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+					        
+					        localId=localIds[0];//默认取一张
+					        
+					        //上传到微信服务器
+					        /* wx.uploadImage({
+							    localId: localId, // 需要上传的图片的本地ID，由chooseImage接口获得
+							    isShowProgressTips: 1, // 默认为1，显示进度提示
+							    success: function (res) {
+							        var serverId = res.serverId; // 返回图片的服务器端ID
+							        alert(serverId);
+							    }
+							}); */
+					        
+					        send({
+									sender: 'self',
+									type: 'image',
+									content: localId
+							});
+					    }
+					});
+					
+					
+				}, false);
+				var setSoundAlertVisable = function(show) {
+					if(show) {
+						ui.boxSoundAlert.style.display = 'block';
+						ui.boxSoundAlert.style.opacity = 1;
+					} else {
+						ui.boxSoundAlert.style.opacity = 0;
+						//fadeOut 完成再真正隐藏
+						setTimeout(function() {
+							ui.boxSoundAlert.style.display = 'none';
+						}, 200);
+					}
+				};
+				var recordCancel = false;
+				var audio_tips = document.getElementById("audio_tips");
+				var startTimestamp = null;
+				var stopTimestamp = null;
+				var stopTimer = null;
+				//录音最小间隔
+				var MIN_SOUND_TIME = 800;
+				ui.boxMsgSound.addEventListener('hold', function(event) {
+					recordCancel = false;
+					if(stopTimer) clearTimeout(stopTimer);
+					audio_tips.innerHTML = "手指上划，取消发送";
+					ui.boxSoundAlert.classList.remove('rprogress-sigh');
+					setSoundAlertVisable(true);
+					//开始录音
+					wx.startRecord({
+					    cancel: function () {
+					   	  mui.alert('用户拒绝授权录音!', '提示', function() {});
+					    }
+					});
+					startTimestamp = (new Date()).getTime();
+					
+				}, false);
+				ui.body.addEventListener('drag', function(event) {
+					//console.log('drag');
+					if(Math.abs(event.detail.deltaY) > 50) {
+						if(!recordCancel) {
+							recordCancel = true;
+							if(!audio_tips.classList.contains("cancel")) {
+								audio_tips.classList.add("cancel");
+							}
+							audio_tips.innerHTML = "松开手指，取消发送";
+						}
+					} else {
+						if(recordCancel) {
+							recordCancel = false;
+							if(audio_tips.classList.contains("cancel")) {
+								audio_tips.classList.remove("cancel");
+							}
+							audio_tips.innerHTML = "手指上划，取消发送";
+						}
+					}
+				}, false);
+				ui.boxMsgSound.addEventListener('release', function(event) {
+					//console.log('release');
+					if(audio_tips.classList.contains("cancel")) {
+						audio_tips.classList.remove("cancel");
+						audio_tips.innerHTML = "手指上划，取消发送";
+					}
+					//
+					stopTimestamp = (new Date()).getTime(); 
+					if(stopTimestamp - startTimestamp < MIN_SOUND_TIME) {
+						audio_tips.innerHTML = "录音时间太短";
+						ui.boxSoundAlert.classList.add('rprogress-sigh');
+						recordCancel = true;
+						stopTimer = setTimeout(function() {
+							setSoundAlertVisable(false);
+						}, 800);
+					} else {
+						setSoundAlertVisable(false);
+					}
+					wx.stopRecord({
+				      success: function (res) {
+				        voice.localId = res.localId;
+				        if(!recordCancel){
+				        	send({
+								sender: 'self',
+								type: 'sound',
+								content: voice.localId
+							});
+				        }
+				        
+				      },
+				      fail: function (res) {
+				        alert(JSON.stringify(res));
+				      }
+				    });
+				}, false);
+				
+				//  监听录音自动停止
+				wx.onVoiceRecordEnd({
+				    complete: function (res) {
+				      voice.localId = res.localId;
+				      audio_tips.classList.remove("cancel");
+					  audio_tips.innerHTML = "录音时间不得超过一分钟";
+					  stopTimer = setTimeout(function() {
+							setSoundAlertVisable(false);
+					  }, 800);
+					  send({
+							sender: 'self',
+							type: 'sound',
+							content: voice.localId
+					  });
+				    }
+				});
+				
+				ui.boxMsgSound.addEventListener("touchstart", function(e) {
+					//console.log("start....");
+					e.preventDefault();
+				});
+				ui.boxMsgText.addEventListener('input', function(event) {
+					ui.btnMsgType.classList[ui.boxMsgText.value == '' ? 'remove' : 'add']('mui-icon-paperplane');
+					ui.btnMsgType.setAttribute("for", ui.boxMsgText.value == '' ? '' : 'msg-text');
+					ui.h.innerText = ui.boxMsgText.value.replace(new RegExp('\n', 'gm'), '\n-') || '-';
+					ui.footer.style.height = (ui.h.offsetHeight + footerPadding) + 'px';
+					ui.content.style.paddingBottom = ui.footer.style.height;
+				});
+				var focus = false;
+				ui.boxMsgText.addEventListener('tap', function(event) {
+					ui.boxMsgText.focus();
+					setTimeout(function() {
+						ui.boxMsgText.focus();
+					}, 0);
+					focus = true;
+					setTimeout(function() {
+						focus = false;
+					}, 1000);
+					event.detail.gesture.preventDefault();
+				}, false);
+				//点击消息列表，关闭键盘
+				ui.areaMsgList.addEventListener('click', function(event) {
+					if(!focus) {
+						ui.boxMsgText.blur();
+					}
+				})
+
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

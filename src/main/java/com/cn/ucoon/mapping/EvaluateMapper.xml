@@ -2,26 +2,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.EvaluateMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Evaluate" >
-    <result column="mission_id" property="missionId" jdbcType="INTEGER" />
-    <result column="publish_id" property="publishId" jdbcType="INTEGER" />
-    <result column="executor_id" property="executorId" jdbcType="INTEGER" />
+    <id column="mission_id" property="missionId" jdbcType="INTEGER" />
+    <id column="publish_id" property="publishId" jdbcType="INTEGER" />
+    <id column="executor_id" property="executorId" jdbcType="INTEGER" />
     <result column="publish_evaluate" property="publishEvaluate" jdbcType="VARCHAR" />
     <result column="executor_evaluate" property="executorEvaluate" jdbcType="VARCHAR" />
     <result column="publish_score" property="publishScore" jdbcType="REAL" />
     <result column="executor_score" property="executorScore" jdbcType="REAL" />
-    <result column="evaluate_time" property="evaluateTime" jdbcType="TIMESTAMP" />
+    <result column="epevaluate_time" property="epevaluateTime" jdbcType="TIMESTAMP" />
+    <result column="peevaluate_time" property="peevaluateTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="map" >
+    delete from evaluate
+    where mission_id = #{missionId,jdbcType=INTEGER}
+      and publish_id = #{publishId,jdbcType=INTEGER}
+      and executor_id = #{executorId,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Evaluate" >
     insert into evaluate (mission_id, publish_id, executor_id, 
       publish_evaluate, executor_evaluate, publish_score, 
-      executor_score, evaluate_time)
+      executor_score, epevaluate_time, peevaluate_time
+      )
     values (#{missionId,jdbcType=INTEGER}, #{publishId,jdbcType=INTEGER}, #{executorId,jdbcType=INTEGER}, 
       #{publishEvaluate,jdbcType=VARCHAR}, #{executorEvaluate,jdbcType=VARCHAR}, #{publishScore,jdbcType=REAL}, 
-      #{executorScore,jdbcType=REAL}, #{evaluateTime,jdbcType=TIMESTAMP})
+      #{executorScore,jdbcType=REAL}, #{epevaluateTime,jdbcType=TIMESTAMP}, #{peevaluateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Evaluate" >
+    update evaluate
+    set publish_evaluate = #{publishEvaluate,jdbcType=VARCHAR},
+      executor_evaluate = #{executorEvaluate,jdbcType=VARCHAR},
+      publish_score = #{publishScore,jdbcType=REAL},
+      executor_score = #{executorScore,jdbcType=REAL},
+      epevaluate_time = #{epevaluateTime,jdbcType=TIMESTAMP},
+      peevaluate_time = #{peevaluateTime,jdbcType=TIMESTAMP}
+    where mission_id = #{missionId,jdbcType=INTEGER}
+      and publish_id = #{publishId,jdbcType=INTEGER}
+      and executor_id = #{executorId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
+    select mission_id, publish_id, executor_id, publish_evaluate, executor_evaluate, 
+    publish_score, executor_score, epevaluate_time, peevaluate_time
+    from evaluate
+    where mission_id = #{missionId,jdbcType=INTEGER}
+      and publish_id = #{publishId,jdbcType=INTEGER}
+      and executor_id = #{executorId,jdbcType=INTEGER}
+  </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select mission_id, publish_id, executor_id, publish_evaluate, executor_evaluate, 
-    publish_score, executor_score, evaluate_time
+    publish_score, executor_score, epevaluate_time, peevaluate_time
     from evaluate
   </select>
 </mapper>

@@ -6,7 +6,6 @@
     <result column="order_num" property="orderNum" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="mission_id" property="missionId" jdbcType="INTEGER" />
-    <result column="price" property="price" jdbcType="REAL" />
     <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
     <result column="state" property="state" jdbcType="INTEGER" />
   </resultMap>
@@ -16,29 +15,28 @@
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Order" >
     insert into order (order_id, order_num, user_id, 
-      mission_id, price, finish_time, 
-      state)
+      mission_id, finish_time, state
+      )
     values (#{orderId,jdbcType=INTEGER}, #{orderNum,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
-      #{missionId,jdbcType=INTEGER}, #{price,jdbcType=REAL}, #{finishTime,jdbcType=TIMESTAMP}, 
-      #{state,jdbcType=INTEGER})
+      #{missionId,jdbcType=INTEGER}, #{finishTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Order" >
     update order
     set order_num = #{orderNum,jdbcType=INTEGER},
       user_id = #{userId,jdbcType=INTEGER},
       mission_id = #{missionId,jdbcType=INTEGER},
-      price = #{price,jdbcType=REAL},
       finish_time = #{finishTime,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=INTEGER}
     where order_id = #{orderId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select order_id, order_num, user_id, mission_id, price, finish_time, state
+    select order_id, order_num, user_id, mission_id, finish_time, state
     from order
     where order_id = #{orderId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select order_id, order_num, user_id, mission_id, price, finish_time, state
+    select order_id, order_num, user_id, mission_id, finish_time, state
     from order
   </select>
 </mapper>

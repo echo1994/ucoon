@@ -17,7 +17,9 @@ public class Evaluate {
 
     private Float executorScore;
 
-    private Date evaluateTime;
+    private Date epevaluateTime;
+
+    private Date peevaluateTime;
 
     public Integer getMissionId() {
         return missionId;
@@ -75,11 +77,19 @@ public class Evaluate {
         this.executorScore = executorScore;
     }
 
-    public Date getEvaluateTime() {
-        return evaluateTime;
+    public Date getEpevaluateTime() {
+        return epevaluateTime;
     }
 
-    public void setEvaluateTime(Date evaluateTime) {
-        this.evaluateTime = evaluateTime;
+    public void setEpevaluateTime(Date epevaluateTime) {
+        this.epevaluateTime = epevaluateTime;
+    }
+
+    public Date getPeevaluateTime() {
+        return peevaluateTime;
+    }
+
+    public void setPeevaluateTime(Date peevaluateTime) {
+        this.peevaluateTime = peevaluateTime;
     }
 }

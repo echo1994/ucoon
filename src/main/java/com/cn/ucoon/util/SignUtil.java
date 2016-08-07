@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class SignUtil {
 	// 与接口配置信息中的Token要一致   
-	private static String token = "ucoon.cn";
+	private static String token = "ucoon2016";
 
 	/**
 	 * 验证签名

@@ -3,6 +3,8 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class CommentChild {
+    private Integer commentChildId;
+
     private Integer commentId;
 
     private Integer fromuserId;
@@ -12,6 +14,14 @@ public class CommentChild {
     private String content;
 
     private Date commentTime;
+
+    public Integer getCommentChildId() {
+        return commentChildId;
+    }
+
+    public void setCommentChildId(Integer commentChildId) {
+        this.commentChildId = commentChildId;
+    }
 
     public Integer getCommentId() {
         return commentId;

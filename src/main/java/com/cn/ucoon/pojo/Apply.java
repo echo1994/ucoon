@@ -2,14 +2,26 @@ package com.cn.ucoon.pojo;
 
 import java.util.Date;
 
-public class PeopleOrder {
+public class Apply {
+    private Integer applyId;
+
     private Integer userId;
 
-    private Integer orderId;
+    private Integer missionId;
 
     private Date takeTime;
 
     private Integer takeState;
+
+    private String note;
+
+    public Integer getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(Integer applyId) {
+        this.applyId = applyId;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -19,12 +31,12 @@ public class PeopleOrder {
         this.userId = userId;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getMissionId() {
+        return missionId;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setMissionId(Integer missionId) {
+        this.missionId = missionId;
     }
 
     public Date getTakeTime() {
@@ -41,5 +53,13 @@ public class PeopleOrder {
 
     public void setTakeState(Integer takeState) {
         this.takeState = takeState;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note == null ? null : note.trim();
     }
 }

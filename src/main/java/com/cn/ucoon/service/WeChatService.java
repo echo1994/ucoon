@@ -12,6 +12,6 @@ public interface WeChatService {
 	 * **/
 	public String processRequest(HttpServletRequest request);
 
-	
+
 
 }

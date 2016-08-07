@@ -1,6 +1,7 @@
 package com.cn.ucoon.dao;
 
 import com.cn.ucoon.pojo.User;
+
 import java.util.List;
 
 public interface UserMapper {
@@ -13,4 +14,14 @@ public interface UserMapper {
     List<User> selectAll();
 
     int updateByPrimaryKey(User record);
+    
+    //通过openid取得用户对象
+    User selectByOpenId(String openId);
+    
+    //微信授权注册用户
+    int regist(User record);
+
+    //获取用户头像
+	String selectUserHeadUrl(String userId);
+    
 }

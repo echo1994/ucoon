@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.ApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Apply" >
+    <id column="apply_id" property="applyId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="mission_id" property="missionId" jdbcType="INTEGER" />
+    <result column="take_time" property="takeTime" jdbcType="TIMESTAMP" />
+    <result column="take_state" property="takeState" jdbcType="INTEGER" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from apply
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Apply" >
+    insert into apply (apply_id, user_id, mission_id, 
+      take_time, take_state, note
+      )
+    values (#{applyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, 
+      #{takeTime,jdbcType=TIMESTAMP}, #{takeState,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Apply" >
+    update apply
+    set user_id = #{userId,jdbcType=INTEGER},
+      mission_id = #{missionId,jdbcType=INTEGER},
+      take_time = #{takeTime,jdbcType=TIMESTAMP},
+      take_state = #{takeState,jdbcType=INTEGER},
+      note = #{note,jdbcType=VARCHAR}
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select apply_id, user_id, mission_id, take_time, take_state, note
+    from apply
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select apply_id, user_id, mission_id, take_time, take_state, note
+    from apply
+  </select>
+</mapper>

@@ -11,8 +11,6 @@ public class Order {
 
     private Integer missionId;
 
-    private Float price;
-
     private Date finishTime;
 
     private Integer state;
@@ -47,14 +45,6 @@ public class Order {
 
     public void setMissionId(Integer missionId) {
         this.missionId = missionId;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
     }
 
     public Date getFinishTime() {

@@ -2,20 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.CommentChildMapper" >
   <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.CommentChild" >
+    <id column="comment_child_id" property="commentChildId" jdbcType="INTEGER" />
     <result column="comment_id" property="commentId" jdbcType="INTEGER" />
     <result column="fromuser_id" property="fromuserId" jdbcType="INTEGER" />
     <result column="touser_id" property="touserId" jdbcType="INTEGER" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from comment_child
+    where comment_child_id = #{commentChildId,jdbcType=INTEGER}
+  </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.CommentChild" >
-    insert into comment_child (comment_id, fromuser_id, touser_id, 
-      content, comment_time)
-    values (#{commentId,jdbcType=INTEGER}, #{fromuserId,jdbcType=INTEGER}, #{touserId,jdbcType=INTEGER}, 
-      #{content,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP})
+    insert into comment_child (comment_child_id, comment_id, fromuser_id, 
+      touser_id, content, comment_time
+      )
+    values (#{commentChildId,jdbcType=INTEGER}, #{commentId,jdbcType=INTEGER}, #{fromuserId,jdbcType=INTEGER}, 
+      #{touserId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}
+      )
   </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.CommentChild" >
+    update comment_child
+    set comment_id = #{commentId,jdbcType=INTEGER},
+      fromuser_id = #{fromuserId,jdbcType=INTEGER},
+      touser_id = #{touserId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      comment_time = #{commentTime,jdbcType=TIMESTAMP}
+    where comment_child_id = #{commentChildId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select comment_child_id, comment_id, fromuser_id, touser_id, content, comment_time
+    from comment_child
+    where comment_child_id = #{commentChildId,jdbcType=INTEGER}
+  </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select comment_id, fromuser_id, touser_id, content, comment_time
+    select comment_child_id, comment_id, fromuser_id, touser_id, content, comment_time
     from comment_child
   </select>
 </mapper>

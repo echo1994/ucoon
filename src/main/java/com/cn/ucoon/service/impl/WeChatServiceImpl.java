@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.cn.ucoon.pojo.wx.resp.Article;
 import com.cn.ucoon.pojo.wx.resp.NewsMessage;
+import com.cn.ucoon.pojo.wx.resp.TextMessage;
 import com.cn.ucoon.service.WeChatService;
 import com.cn.ucoon.util.MessageUtil;
 
@@ -31,7 +32,7 @@ public class WeChatServiceImpl implements WeChatService  {
 			String respContent = null;
 			// xml请求解析
 			Map<String, String> requestMap = new MessageUtil()
-					.parseXml(request);// 2
+					.parseXml(request);
 
 			// 发送方账号（open_id）
 			String openID = requestMap.get("FromUserName");
@@ -44,14 +45,14 @@ public class WeChatServiceImpl implements WeChatService  {
 			String msgType = requestMap.get("MsgType");
 
 			// 回复文本消息
-			// TextMessage textMessage = new TextMessage();
-			// textMessage.setToUserName(openID);
-			// textMessage.setFromUserName(toUserName);
-			// textMessage.setCreateTime(new Date().getTime());
-			// textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
-			// textMessage.setFuncFlag(0);
-			// textMessage.setContent("已接收消息，小编稍后给你回复\ue056\n回复1与机器人聊天\ue00f");
-			// respMessage = MessageUtil.textMessageToXml(textMessage);
+			 TextMessage textMessage = new TextMessage();
+			 textMessage.setToUserName(openID);
+			 textMessage.setFromUserName(toUserName);
+			 textMessage.setCreateTime(new Date().getTime());
+			 textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
+			 textMessage.setFuncFlag(0);
+			 textMessage.setContent("内侧中");
+			 respMessage = MessageUtil.textMessageToXml(textMessage);
 
 			// 文本消息
 			if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {

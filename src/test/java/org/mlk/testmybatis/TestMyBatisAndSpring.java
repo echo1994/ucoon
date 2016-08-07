@@ -9,13 +9,11 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.alibaba.fastjson.JSON;
-import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.listener.OnlineCountListener;
 import com.cn.ucoon.service.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)		//表示继承了SpringJUnit4ClassRunner类
 @ContextConfiguration(locations = {"classpath:spring-mybatis.xml"})
-
 public class TestMyBatisAndSpring {
 	private static Logger logger = Logger.getLogger(TestMyBatisAndSpring.class);
 //	private ApplicationContext ac = null;
@@ -28,11 +26,19 @@ public class TestMyBatisAndSpring {
 //		userService = (IUserService) ac.getBean("userService");
 //	}
 
+//	@Test
+//	public void test1() {
+//		User user = userService.getUserById(1);
+//		// System.out.println(user.getUserName());
+//		// logger.info("值："+user.getUserName());
+//		logger.info(JSON.toJSONString(user));
+//	}
+	
+	
 	@Test
-	public void test1() {
-		User user = userService.getUserById(1);
-		// System.out.println(user.getUserName());
-		// logger.info("值："+user.getUserName());
-		logger.info(JSON.toJSONString(user));
+	public void test2(){
+		
+		System.out.println(OnlineCountListener.getMemberSum());
 	}
+
 }

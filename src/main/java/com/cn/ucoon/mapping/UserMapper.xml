@@ -38,6 +38,26 @@
       #{registTime,jdbcType=TIMESTAMP}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
       #{city,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER})
   </insert>
+  <insert id="regist" parameterType="com.cn.ucoon.pojo.User">
+		insert into user (open_id,
+		nick_name,
+		sex,
+		head_img_url, 
+		regist_time, country,
+		province,
+		city)
+		values (#{openId,jdbcType=VARCHAR},
+		#{nickName,jdbcType=VARCHAR},
+		#{sex,jdbcType=INTEGER},
+		#{headImgUrl,jdbcType=VARCHAR}, 
+		#{registTime,jdbcType=TIMESTAMP},
+		#{country,jdbcType=VARCHAR},
+		#{province,jdbcType=VARCHAR},
+		#{city,jdbcType=VARCHAR})
+		<selectKey keyProperty="userId" resultType="java.lang.Integer" order="AFTER">
+			select LAST_INSERT_ID() 
+		</selectKey> 
+	</insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.User" >
     update user
     set open_id = #{openId,jdbcType=VARCHAR},
@@ -69,4 +89,22 @@
     head_img_url, intro, credit, regist_time, country, province, city, state
     from user
   </select>
+  <select id="selectByOpenId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select user_id, open_id, nick_name, weixin_id, sex,
+		signature, birthday,
+		phone, name,
+		head_img_url, intro, credit,
+		regist_time, country, province, city, state
+		from user
+		where open_id =
+		#{openId,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<select id="selectUserHeadUrl" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select head_img_url from user
+		where user_id = #{userId,jdbcType=INTEGER}
+	</select>
 </mapper>

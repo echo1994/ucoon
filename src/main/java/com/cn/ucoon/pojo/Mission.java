@@ -25,11 +25,9 @@ public class Mission {
 
     private Integer userId;
 
-    private Integer orderId;
-
     private Integer viewCount;
 
-    private String leaveMessage;
+    private Integer missionPrice;
 
     public Integer getMissionId() {
         return missionId;
@@ -119,14 +117,6 @@ public class Mission {
         this.userId = userId;
     }
 
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
     public Integer getViewCount() {
         return viewCount;
     }
@@ -135,11 +125,11 @@ public class Mission {
         this.viewCount = viewCount;
     }
 
-    public String getLeaveMessage() {
-        return leaveMessage;
+    public Integer getMissionPrice() {
+        return missionPrice;
     }
 
-    public void setLeaveMessage(String leaveMessage) {
-        this.leaveMessage = leaveMessage == null ? null : leaveMessage.trim();
+    public void setMissionPrice(Integer missionPrice) {
+        this.missionPrice = missionPrice;
     }
 }
