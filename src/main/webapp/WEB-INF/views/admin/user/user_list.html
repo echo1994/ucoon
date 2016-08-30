@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>后台管理系统</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="../css/cj.css" type="text/css" />
+		<link rel="stylesheet" href="../css/list.css" type="text/css" />		
+	</head>
+	<body >
+		<div class="listbox">
+			<div class="pagetitle">用户管理</div>
+			<div class="buttonz">
+				<a href="add_user.html" class="btn btn-success btn-sm">增加用户</a>
+				<a href="javascript:;" class="btn btn-danger btn-sm" onclick="delall_user();">批量删除</a>
+			</div>
+			<div class="search_row">
+				<div class="form-inline">
+					<p>
+						<div class="form-group">
+					      <label>会员名称：</label>
+					      <input type="text" class="form-control  input-sm" id="username" name="username">
+					    </div>
+						<div class="form-group">
+					      <label>会员名称：</label>
+					      <input type="text" class="form-control  input-sm" id="username" name="username">
+					    </div>
+					</p>
+					<p>
+						<div class="form-group">
+					      <label>会员名称：</label>
+					      <input type="text" class="form-control  input-sm" id="username" name="username">
+					    </div>
+						<div class="form-group">
+					      <label>会员名称：</label>
+					      <input type="text" class="form-control  input-sm" id="username" name="username">
+					    </div>
+						
+					    <div class="form-group">
+					      <label>是否认证：</label>
+					      <select class="form-control input-sm">
+							  <option>已认证</option>
+							  <option>未认证</option>
+							</select>
+					    </div>
+					    <a href="javascript:;" class="btn btn-default  btn-sm">搜索</a>
+					</p>
+					
+				</div>
+			</div>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th width="1%"><input type="checkbox" id="checkall"></th>
+					<th width="5%">ID</th>
+					<th width="12%">会员名称</th>
+					<th width="13%">手机号</th>
+					<th width="15%">邮箱</th>
+					<th width="5%">余额</th>
+					<th width="5%">积分</th>
+					<th width="5%">经验</th>
+					<th width="5%">认证</th>
+					<th width="15%">最后登录时间</th>
+					<th width="19%">操作</th>
+				</tr>
+				<tr>
+					<td class="text-center"><input type="checkbox" name="checklist" value="019"></td>
+					<td class="text-center">019</td>
+					<td><a href="edit_user.html?id=019">邵钒淳</a></td>
+					<td class="text-center">15868721752</td>
+					<td>15868721752@qq.com</td>
+					<td>￥0</td>
+					<td>0</td>
+					<td>0</td>
+					<td class="text-center">已认证</td>
+					<td class="text-center">2015-07-01 14:46:59</td>
+					<td>
+						<a href="edit_user.html?id=019">编辑</a>
+						<a href="javascript:;" onclick="deluser(019);">删除</a>
+						<a href="user_bank.html?id=019">银行卡管理</a>						
+					</td>
+				</tr>			
+			</table>
+			<div class="paging">
+			  <ul class="pagination">
+			    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">‹</span></a></li>
+			    <li class="active"><a href="#">1</a></li>
+			    <li><a href="#">2</a></li>								    
+			    <li><a href="#" aria-label="Next"><span aria-hidden="true">›</span></a></li>
+			    <li><span>1/1022 页</span></li>
+			    <li><input type="text" class="form-control"></li>
+				<li><a href="javascript:;">Go</a></li>
+				<li><span>30655 条记录</span></li>
+			  </ul>
+			</div>
+		</div>
+	</body>
+</html>
+<script src="../script/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="../script/jquery.alerts.js" type="text/javascript"></script>
+<script src="../js/tongyong.js" type="text/javascript"></script>
+<script src="../js/user_list.js"></script>

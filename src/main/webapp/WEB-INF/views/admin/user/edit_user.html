@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>后台管理系统</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="../css/cj.css" type="text/css" />
+		<link rel="stylesheet" href="../css/list.css" type="text/css" />		
+	</head>
+	<body >
+		<div class="listbox">
+			<div class="pagetitle">修改用户
+				<a href="user_list.html">>>返回列表</a>
+			</div>
+			<form  name="" id="" action="" method="get">
+				<table class="table table-bordered table-condensed">
+					<tr>
+						<td colspan="2">会员基本信息</td>
+					</tr>
+					<tr>
+						<td class="item_title">会员名称:</td>
+						<td class="item_input">
+							<input type="text" name="username"  class="form-control input-sm" data-val="true" data-val-required="请输入会员名称">
+							<span class="" data-valmsg-for="username" data-valmsg-replace="true"></span>	
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">会员密码:</td>
+						<td class="item_input"><input type="password" name="password"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">支付密码:</td>
+						<td class="item_input"><input type="password" name="payword"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">手机号码:</td>
+						<td class="item_input"><input type="text" name="phone"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">电子邮箱:</td>
+						<td class="item_input"><input type="text" name="email"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">昵称:</td>
+						<td class="item_input"><input type="text" name="nicheng"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">性别:</td>
+						<td class="item_input">
+							<label class="radio-inline"><input type="radio" name="sex" value="1">男</label>
+							<label class="radio-inline"><input type="radio" name="sex" value="2">女</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">出生日期:</td>
+						<td class="item_input"><input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="form-control input-sm" name="birth"></td>
+					</tr>
+					<tr>
+						<td class="item_title">QQ:</td>
+						<td class="item_input"><input type="text" name="QQ"  class="form-control input-sm"></td>
+					</tr>					
+					<tr>
+						<td class="item_title">微信:</td>
+						<td class="item_input"><input type="text" name="weixin"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td colspan="2">会员认证信息</td>
+					</tr>
+					<tr>
+						<td class="item_title">真实姓名:</td>
+						<td class="item_input"><input type="text" name="realname"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">身份证号:</td>
+						<td class="item_input"><input type="text" name="ID_card"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">学校名称:</td>
+						<td class="item_input"><input type="text" name="school"  class="form-control input-sm" onfocus="select_sk()"></td>
+					</tr>
+					
+					<tr>
+						<td class="item_title">入学年份:</td>
+						<td class="item_input"><input type="text" onfocus="WdatePicker({dateFmt:'yyyy'})" class="form-control input-sm" name="access"></td>
+					</tr>
+					<tr>
+						<td class="item_title">学号:</td>
+						<td class="item_input"><input type="text" name="studentID"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">认证:</td>
+						<td class="item_input">
+							<label class="radio-inline"><input type="radio" name="renzheng" value="1">是</label>
+							<label class="radio-inline"><input type="radio" name="renzheng" value="2">否</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">上传证件:</td>
+						<td class="item_input">
+							<ul class="gallery">
+								<li><a href="../img/shengfenzheng.png"><img src="../img/shengfenzheng.png"></a></li>
+								<li><a href="../img/shengfenzheng.png"><img src="../img/shengfenzheng.png"></a></li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">&nbsp;</td>
+						<td class="item_input">
+							<div id="uploader-img">
+					      		<!--用来存放item-->
+							    <div id="fileList" class="uploader-list"></div>
+							    <div id="filePicker">重新上传证件</div>										    
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="item_title"></td>
+						<td class="item_input">
+							<button type="submit" class="btn btn-primary btn-sm" style="width:150px;">保存</button>
+						</td>
+					</tr>
+					
+				</table>
+			</form>
+		</div>
+	</body>
+</html>
+<!--设置学校弹出框-->
+<div class="modal fade" id="select" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">选择学校</h4>
+      </div>
+      <div class="modal-body">
+      	<div class="sk_box">
+      		<div class="sk_search">
+      			<form class="form-inline">
+				  <div class="form-group">
+				    <label for="school" class="form-left control-label">搜索：</label>
+				  	<input type="text" class="form-control input-sm" placeholder="请输入学校关键字" style="width: 300px;">
+				  </div>
+				</form>
+      		</div>
+      		<div class="sk_province">
+      			<ul>
+      				<li class="active"><a onclick="">浙江</a></li>
+      				<li><a onclick="">上海</a></li>
+      			</ul>
+      		</div>
+      		<div class="sk_select">
+      			<ul>
+      				<li><a onclick="" href="1">清华大学</a></li>
+      				<li><a onclick="" href="2">清华大学</a></li>
+      				<li><a onclick="" href="3">清华大学</a></li>
+      				<li><a onclick="" href="4">清华大学</a></li>
+      			</ul>								      			
+      		</div>
+      	</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../script/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="../script/bootstrap.min.js"></script>
+<script src="../script/jquery.alerts.js" type="text/javascript"></script>
+<script src="../script/jquery.validate.js" type="text/javascript"></script>
+<script src="../script/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="../script/jquery.validate.unobtrusive.js" type="text/javascript"></script>
+<script src="../script/photozs.js"></script>
+<script src="../webuploader/webuploader.js" type="text/javascript"></script>
+<script src="../My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+<script src="../js/tongyong.js" type="text/javascript"></script>
+<script src="../js/add_user.js"></script>

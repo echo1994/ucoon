@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>后台管理系统</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="../css/cj.css" type="text/css" />
+		<link rel="stylesheet" href="../css/list.css" type="text/css" />	
+	</head>
+	<body>
+		<div class="listbox">
+			<div class="pagetitle">添加表格</div>
+			<form  name="" id="" action="" method="get">
+				<table class="table table-bordered table-condensed">
+					<tr>
+						<td class="item_title">创建表格</td>
+						<td class="item_input">
+							<div class="form-inline">
+								<input type="text" class="form-control" id="row" placeholder="行" style="width:50px">
+								<span style="margin:0px 5px">X</span>
+								<input type="text" class="form-control" id="col" placeholder="列" style="width:50px">
+							  	<button type="button" class="btn btn-success btn-sm" onclick="table.add_table()">添加表格</button>
+								<button type="button" class="btn btn-default btn-sm" onclick="table.del_table()">删除表格</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">表格信息</td>
+						<td class="item_input" id="table-box">
+							<table class="table table-bordered" id="new_table" style="max-width: 600px;min-width: 600px;">
+								<tbody>
+									<tr id="row_1">
+										<td rel="1_1">
+											<input type="text" id="input_1_1" class="form-control input-sm" style="width:100%;border:none;box-shadow:none">
+										</td>
+										<td rel="1_2">
+											<input type="text" id="input_1_2" class="form-control input-sm" style="width:100%;border:none;box-shadow:none">
+										</td>
+										<td width="50px"><a href="javascript:;" onclick="table.del_row(1)">删除</a></td>
+									</tr>
+									<tr id="row_2">
+										<td rel="2_1">
+											<input type="text" id="input_2_1" class="form-control input-sm" style="width:100%;border:none;box-shadow:none">
+										</td>
+										<td rel="2_2">
+											<input type="text" id="input_2_2" class="form-control input-sm" style="width:100%;border:none;box-shadow:none">
+										</td>
+										<td width="50px"><a href="javascript:;" onclick="table.del_row(2)">删除</a></td>
+									</tr>
+								</tbody>
+							</table>						
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</body>
+</html>
+<script src="../script/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="../script/bootstrap.min.js"></script>
+<script>
+var table={}
+table.fun=$("#table-box");			
+//增加表格
+table.add_table=function(){
+	var table_row=$("#row").val(),//行
+		table_col=$("#col").val();//列
+	var tab='<table class="table table-bordered" id="new_table" style="max-width: 600px;min-width: 600px;">';
+	for(var i=1;i<=table_row;i++){
+		var a=1;
+		tab+='<tr id="row_'+i+'">';
+		for(var j=1;j<=table_col;j++){
+			tab+='<td rel="'+i+'_'+a+'">';
+			tab+='<input type="text" id="input_'+i+'_'+a+'" class="form-control input-sm" style="width:100%;border:none;box-shadow:none">';
+			tab+='</td>';
+			a++;
+		}
+		tab+='<td width="50px"><a href="javascript:;" onclick="table.del_row('+i+')">删除</a></td></tr>';
+	}
+	tab+='</table>';
+	table.fun.html(tab);
+}
+//删除表格
+table.del_table=function(){
+	table.fun.html('');
+}
+//删除行
+table.del_row=function(num){
+	var row=$("#row_"+num);
+	row.remove();
+}
+</script>

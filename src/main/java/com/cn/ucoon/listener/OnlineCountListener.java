@@ -74,8 +74,8 @@ public class OnlineCountListener implements HttpSessionAttributeListener,
 		}
 	}
 
+	//页面加载时
 	public void sessionCreated(HttpSessionEvent arg) {
-		System.out.println("user ++ ");
 		userSum++;
 	}
 

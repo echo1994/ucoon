@@ -15,7 +15,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -41,9 +40,9 @@ import com.cn.ucoon.pojo.wx.Menu;
 public class WeixinUtil {
 	
 	// 第三方用户唯一凭证
-	public static String appid = "wx7687c14ac73b051b";
+	public static String appid = "wx14236620e0b8201e";
 	// 第三方用户唯一凭证密钥
-	public static String appsecret = "58761104834ed5a2a617443a5b838568";
+	public static String appsecret = "a1e573ee1d1e594ca062a9715dff2568";
 	
 	
 	// 菜单创建（POST） 限100（次/天）

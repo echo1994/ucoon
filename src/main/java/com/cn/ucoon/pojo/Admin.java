@@ -7,7 +7,7 @@ public class Admin {
 
     private String adminPsw;
 
-    private Integer adminRank;
+    private AdminGroup adminGroup;
 
     public Integer getAdminId() {
         return adminId;
@@ -33,11 +33,11 @@ public class Admin {
         this.adminPsw = adminPsw == null ? null : adminPsw.trim();
     }
 
-    public Integer getAdminRank() {
-        return adminRank;
+    public AdminGroup getAdminGroup() {
+        return adminGroup;
     }
 
-    public void setAdminRank(Integer adminRank) {
-        this.adminRank = adminRank;
+    public void setAdminGroup(AdminGroup adminGroup) {
+        this.adminGroup = adminGroup;
     }
 }

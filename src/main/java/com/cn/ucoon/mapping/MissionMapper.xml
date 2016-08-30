@@ -1,62 +1,97 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.MissionMapper" >
-  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Mission" >
-    <id column="mission_id" property="missionId" jdbcType="INTEGER" />
-    <result column="mission_type_id" property="missionTypeId" jdbcType="INTEGER" />
-    <result column="mission_title" property="missionTitle" jdbcType="VARCHAR" />
-    <result column="mission_describe" property="missionDescribe" jdbcType="VARCHAR" />
-    <result column="pictures" property="pictures" jdbcType="VARCHAR" />
-    <result column="people_count" property="peopleCount" jdbcType="INTEGER" />
-    <result column="place" property="place" jdbcType="VARCHAR" />
-    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
-    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
-    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
-    <result column="user_id" property="userId" jdbcType="INTEGER" />
-    <result column="view_count" property="viewCount" jdbcType="INTEGER" />
-    <result column="mission_price" property="missionPrice" jdbcType="INTEGER" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from mission
-    where mission_id = #{missionId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.cn.ucoon.pojo.Mission" >
-    insert into mission (mission_id, mission_type_id, mission_title, 
-      mission_describe, pictures, people_count, 
-      place, start_time, end_time, 
-      publish_time, user_id, view_count, 
-      mission_price)
-    values (#{missionId,jdbcType=INTEGER}, #{missionTypeId,jdbcType=INTEGER}, #{missionTitle,jdbcType=VARCHAR}, 
-      #{missionDescribe,jdbcType=VARCHAR}, #{pictures,jdbcType=VARCHAR}, #{peopleCount,jdbcType=INTEGER}, 
-      #{place,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{publishTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, 
-      #{missionPrice,jdbcType=INTEGER})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Mission" >
-    update mission
-    set mission_type_id = #{missionTypeId,jdbcType=INTEGER},
-      mission_title = #{missionTitle,jdbcType=VARCHAR},
-      mission_describe = #{missionDescribe,jdbcType=VARCHAR},
-      pictures = #{pictures,jdbcType=VARCHAR},
-      people_count = #{peopleCount,jdbcType=INTEGER},
-      place = #{place,jdbcType=VARCHAR},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      publish_time = #{publishTime,jdbcType=TIMESTAMP},
-      user_id = #{userId,jdbcType=INTEGER},
-      view_count = #{viewCount,jdbcType=INTEGER},
-      mission_price = #{missionPrice,jdbcType=INTEGER}
-    where mission_id = #{missionId,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select mission_id, mission_type_id, mission_title, mission_describe, pictures, people_count, 
-    place, start_time, end_time, publish_time, user_id, view_count, mission_price
-    from mission
-    where mission_id = #{missionId,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select mission_id, mission_type_id, mission_title, mission_describe, pictures, people_count, 
-    place, start_time, end_time, publish_time, user_id, view_count, mission_price
-    from mission
-  </select>
+	<resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Mission" >
+		<id column="mission_id" property="missionId" jdbcType="INTEGER" />
+		<result column="mission_type_id" property="missionTypeId" jdbcType="INTEGER" />
+		<result column="mission_title" property="missionTitle" jdbcType="VARCHAR" />
+		<result column="mission_describe" property="missionDescribe" jdbcType="VARCHAR" />
+		<result column="pictures" property="pictures" jdbcType="VARCHAR" />
+		<result column="pic_count" property="picCount" jdbcType="INTEGER" />
+		<result column="people_count" property="peopleCount" jdbcType="INTEGER" />
+		<result column="place" property="place" jdbcType="VARCHAR" />
+		<result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+		<result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="view_count" property="viewCount" jdbcType="INTEGER" />
+		<result column="mission_price" property="missionPrice" jdbcType="INTEGER" />
+		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+		<result column="mission_status" property="missionStatus" jdbcType="INTEGER" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >delete from mission
+    where mission_id = #{missionId,jdbcType=INTEGER}</delete>
+	<insert id="insert" parameterType="com.cn.ucoon.pojo.Mission" >
+		insert into mission (mission_id, mission_type_id, mission_title, mission_describe,
+		pictures,pic_count, people_count, place, start_time, end_time, publish_time, user_id,
+		view_count, mission_price , telephone,mission_status) values (#{missionId,jdbcType=INTEGER},
+		#{missionTypeId,jdbcType=INTEGER}, #{missionTitle,jdbcType=VARCHAR}, #{missionDescribe,jdbcType=VARCHAR},
+		#{pictures,jdbcType=VARCHAR}, #{picCount,jdbcType=INTEGER},#{peopleCount,jdbcType=INTEGER},
+		#{place,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+		#{publishTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER},
+		#{missionPrice,jdbcType=INTEGER},#{telephone,jdbcType=VARCHAR}, #{missionStatus,jdbcType=INTEGER})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Mission" >
+		update mission set mission_type_id = #{missionTypeId,jdbcType=INTEGER}, mission_title
+		= #{missionTitle,jdbcType=VARCHAR}, mission_describe = #{missionDescribe,jdbcType=VARCHAR},
+		pictures = #{pictures,jdbcType=VARCHAR}, pic_count = #{picCount,jdbcType=INTEGER},
+		people_count = #{peopleCount,jdbcType=INTEGER}, place = #{place,jdbcType=VARCHAR},
+		start_time = #{startTime,jdbcType=TIMESTAMP}, end_time = #{endTime,jdbcType=TIMESTAMP},
+		publish_time = #{publishTime,jdbcType=TIMESTAMP}, user_id = #{userId,jdbcType=INTEGER},
+		view_count = #{viewCount,jdbcType=INTEGER}, mission_price = #{missionPrice,jdbcType=INTEGER}
+		, telephone = #{telephone,jdbcType=VARCHAR} ,mission_status= #{missionStatus,jdbcType=INTEGER}
+		where mission_id = #{missionId,jdbcType=INTEGER}
+	</update>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer"
+		>
+		select mission_id, mission_type_id, mission_title, mission_describe, pictures,pic_count,
+		people_count, place, start_time, end_time, publish_time, user_id, view_count, mission_price,telephone
+		,mission_status from mission where mission_id = #{missionId,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap" >
+		select mission_id, mission_type_id, mission_title, mission_describe, pictures,pic_count,
+		people_count, place, start_time, end_time, publish_time, user_id, view_count, mission_price
+		,telephone, mission_status from mission
+	</select>
+	
+	<!--  返回一定限定数量的mission记录  按时间顺序   index.jsp-->
+	<select id="selectLimited" resultType="java.util.HashMap" >
+		SELECT mission_id, head_img_url, mission_title, mission_describe, place, publish_time,
+		mission_price,view_count FROM mission LEFT JOIN user ON user.user_id = mission.user_id
+		ORDER BY publish_time LIMIT #{0},#{1}
+	</select>
+	
+	<!--  返回一定限定数量的mission记录   关键字    按时间顺序  index.jsp-->
+	<select id="selectLimitedbyKeyWord" resultType="java.util.HashMap" >
+		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
+		mission_price ,view_count FROM mission LEFT JOIN user ON user.user_id = mission.user_id
+		WHERE mission_title like #{0} or mission_describe like #{0} ORDER BY publish_time
+		LIMIT #{1},#{2}
+	</select>
+	
+	<!--  返回一定限定数量的mission记录      Userid  	按时间顺序   mysend.jsp-全部-->
+	<select id="selectLimitedbyUserId" resultType="java.util.HashMap" >
+		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
+		mission_price ,view_count,mission_status FROM mission LEFT JOIN user ON user.user_id
+		= mission.user_id WHERE mission.user_id = #{0} ORDER BY publish_time LIMIT #{1},#{2}
+	</select>
+	
+	<!-- 返回一定限定数量的mission记录 Userid/missionStatus 按时间顺序 mysend.jsp -已上架=0,已下架=1;未支付=2;已完成=3-->
+	<select id="selectLimitedbyUserIdAndStatus" resultType="java.util.HashMap" >
+		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
+		mission_price ,view_count,mission_status FROM mission LEFT JOIN user ON user.user_id
+		= mission.user_id WHERE mission.user_id = #{0} AND mission_status = #{1} ORDER BY
+		publish_time LIMIT #{2},#{3}
+	</select>
+	
+	<!-- 查询mission详情   -->
+	<select id="selectForMissionDetails" resultType="java.util.HashMap">
+		SELECT mission_id,mission.user_id,nick_name,head_img_url,sex,mission_title,mission_price,
+		view_count, people_count,place,publish_time,start_time,end_time,mission_describe,pictures,
+		pic_count FROM mission left join user on user.user_id = mission.user_id WHERE mission.mission_id
+		= #{0}
+	</select>
+	
+	<select id="selectUserIdByMissionId" resultType="java.lang.Integer">SELECT user_id FROM mission WHERE mission_id = #{0}</select>
+	
 </mapper>

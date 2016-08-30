@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>后台管理系统</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="../css/cj.css" type="text/css" />
+		<link rel="stylesheet" href="../css/list.css" type="text/css" />		
+	</head>
+	<body >
+		<div class="listbox">
+			<div class="pagetitle">添加企业
+				<a href="company_list.html">>>返回列表</a>
+			</div>
+			<form  name="" id="" action="" method="get">
+				<table class="table table-bordered table-condensed">
+					<tr>
+						<td colspan="2">企业基本信息</td>
+					</tr>
+					<tr>
+						<td class="item_title">上传公司logo:</td>
+						<td class="item_input">
+							<div id="logoimg" class="uploader-img">
+					      		<!--用来存放item-->
+							    <div id="logoList" class="uploader-list"></div>
+							    <div id="logoPicker">选择图片</div>										    
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">账号名称:</td>
+						<td class="item_input">
+							<input type="text" name="username"  class="form-control input-sm" data-val="true" data-val-required="请输入会员名称">
+							<span class="" data-valmsg-for="username" data-valmsg-replace="true"></span>	
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">账号密码:</td>
+						<td class="item_input"><input type="password" name="password"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">支付密码:</td>
+						<td class="item_input"><input type="password" name="payword"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">手机号码:</td>
+						<td class="item_input"><input type="text" name="phone"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">电子邮箱:</td>
+						<td class="item_input"><input type="text" name="email"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">联系人:</td>
+						<td class="item_input"><input type="text" name="contacts"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">联系号码:</td>
+						<td class="item_input"><input type="text" name="phone"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">员工人数:</td>
+						<td class="item_input">
+							<select class="form-control valid" name="workernum">
+								<option>请选择</option>
+								<option value="1">少于20人</option>
+								<option value="2">20-50人</option>
+								<option value="3">50-100人</option>
+								<option value="4">100-200人</option>
+								<option value="5">200-500人</option>
+								<option value="6">500人以上</option>
+						   	</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">公车线路:</td>
+						<td class="item_input"><input type="text" name="address"  class="form-control input-sm"></td>
+					</tr>
+
+					<tr>
+						<td colspan="2">企业认证信息</td>
+					</tr>
+					<tr>
+						<td class="item_title">真实姓名:</td>
+						<td class="item_input"><input type="text" name="realname"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">企业名称:</td>
+						<td class="item_input"><input type="text" name="coname"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">企业性质:</td>
+						<td class="item_input">
+							<select class="form-control valid" name="conature">
+								<option>请选择</option>
+								<option value="1">私营企业</option>
+								<option value="2">三资企业</option>
+								<option value="3">股份制企业</option>
+								<option value="4">行政机关</option>
+								<option value="5">社会团体</option>
+								<option value="6">事业单位</option>
+								<option value="7">国有企业</option>
+								<option value="8">集体企业</option>
+								<option value="9">集体事业</option>
+								<option value="10">乡镇企业</option>
+						   	</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">所属行业:</td>
+						<td class="item_input">
+							<select class="form-control valid" name="conindustry">
+								<option>请选择</option>
+								<option value="1">综合性工商/实业公司</option>
+								<option value="2">电子/通讯/电器</option>
+								<option value="3">食品/粮油/烟草/日用品</option>
+								<option value="4">公关/市场/营销/会展</option>
+								<option value="5">制药/生物工程</option>
+								<option value="6">广告/企业策划/管理咨询</option>
+								<option value="7">教育/科研/培训/学术</option>
+								<option value="8">法律/社会服务</option>
+								<option value="9">传播/新闻/媒体/出版/影视/艺术</option>
+								<option value="10">金融/保险/投资/证券/银行</option>
+								<option value="11">旅游/餐饮/健身娱乐</option>
+								<option value="12">商业/贸易/进出口/批发/零售</option>
+								<option value="13">医疗卫生/药品/保健品/护理/美容</option>
+								<option value="14">计算机/网络/电子商务</option>
+								<option value="15">工程/制造/机械</option>
+								<option value="16">建筑/房地产/物业管理/安装工程/装潢</option>
+								<option value="17">石油/化工/原材料/能源</option>
+								<option value="18">服装/纺织/制帽/皮具/丝绒/鞋业</option>
+								<option value="19">农业/渔业/林业/牧业</option>
+								<option value="20">国家机关/公共事业</option>
+								<option value="21">城市规划/园林工程/环保</option>
+								<option value="22">协会/学会</option>
+								<option value="23">交通运输/物流/仓储</option>
+								<option value="24">造纸/印刷/包装/文体用品</option>
+								<option value="25">生产/制造业/模具加工</option>
+								<option value="26">矿山/冶金/地质</option>
+								<option value="27">五金交电/仪器仪表</option>
+								<option value="28">家具/家电/家居/木材及竹、藤、棕、草制品</option>
+								<option value="29">工艺美术/礼品/玩具/收藏品</option>
+								<option value="30">中介服务</option>
+								<option value="31">检验/检测/认证</option>
+								<option value="32">酒店/度假/生活服务</option>
+								<option value="33">电气/电力/水利</option>
+								<option value="34">航天/航空/航天研究与制造</option>
+								<option value="35">汽车及零配件</option>
+								<option value="36">其他</option>
+						   	</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">成立时间:</td>
+						<td class="item_input"><input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" class="form-control input-sm" name="createtime"></td>
+					</tr>
+					<tr>
+						<td class="item_title">工作地点:</td>
+						<td class="item_input sanji">
+							<select class="form-control" id="s_province" name="s_province">
+						   			<option value="0">--省份--</option>
+					   		</select>			      
+					   		<select class="form-control" id="s_city" name="s_city">
+					   			<option value="0">--城市--</option>
+					   		</select>			      
+					   		<select class="form-control" id="s_county" name="s_county">
+					   			<option value="0">--区/县--</option>
+					   		</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">企业地址:</td>
+						<td class="item_input"><input type="text" name="address"  class="form-control input-sm"></td>
+					</tr>
+					<tr>
+						<td class="item_title">认证:</td>
+						<td class="item_input">
+							<label class="radio-inline"><input type="radio" name="renzheng" value="1">是</label>
+							<label class="radio-inline"><input type="radio" name="renzheng" value="2">否</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">上传营业执照:</td>
+						<td class="item_input">
+							<div id="yingyeimg" class="uploader-img">
+					      		<!--用来存放item-->
+							    <div id="yingyeList" class="uploader-list"></div>
+							    <div id="yingyePicker">选择图片</div>										    
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="item_title">上传环境照:</td>
+						<td class="item_input">
+							<div id="huanjingimg" class="uploader-img">
+					      		<!--用来存放item-->
+							    <div id="huanjingList" class="uploader-list"></div>
+							    <div id="huanjingPicker">选择照片</div>										    
+							</div>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
+					<tr>
+						<td class="item_title"></td>
+						<td class="item_input">
+							<button type="submit" class="btn btn-primary btn-sm" style="width:150px;">保存</button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</body>
+</html>
+
+<script src="../script/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="../script/bootstrap.min.js"></script>
+<script src="../script/jquery.alerts.js" type="text/javascript"></script>
+<script src="../script/jquery.validate.js" type="text/javascript"></script>
+<script src="../script/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="../script/jquery.validate.unobtrusive.js" type="text/javascript"></script>
+<script src="../webuploader/webuploader.js" type="text/javascript"></script>
+<script src="../My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+<script src="../js/tongyong.js" type="text/javascript"></script>
+<script src="../js/add_company.js"></script>

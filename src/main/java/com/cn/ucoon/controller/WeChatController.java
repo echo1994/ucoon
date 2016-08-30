@@ -134,4 +134,13 @@ public class WeChatController {
 		return map;  
     }  
 
+	
+	@RequestMapping(value = "/test")
+	public void test(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("进来了");
+		// 微信加密签名
+		
+	}
+	
 }

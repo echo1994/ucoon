@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>后台管理系统</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css" />
+		<link rel="stylesheet" href="../css/cj.css" type="text/css" />
+		<link rel="stylesheet" href="../css/list.css" type="text/css" />		
+	</head>
+	<body >
+		<div class="listbox">
+			<div class="pagetitle">会员资金明细</div>
+			<div class="buttonz">
+				<a href="detailed_user.html" class="btn btn-success btn-sm">会员资金明细</a>
+				<a href="detailed_company.html" class="btn btn-default btn-sm">企业资金明细</a>
+			</div>
+			<div class="search_row">
+				<div class="form-inline">
+				    <div class="form-group">
+				      <label>会员账号：</label>
+				      <input type="text" class="form-control  input-sm" id="username" name="username">
+				    </div>
+				    <div class="form-group">
+				      <label>开始时间：</label>
+				      <input type="text" class="form-control  input-sm" id="starttime" name="starttime" onfocus="var endtime=$dp.$('endtime');WdatePicker({dateFmt:'yyyy-MM-dd',onpicked:function(){endtime.focus();},maxDate:'#F{$dp.$D(\'endtime\')}'})">
+				    </div>
+				    <div class="form-group">
+				      <label>结束时间：</label>
+				      <input type="text" class="form-control  input-sm" id="endtime" name="endtime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'starttime\')}'})">
+				    </div>
+				    <a href="javascript:;" class="btn btn-default  btn-sm">搜索</a>
+				</div>
+			</div>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th width="5%">ID</th>
+					<th width="15%">流水号</th>
+					<th width="15%">会员账号</th>
+					<th width="10%">资金变动</th>					
+					<th width="10%">积分变动</th>					
+					<th width="20%">时间</th>					
+					<th width="25%">备注</th>		
+				</tr>
+				<tr>
+					<td class="text-center">012</td>
+					<td class="text-center">123415645123</td>
+					<td>XXXXXXX</td>
+					<td class="text-center">+50元</td>
+					<td class="text-center">+50积分</td>
+					<td class="text-center">2015-10-10 09:20</td>
+					<td>乱七八糟我也不知道啥</td>
+				</tr>		
+				<tr>
+					<td class="text-center">012</td>
+					<td class="text-center">123415645123</td>
+					<td>XXXXXXX</td>
+					<td class="text-center">-50元</td>
+					<td class="text-center">-50积分</td>
+					<td class="text-center">2015-10-10 09:20</td>
+					<td>乱七八糟我也不知道啥</td>
+				</tr>
+			</table>
+			<div class="paging">
+			  <ul class="pagination">
+			    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">‹</span></a></li>
+			    <li class="active"><a href="#">1</a></li>
+			    <li><a href="#">2</a></li>
+			    <li><a href="#" aria-label="Next"><span aria-hidden="true">›</span></a></li>
+			    <li><span>1/1022 页</span></li>
+			    <li><input type="text" class="form-control"></li>
+				<li><a href="javascript:;">Go</a></li>
+				<li><span>30655 条记录</span></li>
+			  </ul>
+			</div>
+		</div>
+	</body>
+</html>
+<script src="../script/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script src="../script/jquery.alerts.js" type="text/javascript"></script>
+<script src="../My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+<script src="../js/tongyong.js" type="text/javascript"></script>

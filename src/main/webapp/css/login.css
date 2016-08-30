@@ -1,0 +1,187 @@
+
+.loginpage {background: #fff url(../images/patternbg.png)}
+.loginpage .nousername,.loginpage .nopassword {display: none}
+.loginbox {
+	width: 400px;
+	padding: 5px;
+	background: #fff;
+	margin: 7% auto 0 auto;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+	-webikt-box-shadow: 0 0 2px rgba(0, 0, 0, 0.3)
+}
+.loginbox .logo {text-align: center}
+.loginbox .logo h1 {
+	height: 69px;
+	margin-top: 0;
+	font-size: 32px;
+	color: #fff;
+	border-bottom: 1px solid #56647d;
+	line-height: normal;
+	margin-bottom: 5px
+}
+.loginbox .logo h1 span {
+	color: #fb9337
+}
+.loginbox .slogan {
+	color: #fff
+}
+.loginbox .boxhen {
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webikt-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	margin: 20px 0;
+	overflow: hidden
+}
+.loginbox .username {
+	background: #eee url(../images/icons/username.png) no-repeat 13px center;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webikt-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	margin: 20px 0;
+	overflow: hidden
+}
+.loginbox .password {
+	background: #eee url(../images/icons/password.png) no-repeat 13px center;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webikt-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	margin: 20px 0;
+	overflow: hidden
+}
+.loginbox .code {
+	background: #eee url(../images/icons/code.png) no-repeat 15px center;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webikt-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	margin: 20px 0;
+	overflow: hidden
+}
+.loginbox .username input,
+.loginbox .password input,
+.loginbox .code input {
+	padding: 15px 10px;
+	border: 0;
+	font-size: 14px;
+	width: 100%;
+	box_shadow: none;
+	color: #666;
+	-moz-border-radius: 0 2px 2px 0;
+	-webkit-border-radius: 0 2px 2px 0;
+	border-radius: 0 2px 2px 0
+}
+.loginbox .code input{width:41%;background: #fff;}
+.codeimg{display:inline-block;height:43px;position:absolute;top:0px;right:0px;background: #fff;padding:3px 5px 0px;cursor: pointer;border-right: 1px solid #ddd;}
+.codeimg img{width: 160px;height: 40px;}
+.loginbox .usernameinner,
+.loginbox .passwordinner,
+.loginbox .codeinner {
+	margin-left: 45px;
+	border-left: 1px solid #ddd;
+	background: #fff;
+	padding-right: 20px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px
+}
+.loginbox .codeinner{background:none;position:relative;}
+.loginbox #oa_login {
+	color: #fff;
+	background: #f0801d url(../images/btngrad.png) repeat-x top left;
+	border: 0;
+	padding: 15px 0;
+	text-align: center;
+	font-size: 14px;
+	font-weight: normal;
+	width: 100%;
+	text-transform: uppercase;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	-webikt-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4)
+}
+.loginbox #oa_login:hover {
+	background-color: #f0721e
+}
+.loginbox .loginmsg {
+	background: #fffccc;
+	color: #333;
+	margin-bottom: 10px;
+	padding: 5px;
+	text-align: center;
+	font-size: 12px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px
+}
+.loginboxinner {
+	padding: 20px;
+	background: #32415a url(../images/patternbg.png);
+	border-radius: 0 0 2px 2px
+}
+.dotting {
+	display: inline-block;
+	width: 10px;
+	min-height: 2px;
+	padding-right: 2px;
+	border-left: 2px solid currentColor;
+	border-right: 2px solid currentColor;
+	background-color: currentColor;
+	background-clip: content-box;
+	box-sizing: border-box;
+	-webkit-animation: dot 1s infinite step-start both;
+	animation: dot 1s infinite step-start both
+}
+.dotting:before {
+	content: '...'
+}
+.dotting::before {
+	content: ''
+}
+:root .dotting {
+	margin-left: 2px;
+	padding-left: 2px
+}
+@-webkit-keyframes dot {
+	25% {
+		border-color: transparent;
+		background-color: transparent
+	}
+	50% {
+		border-right-color: transparent;
+		background-color: transparent
+	}
+	75% {
+		border-right-color: transparent
+	}
+}
+@keyframes dot {
+	25% {
+		border-color: transparent;
+		background-color: transparent
+	}
+	50% {
+		border-right-color: transparent;
+		background-color: transparent
+	}
+	75% {
+		border-right-color: transparent
+	}
+}

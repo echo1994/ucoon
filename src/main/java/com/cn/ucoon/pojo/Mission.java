@@ -2,134 +2,185 @@ package com.cn.ucoon.pojo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Mission {
-    private Integer missionId;
+	private Integer missionId;
 
-    private Integer missionTypeId;
+	private Integer missionTypeId;
 
-    private String missionTitle;
+	private String missionTitle;
 
-    private String missionDescribe;
+	private String missionDescribe;
 
-    private String pictures;
+	private String pictures;
 
-    private Integer peopleCount;
+	private Integer picCount;
+	
+	private Integer peopleCount;
 
-    private String place;
+	private String place;
 
-    private Date startTime;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	private Date startTime;
 
-    private Date endTime;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	private Date endTime;
 
-    private Date publishTime;
+	private Date publishTime;
 
-    private Integer userId;
+	private Integer userId;
 
-    private Integer viewCount;
+	private Integer viewCount;
 
-    private Integer missionPrice;
+	private Integer missionPrice;
 
-    public Integer getMissionId() {
-        return missionId;
-    }
+	private String telephone;
 
-    public void setMissionId(Integer missionId) {
-        this.missionId = missionId;
-    }
+	private Integer missionStatus;
 
-    public Integer getMissionTypeId() {
-        return missionTypeId;
-    }
+	public Integer getMissionId() {
+		return missionId;
+	}
 
-    public void setMissionTypeId(Integer missionTypeId) {
-        this.missionTypeId = missionTypeId;
-    }
+	public void setMissionId(Integer missionId) {
+		this.missionId = missionId;
+	}
 
-    public String getMissionTitle() {
-        return missionTitle;
-    }
+	public Integer getMissionTypeId() {
+		return missionTypeId;
+	}
 
-    public void setMissionTitle(String missionTitle) {
-        this.missionTitle = missionTitle == null ? null : missionTitle.trim();
-    }
+	public void setMissionTypeId(Integer missionTypeId) {
+		this.missionTypeId = missionTypeId;
+	}
 
-    public String getMissionDescribe() {
-        return missionDescribe;
-    }
+	public String getMissionTitle() {
+		return missionTitle;
+	}
 
-    public void setMissionDescribe(String missionDescribe) {
-        this.missionDescribe = missionDescribe == null ? null : missionDescribe.trim();
-    }
+	public void setMissionTitle(String missionTitle) {
+		this.missionTitle = missionTitle == null ? null : missionTitle.trim();
+	}
 
-    public String getPictures() {
-        return pictures;
-    }
+	public String getMissionDescribe() {
+		return missionDescribe;
+	}
 
-    public void setPictures(String pictures) {
-        this.pictures = pictures == null ? null : pictures.trim();
-    }
+	public void setMissionDescribe(String missionDescribe) {
+		this.missionDescribe = missionDescribe == null ? null : missionDescribe
+				.trim();
+	}
 
-    public Integer getPeopleCount() {
-        return peopleCount;
-    }
+	public String getPictures() {
+		return pictures;
+	}
 
-    public void setPeopleCount(Integer peopleCount) {
-        this.peopleCount = peopleCount;
-    }
+	public void setPictures(String pictures) {
+		this.pictures = pictures == null ? null : pictures.trim();
+	}
 
-    public String getPlace() {
-        return place;
-    }
+	public Integer getPicCount() {
+		return picCount;
+	}
 
-    public void setPlace(String place) {
-        this.place = place == null ? null : place.trim();
-    }
+	public void setPicCount(Integer picCount) {
+		this.picCount = picCount;
+	}
 
-    public Date getStartTime() {
-        return startTime;
-    }
+	public Integer getPeopleCount() {
+		return peopleCount;
+	}
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
+	public void setPeopleCount(Integer peopleCount) {
+		this.peopleCount = peopleCount;
+	}
 
-    public Date getEndTime() {
-        return endTime;
-    }
+	public String getPlace() {
+		return place;
+	}
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
+	public void setPlace(String place) {
+		this.place = place == null ? null : place.trim();
+	}
 
-    public Date getPublishTime() {
-        return publishTime;
-    }
+	public Date getStartTime() {
+		return startTime;
+	}
 
-    public void setPublishTime(Date publishTime) {
-        this.publishTime = publishTime;
-    }
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
-    public Integer getUserId() {
-        return userId;
-    }
+	public Date getEndTime() {
+		return endTime;
+	}
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
 
-    public Integer getViewCount() {
-        return viewCount;
-    }
+	public Date getPublishTime() {
+		return publishTime;
+	}
 
-    public void setViewCount(Integer viewCount) {
-        this.viewCount = viewCount;
-    }
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
+	}
 
-    public Integer getMissionPrice() {
-        return missionPrice;
-    }
+	public Integer getUserId() {
+		return userId;
+	}
 
-    public void setMissionPrice(Integer missionPrice) {
-        this.missionPrice = missionPrice;
-    }
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Integer getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(Integer viewCount) {
+		this.viewCount = viewCount;
+	}
+
+	public Integer getMissionPrice() {
+		return missionPrice;
+	}
+
+	public void setMissionPrice(Integer missionPrice) {
+		this.missionPrice = missionPrice;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public Integer getMissionStatus() {
+		return missionStatus;
+	}
+
+	public void setMissionStatus(Integer missionStatus) {
+		this.missionStatus = missionStatus;
+	}
+
+	@Override
+	public String toString() {
+		return "Mission [missionId=" + missionId + ", missionTypeId="
+				+ missionTypeId + ", missionTitle=" + missionTitle
+				+ ", missionDescribe=" + missionDescribe + ", pictures="
+				+ pictures + ", peopleCount=" + peopleCount + ", place="
+				+ place + ", startTime=" + startTime + ", endTime=" + endTime
+				+ ", publishTime=" + publishTime + ", userId=" + userId
+				+ ", viewCount=" + viewCount + ", missionPrice=" + missionPrice
+				+ ", telephone=" + telephone + ", missionStatus="
+				+ missionStatus + "]";
+	}
+
+	
+
 }

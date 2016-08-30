@@ -3,63 +3,84 @@ package com.cn.ucoon.pojo;
 import java.util.Date;
 
 public class Apply {
-    private Integer applyId;
+	private Integer applyId;
 
-    private Integer userId;
+	private Integer userId;
 
-    private Integer missionId;
+	private Integer missionId;
 
-    private Date takeTime;
+	private Date takeTime;
 
-    private Integer takeState;
+	private Integer takeState;
 
-    private String note;
+	private String note;
 
-    public Integer getApplyId() {
-        return applyId;
-    }
+	public Apply(Integer userId, Integer missionId, Date takeTime,
+			Integer takeState) {
+		super();
+		this.userId = userId;
+		this.missionId = missionId;
+		this.takeTime = takeTime;
+		this.takeState = takeState;
+	}
 
-    public void setApplyId(Integer applyId) {
-        this.applyId = applyId;
-    }
+	public Apply() {
+		super();
+	}
 
-    public Integer getUserId() {
-        return userId;
-    }
+	public Integer getApplyId() {
+		return applyId;
+	}
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+	public void setApplyId(Integer applyId) {
+		this.applyId = applyId;
+	}
 
-    public Integer getMissionId() {
-        return missionId;
-    }
+	public Integer getUserId() {
+		return userId;
+	}
 
-    public void setMissionId(Integer missionId) {
-        this.missionId = missionId;
-    }
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 
-    public Date getTakeTime() {
-        return takeTime;
-    }
+	public Integer getMissionId() {
+		return missionId;
+	}
 
-    public void setTakeTime(Date takeTime) {
-        this.takeTime = takeTime;
-    }
+	public void setMissionId(Integer missionId) {
+		this.missionId = missionId;
+	}
 
-    public Integer getTakeState() {
-        return takeState;
-    }
+	public Date getTakeTime() {
+		return takeTime;
+	}
 
-    public void setTakeState(Integer takeState) {
-        this.takeState = takeState;
-    }
+	public void setTakeTime(Date takeTime) {
+		this.takeTime = takeTime;
+	}
 
-    public String getNote() {
-        return note;
-    }
+	public Integer getTakeState() {
+		return takeState;
+	}
 
-    public void setNote(String note) {
-        this.note = note == null ? null : note.trim();
-    }
+	public void setTakeState(Integer takeState) {
+		this.takeState = takeState;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note == null ? null : note.trim();
+	}
+
+	@Override
+	public String toString() {
+		return "Apply [applyId=" + applyId + ", userId=" + userId
+				+ ", missionId=" + missionId + ", takeTime=" + takeTime
+				+ ", takeState=" + takeState + ", note=" + note + "]";
+	}
+
 }

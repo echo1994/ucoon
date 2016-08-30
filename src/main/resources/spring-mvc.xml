@@ -68,6 +68,22 @@
 	<mvc:resources mapping="/js/**" location="/js/" cache-period="31556926"/>  
 	<mvc:resources mapping="/css/**" location="/css/" cache-period="31556926"/>  
 	<mvc:resources mapping="/fonts/**" location="/fonts/" cache-period="31556926"/> 
+	<mvc:resources mapping="/editor/**" location="/editor/" cache-period="31556926"/>
+	<mvc:resources mapping="/My97DatePicker/**" location="/My97DatePicker/" cache-period="31556926"/>
+	<mvc:resources mapping="/ueditor/**" location="/ueditor/" cache-period="31556926"/>
+	<mvc:resources mapping="/script/**" location="/script/" cache-period="31556926"/>
+	<mvc:resources mapping="/webuploader/**" location="/webuploader/" cache-period="31556926"/>
+	
+	<mvc:view-controller path="/we" view-name="we" />
+	<mvc:view-controller path="/index" view-name="index" />
+	<mvc:view-controller path="/who" view-name="who" />
+	<mvc:view-controller path="/who-new" view-name="who-new" />
+	<mvc:view-controller path="/mysend" view-name="mysend" />
+	<mvc:view-controller path="/myservice" view-name="myservice" />
+	
+	
 	<!-- 静态界面过滤 -->
 	<mvc:resources mapping="/html/**" location="/WEB-INF/html/" cache-period="31556926"/> 
+	<!-- 后台界面过滤 -->
+	<mvc:resources mapping="/admin/**" location="/WEB-INF/admin/" cache-period="31556926"/> 
 </beans>

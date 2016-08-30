@@ -38,6 +38,8 @@ public class UserServiceImpl implements UserService {
 
 			String access_token = jsonObject.getString("access_token");//网页授权需要的凭证
 			String openid = jsonObject.getString("openid");//用户openid
+			System.out.println(openid);
+			
 			//String unionid = jsonObject.getString("unionid");//微信开放云id
 			
 			//通过openid判断用户是否已经拉取，即判断用户是否存在

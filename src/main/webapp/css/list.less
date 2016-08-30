@@ -1,0 +1,89 @@
+@listbg:#8ba9c0;
+@a:#25d;
+@ah:#f60;
+@wzcolor:#1B9AF7;
+.listbox{padding:10px;min-width: 1000px;}
+.pagetitle {color: #fff;  font-weight: bold;  margin-bottom: 10px;background:@listbg;  padding: 5px 15px; position: relative;
+    a{float: right;color:#fff;}
+}
+.buttonz{ margin-bottom: 10px;}
+.search_row{ color: #666;  padding: 5px;margin-bottom: 10px;
+    .btn{vertical-align:inherit;}
+    .form-group{margin-bottom:4px;}
+    label{font-weight:normal;}
+    input[type=text],select{width:120px;margin-right: 10px;border-radius:0;box-shadow:none;}
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{vertical-align: middle;}
+.table{color:#666;min-width: 1000px;
+    th{text-align: center;}
+    a{color: @a;&:hover{color: @ah;}padding:0 3px;}
+}
+.form-inline{
+    p{margin-bottom: 5px;}
+}
+.paging{float: right;
+    .pagination>.active>a{}
+    .pagination>li>a,.pagination>li>span{font-weight: bold;}
+    .pagination>li>input{vertical-align: top;height: 31px;margin-bottom:0px;background-color: #fff;width:50px;float:left;border-left-width: 0;border-color: #ddd;}
+}
+.item_title {text-align: right;width: 130px;color: #000;background: #e2e8eb;
+    .impt{margin-right: 4px;color: #C00;font-size:14px;}
+}
+.item_input {text-align: left;position: relative;
+    input[type=text],input[type=password]{width:300px;}
+    textarea{width:400px;height:250px;}
+    select{width:150px;}
+    .input-group{width:300px;}
+}
+.selectlb {float: left;display: inline;color: #666;width: 200px;height: 35px;line-height: 35px;padding: 0 35px 0 10px;border: 1px solid #ccc;cursor: pointer;margin-right: 5px;overflow: hidden;zoom: 1;position: relative;
+    .caret {position: absolute;top: 16px;right: 10px;}
+}
+.lbbox {width: 550px;padding: 12px 4px 9px 18px;overflow: hidden;
+    li {float: left;width: 105px;line-height: 26px;font-size: 12px;text-align: center;}
+    a{color: #25d;display: block}
+}
+.sanji{
+    select{width:150px;float: left;margin-right: 10px;}
+    input{float: left;margin-right: 10px;}
+}
+
+.sk_box{overflow:hidden;
+    .form-left{width:auto}
+    .sk_province{border:1px solid #c3c3c3;padding: 3px;overflow:hidden;margin-top:10px;
+        li{float: left;text-align: center;
+            a{height: 18px;display: block;cursor: pointer;line-height: 18px;color:@a;padding:0 5px;}
+        }
+        .active{
+            a{background:@wzcolor;color: #fff!important;}
+        }
+    }
+    .sk_select{list-style: none;overflow-x: hidden;overflow-y: auto;height: 200px;zoom: 1;border: 1px solid #c3c3c3;background: #FFF;padding: 10px 0 10px 10px;margin: 5px 0;
+        li{float: left;width: 156px;padding: 4px 12px;background: url(../img/school_list.gif) no-repeat 0 12px;
+            a{color:@a;
+                &:hover{background: @wzcolor;color: #FFF;text-decoration: none;padding: 2px;}
+            }
+        }
+    }
+}
+.category {min-width: 100px;padding-right:5px;height:30px;line-height:30px;padding-left: 30px;cursor: pointer;border: 1px solid #ccc;background: url(../img/addzw.png) 7px 7px no-repeat;float: left;
+    &:hover{background:url(../img/addzw_h.png) @wzcolor 7px 7px no-repeat;color:#fff;border:1px solid @wzcolor;}
+}
+.zhiwei{width:130px;padding-left:5px;height:30px;line-height: 30px;border:1px solid #ccc;margin:0 5px 5px 0;float: left;position: relative;
+        span{display: inline-block;width:100px;text-align: center;}
+        i{display:block;position:absolute;right:0px;top:0px;width:27px;height:29px;background:url(../img/delzw.png) 7px 7px no-repeat;border-left:1px solid #ccc;cursor: pointer;
+            &:hover{background:url(../img/delzw_h.png) @wzcolor 7px 7px no-repeat;border:1px solid @wzcolor;top:-1px}
+        }            
+}
+.xz_zhiwei{width:100%;overflow: hidden;min-height: 35px;} 
+.kx_zhiwei{width:100%;overflow: hidden;
+    div{width:88px;height:30px;line-height: 30px;border:1px solid #ccc;margin:0 5px 5px 0;float: left;text-align: center;cursor: pointer;
+        &:hover{background: @wzcolor;color:#fff;border-color:@wzcolor;}
+    }
+}
+.access_list{width: 100%;
+    td {padding: 8px;border: none;border-bottom: dotted 1px #ccc;}
+    .access_left {border-right: dotted 1px #ccc;text-align: right;width:130px;}
+    label{font-weight: normal;cursor:pointer;padding:5px;
+        input{vertical-align: middle;margin-left:5px;margin-bottom: 4px;}
+    }
+}

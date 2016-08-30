@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @RequestMapping("/user")
@@ -27,6 +29,40 @@ public class UserController {
 		model.addAttribute("user", user);
 		return "test";
 	}
+	
+	
+	/**
+	 * 获取用户信息
+	 * 
+	 * @param userId
+	 *            页面传的userId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/showUser", method = RequestMethod.POST)
+	@ResponseBody
+	public String getUserDetails(
+			@RequestParam(value = "userId", required = false) Integer userId,
+			HttpServletRequest request) {
+		User user = null;
+		if (userId == null) {
+			Integer realUserId = Integer.parseInt(request.getParameter("id"));
+			user = this.userService.getUserById(realUserId);
+		} else {
+			user = this.userService.getUserById(userId);
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonfromList = "";
+		try {
+			jsonfromList = mapper.writeValueAsString(user);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			jsonfromList = "{}";
+		}
+		return jsonfromList;
+	}
+	
 	
 	@RequestMapping(value="/getHeadUrl",method=RequestMethod.GET)
 	@ResponseBody

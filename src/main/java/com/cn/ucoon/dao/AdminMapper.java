@@ -13,4 +13,10 @@ public interface AdminMapper {
     List<Admin> selectAll();
 
     int updateByPrimaryKey(Admin record);
+    
+    
+    /**
+     * 验证用户名
+     */
+    Admin selectByUsernameAndPassword(Admin record);
 }

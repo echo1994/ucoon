@@ -1,16 +1,26 @@
 package com.cn.ucoon.dao;
 
-import com.cn.ucoon.pojo.Order;
+import com.cn.ucoon.pojo.Orders;
+
+import java.util.HashMap;
 import java.util.List;
 
 public interface OrderMapper {
-    int deleteByPrimaryKey(Integer orderId);
+	int deleteByPrimaryKey(Integer orderId);
 
-    int insert(Order record);
+	int insert(Orders record);
 
-    Order selectByPrimaryKey(Integer orderId);
+	Orders selectByPrimaryKey(Integer orderId);
 
-    List<Order> selectAll();
+	List<Orders> selectAll();
 
-    int updateByPrimaryKey(Order record);
+	int updateByPrimaryKey(Orders record);
+
+	List<HashMap<String, String>> selectOrdersLimited(Integer userId,
+			Integer startIndex, Integer endIndex);
+
+	List<HashMap<String, String>> selectOrderbyUMID(Integer userId,
+			Integer missionId);
+
+	Integer selectOrdersCountByM(Integer missionId);
 }
