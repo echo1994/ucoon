@@ -18,6 +18,9 @@
 .icon-wode:before { content: "\e603"; }
 .icon-women:before { content: "\e604"; }
 .icon-qian:before { content: "\e605"; }
+.icon-wechat-pay:before { content: "\e60e"; }
+.icon-card:before { content: "\e610"; }
+.icon-alipay:before { content: "\e60f"; }
 .icon-star-empty:before { content: "\e606"; }
 .icon-star-half:before { content: "\e607"; }
 .icon-star:before { content: "\e608"; }

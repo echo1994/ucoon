@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.CommentMapper" >
-  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Comment" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Comments" >
     <id column="comment_id" property="commentId" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="mission_id" property="missionId" jdbcType="INTEGER" />
@@ -9,17 +9,20 @@
     <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from comment
+    delete from comments
     where comment_id = #{commentId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.cn.ucoon.pojo.Comment" >
-    insert into comment (comment_id, user_id, mission_id, 
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Comments" >
+    insert into comments ( user_id, mission_id, 
       content, comment_time)
-    values (#{commentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, 
+    values (#{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, 
       #{content,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP})
+      <selectKey keyProperty="commentId" resultType="java.lang.Integer" order="AFTER">
+			select LAST_INSERT_ID() 
+		</selectKey> 
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Comment" >
-    update comment
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Comments" >
+    update comments
     set user_id = #{userId,jdbcType=INTEGER},
       mission_id = #{missionId,jdbcType=INTEGER},
       content = #{content,jdbcType=VARCHAR},
@@ -28,11 +31,20 @@
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select comment_id, user_id, mission_id, content, comment_time
-    from comment
+    from comments
     where comment_id = #{commentId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select comment_id, user_id, mission_id, content, comment_time
-    from comment
+    from comments
   </select>
+  
+  <!--  返回一定限定数量的comments记录      Missionid  	按时间顺序   task_info.jsp-全部-->
+  <select id="selectLimitedbyMissionId" resultType="java.util.HashMap" >
+	SELECT comment_id,mission_id,content,comment_time,comments.user_id,
+	nick_name,sex,head_img_url FROM comments LEFT JOIN user ON
+	 user.user_id = comments.user_id WHERE comments.mission_id = #{0}
+	  ORDER BY comment_time DESC LIMIT #{1},#{2}
+  </select>
+  
 </mapper>

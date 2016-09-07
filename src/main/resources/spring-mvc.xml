@@ -80,10 +80,27 @@
 	<mvc:view-controller path="/who-new" view-name="who-new" />
 	<mvc:view-controller path="/mysend" view-name="mysend" />
 	<mvc:view-controller path="/myservice" view-name="myservice" />
+	<mvc:view-controller path="/mission-pay" view-name="mission-pay" />
 	
 	
 	<!-- 静态界面过滤 -->
 	<mvc:resources mapping="/html/**" location="/WEB-INF/html/" cache-period="31556926"/> 
 	<!-- 后台界面过滤 -->
 	<mvc:resources mapping="/admin/**" location="/WEB-INF/admin/" cache-period="31556926"/> 
+
+
+	<!-- 拦截器 -->  
+	<mvc:interceptors>  
+		<!-- 登录拦截器 -->   
+	  	<mvc:interceptor>   
+	    	<mvc:mapping path="/"/>
+	    	<mvc:mapping path="/who-new"/> 
+	    	<mvc:mapping path="/mysend"/> 
+	    	<mvc:mapping path="/myservice"/> 
+	    	<mvc:mapping path="/mission-pay"/> 
+	    	<mvc:exclude-mapping path=""/>  <!-- 不包含的 -->
+	    	<bean class="com.cn.ucoon.interceptor.UserLoginInterceptor"></bean>   
+	  	</mvc:interceptor>   
+	</mvc:interceptors> 
+
 </beans>

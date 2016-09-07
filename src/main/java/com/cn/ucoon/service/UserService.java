@@ -24,7 +24,16 @@ public interface UserService {
 	 */
 	public String getHeadUrl(String userId);
 	
+	/**
+	 * 根据user_id获取open_id
+	 * @param userId
+	 * @return
+	 */
+	public String getOpenIdbyUserId(Integer userId);
+	
 	public List<User> getAllUser();
+
+
 	
 	
 	

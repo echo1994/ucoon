@@ -66,8 +66,8 @@ public class UserServiceImpl implements UserService {
 			
 			
 		} catch (Exception e) {
-			//e.printStackTrace();
-			return null;
+			e.printStackTrace();
+			//return null;
 		}
 		
 		return user;
@@ -86,7 +86,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 
-//
+	@Override
+	public String getOpenIdbyUserId(Integer userId) {
+		return userDao.selectOpenId(userId);
+	}
+
 //	public User getUserById(int userId) {
 //		// TODO Auto-generated method stub
 //		return this.userDao.selectByPrimaryKey(userId);

@@ -19,9 +19,14 @@ public class MissionServiceImpl implements MissionService {
 
 	@Override
 	@Transactional
-	public void publishMission(Mission mission) {
+	public boolean publishMission(Mission mission) {
 		// TODO Auto-generated method stub
-		missionMapper.insert(mission);
+		
+		if(missionMapper.insert(mission) > 0){
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -87,5 +92,11 @@ public class MissionServiceImpl implements MissionService {
 	public Integer updateByPrimaryKey(Mission mission) {
 		// TODO Auto-generated method stub
 		return missionMapper.updateByPrimaryKey(mission);
+	}
+
+	@Override
+	public void viewCount(Integer missionId) {
+		// TODO Auto-generated method stub
+		missionMapper.updateViewByPrimaryKey(missionId);
 	}
 }

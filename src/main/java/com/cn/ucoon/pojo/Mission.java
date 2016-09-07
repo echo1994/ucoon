@@ -1,172 +1,168 @@
 package com.cn.ucoon.pojo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 public class Mission {
-	private Integer missionId;
+    private Integer missionId;
 
-	private Integer missionTypeId;
+    private Integer missionTypeId;
 
-	private String missionTitle;
+    private String missionTitle;
 
-	private String missionDescribe;
+    private String missionDescribe;
 
-	private String pictures;
+    private String pictures;
 
-	private Integer picCount;
-	
-	private Integer peopleCount;
+    private Integer peopleCount;
 
-	private String place;
+    private String place;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date startTime;
+    private Date startTime;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date endTime;
+    private Date endTime;
 
-	private Date publishTime;
+    private Date publishTime;
 
-	private Integer userId;
+    private Integer userId;
 
-	private Integer viewCount;
+    private Integer viewCount;
 
-	private Integer missionPrice;
+    private BigDecimal missionPrice;
 
-	private String telephone;
+    private String telephone;
 
-	private Integer missionStatus;
+    private Integer missionStatus;
 
-	public Integer getMissionId() {
-		return missionId;
-	}
+    private Integer picCount;
 
-	public void setMissionId(Integer missionId) {
-		this.missionId = missionId;
-	}
+    public Integer getMissionId() {
+        return missionId;
+    }
 
-	public Integer getMissionTypeId() {
-		return missionTypeId;
-	}
+    public void setMissionId(Integer missionId) {
+        this.missionId = missionId;
+    }
 
-	public void setMissionTypeId(Integer missionTypeId) {
-		this.missionTypeId = missionTypeId;
-	}
+    public Integer getMissionTypeId() {
+        return missionTypeId;
+    }
 
-	public String getMissionTitle() {
-		return missionTitle;
-	}
+    public void setMissionTypeId(Integer missionTypeId) {
+        this.missionTypeId = missionTypeId;
+    }
 
-	public void setMissionTitle(String missionTitle) {
-		this.missionTitle = missionTitle == null ? null : missionTitle.trim();
-	}
+    public String getMissionTitle() {
+        return missionTitle;
+    }
 
-	public String getMissionDescribe() {
-		return missionDescribe;
-	}
+    public void setMissionTitle(String missionTitle) {
+        this.missionTitle = missionTitle == null ? null : missionTitle.trim();
+    }
 
-	public void setMissionDescribe(String missionDescribe) {
-		this.missionDescribe = missionDescribe == null ? null : missionDescribe
-				.trim();
-	}
+    public String getMissionDescribe() {
+        return missionDescribe;
+    }
 
-	public String getPictures() {
-		return pictures;
-	}
+    public void setMissionDescribe(String missionDescribe) {
+        this.missionDescribe = missionDescribe == null ? null : missionDescribe.trim();
+    }
 
-	public void setPictures(String pictures) {
-		this.pictures = pictures == null ? null : pictures.trim();
-	}
+    public String getPictures() {
+        return pictures;
+    }
 
-	public Integer getPicCount() {
-		return picCount;
-	}
+    public void setPictures(String pictures) {
+        this.pictures = pictures == null ? null : pictures.trim();
+    }
 
-	public void setPicCount(Integer picCount) {
-		this.picCount = picCount;
-	}
+    public Integer getPeopleCount() {
+        return peopleCount;
+    }
 
-	public Integer getPeopleCount() {
-		return peopleCount;
-	}
+    public void setPeopleCount(Integer peopleCount) {
+        this.peopleCount = peopleCount;
+    }
 
-	public void setPeopleCount(Integer peopleCount) {
-		this.peopleCount = peopleCount;
-	}
+    public String getPlace() {
+        return place;
+    }
 
-	public String getPlace() {
-		return place;
-	}
+    public void setPlace(String place) {
+        this.place = place == null ? null : place.trim();
+    }
 
-	public void setPlace(String place) {
-		this.place = place == null ? null : place.trim();
-	}
+    public Date getStartTime() {
+        return startTime;
+    }
 
-	public Date getStartTime() {
-		return startTime;
-	}
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
+    public Date getEndTime() {
+        return endTime;
+    }
 
-	public Date getEndTime() {
-		return endTime;
-	}
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
+    public Date getPublishTime() {
+        return publishTime;
+    }
 
-	public Date getPublishTime() {
-		return publishTime;
-	}
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
 
-	public void setPublishTime(Date publishTime) {
-		this.publishTime = publishTime;
-	}
+    public Integer getUserId() {
+        return userId;
+    }
 
-	public Integer getUserId() {
-		return userId;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public Integer getViewCount() {
+        return viewCount;
+    }
 
-	public Integer getViewCount() {
-		return viewCount;
-	}
+    public void setViewCount(Integer viewCount) {
+        this.viewCount = viewCount;
+    }
 
-	public void setViewCount(Integer viewCount) {
-		this.viewCount = viewCount;
-	}
+    public BigDecimal getMissionPrice() {
+        return missionPrice;
+    }
 
-	public Integer getMissionPrice() {
-		return missionPrice;
-	}
+    public void setMissionPrice(BigDecimal missionPrice) {
+        this.missionPrice = missionPrice;
+    }
 
-	public void setMissionPrice(Integer missionPrice) {
-		this.missionPrice = missionPrice;
-	}
+    public String getTelephone() {
+        return telephone;
+    }
 
-	public String getTelephone() {
-		return telephone;
-	}
+    public void setTelephone(String telephone) {
+        this.telephone = telephone == null ? null : telephone.trim();
+    }
 
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
+    public Integer getMissionStatus() {
+        return missionStatus;
+    }
 
-	public Integer getMissionStatus() {
-		return missionStatus;
-	}
+    public void setMissionStatus(Integer missionStatus) {
+        this.missionStatus = missionStatus;
+    }
 
-	public void setMissionStatus(Integer missionStatus) {
-		this.missionStatus = missionStatus;
-	}
+    public Integer getPicCount() {
+        return picCount;
+    }
+
+    public void setPicCount(Integer picCount) {
+        this.picCount = picCount;
+    }
 
 	@Override
 	public String toString() {
@@ -178,9 +174,9 @@ public class Mission {
 				+ ", publishTime=" + publishTime + ", userId=" + userId
 				+ ", viewCount=" + viewCount + ", missionPrice=" + missionPrice
 				+ ", telephone=" + telephone + ", missionStatus="
-				+ missionStatus + "]";
+				+ missionStatus + ", picCount=" + picCount + "]";
 	}
-
-	
-
+    
+    
+    
 }

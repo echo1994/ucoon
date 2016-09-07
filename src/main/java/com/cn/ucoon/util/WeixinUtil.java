@@ -33,6 +33,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.pojo.wx.AccessToken;
 import com.cn.ucoon.pojo.wx.JsApiTicket;
 import com.cn.ucoon.pojo.wx.Menu;
+import com.cn.ucoon.pojo.wx.Template;
 
 /**
  * 内部开发通用接口工具类
@@ -59,6 +60,13 @@ public class WeixinUtil {
 	
 	//获取网页jsapi_ticket
 	public final static String jsapi_ticket_url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
+	
+	//客服发消息（POST）限5000000（次/天）
+	public final static String custom_send_url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+	
+	//客服发消息（POST）限5000000（次/天）
+	public final static String template_api_url = "	https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
+		
 	
 	private static Logger log = LoggerFactory.getLogger(WeixinUtil.class);
 
@@ -294,7 +302,12 @@ public class WeixinUtil {
 	
 
 	
-	
+	/**
+	 * 拉取用户信息
+	 * @param access_token
+	 * @param open_id
+	 * @return
+	 */
 	public static JSONObject getUserInfo(String access_token, String open_id) {
 		//lang默认简体即： zh_CN
 		
@@ -338,6 +351,87 @@ public class WeixinUtil {
 		return result;
 	}
 	
+	
+	
+	/**
+	 * 客服接口：发消息
+	 * 目前实现：文本消息，图片消息，语音消息，图文消息（点击跳转到图文消息页面）
+	 * 
+	 * @param OPENID 用户openid	not null
+	 * @param msgtype 消息类型	 not null
+	 * @param kf_account 客服账号  null
+	 * @param obj 额外参数 null
+	 * @return
+	 */
+	public static int customSend(String OPENID,String msgtype,String kf_account,Object ... obj) {
+
+		int result = 0;
+		String url = custom_send_url.replace("ACCESS_TOKEN", getAccessToken().getToken());
+		JSONObject json = new JSONObject();
+		json.put("touser", OPENID);
+		json.put("msgtype", msgtype);
+		
+		JSONObject response = new JSONObject();
+		
+		switch (msgtype) {
+		case "text":
+			
+			response.put("content", obj[0]);
+			json.put(msgtype, response);
+			break;
+		default:
+			response.put("media_id", obj[0]);
+			json.put(msgtype, response);
+			break;
+		}
+		
+		if(kf_account != null){
+			
+			JSONObject account = new JSONObject();
+			account.put("kf_account", kf_account);
+			json.put("customservice", account);
+		}
+		
+		
+		
+		String jsonMenu = JSON.toJSONString(json);
+		JSONObject jsonObject = httpRequest(url, "POST", jsonMenu);
+		if (null != jsonObject) {
+			if (0 != jsonObject.getIntValue("errcode")) {
+				result = jsonObject.getIntValue("errcode");
+				log.error("客服消息发送失败 errcode:{} errmsg:{}", jsonObject.getIntValue("errcode"), jsonObject.getString("errmsg"));
+			}
+		}
+
+		return result;
+	}
+	
+	/**
+	 * 发送模板消息
+	 * @param token
+	 * @param template 模板消息id
+	 * @return
+	 */
+	public static boolean sendTemplateMsg(Template template){  
+        
+        boolean flag=false;  
+          
+        String requestUrl = template_api_url.replace("ACCESS_TOKEN", getAccessToken().getToken());  
+      
+        JSONObject jsonResult=httpRequest(requestUrl, "POST", template.toJSON());  
+        if(jsonResult!=null){
+        	int result = jsonResult.getIntValue("errcode");
+        	
+            if(result==0){  
+                flag=true;  
+            }else{  
+            	log.error("客服消息发送失败 errcode:{} errmsg:{}", jsonResult.getIntValue("errcode"), jsonResult.getString("errmsg"));
+                flag=false;  
+            }  
+        }  
+        return flag;  
+	}  
+	
 	//获取缓存的token
 	public static AccessToken  getAccessToken() {  
         return (AccessToken) ServletContextUtil.get().getAttribute("access_token");  
@@ -348,6 +442,12 @@ public class WeixinUtil {
         return (JsApiTicket) ServletContextUtil.get().getAttribute("jsapi_ticket");  
     }  
 	
+	
+	/**
+	 * 设置jssdk参数
+	 * @param url
+	 * @return
+	 */
 	public static Map<String, String> getJSSDK(String url) {  
         JsApiTicket jsApiTicket = getJsApiTicket();
         if(null != jsApiTicket) {  

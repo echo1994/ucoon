@@ -3,10 +3,6 @@ package com.cn.ucoon.service;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.cn.ucoon.dao.MissionMapper;
 import com.cn.ucoon.pojo.Mission;
 
 public interface MissionService {
@@ -17,7 +13,7 @@ public interface MissionService {
 	
 	public Integer updateByPrimaryKey(Mission mission);
 	
-	public void publishMission(Mission mission);
+	public boolean publishMission(Mission mission);
 
 	public List<HashMap<String, String>> getMissionLimited(Integer startIndex,
 			Integer endIndex);
@@ -36,4 +32,7 @@ public interface MissionService {
 			Integer missionId);
 
 	public Integer selectUserIdByMissionId(Integer missionId);
+	
+	
+	public void viewCount(Integer missionId);
 }

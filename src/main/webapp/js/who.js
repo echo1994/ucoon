@@ -3,6 +3,17 @@ filecount = 0;
 $(document)
 		.ready(
 				function(e) {
+					wx.ready(function () {
+						//页面加载时调用
+						wx.checkJsApi({
+						    jsApiList: [
+						      'chooseWXPay'
+						    ],
+						    success: function (res) {
+						      alert(JSON.stringify(res));
+						    }
+						 });
+					});		
 					// 判断浏览器是否有FileReader接口
 					if (typeof FileReader == 'undefined') {
 						$("#destination")
@@ -284,6 +295,39 @@ addimgCo.addEventListener('tap', function() {
 var formSub = document.getElementById('send-btn');
 formSub.addEventListener('tap', function() {
 	// 微信支付
+	
+	
+	
 	$('.mui-input-group').submit();
+	//$('#myModal').modal('show')
+		
 });
+
+//var pay = document.getElementById('pay');
+//pay.addEventListener('tap', function() {
+//	
+//	$.ajax({
+//	    url: "/ucoon/pay/getPay",
+//	    success: function(result){
+//	    	if(result.result_type == "error"){
+//	    		alert(result.msg);
+//	    		return;
+//	    	}
+//	    	
+//	    	var config = eval("(" + result.msg + ")");
+//	    	
+//    	    wx.chooseWXPay({
+//		       timestamp: config.timestamp,
+//		       nonceStr: config.nonce,
+//		       package:config.packageName,
+//		       signType: config.signType, // 注意：新版支付接口使用 MD5 加密
+//		       paySign: config.signature
+//		    }) 
+//	    },
+//	  	dataType: "json",
+//	  	async:true
+//	});
+//	
+//});
+
 // 添加图片事件绑定

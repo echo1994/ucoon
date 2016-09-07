@@ -39,4 +39,8 @@
 	
 	<select id="updateStateByApplyId" resultType="java.lang.Integer">UPDATE apply set take_state= #{1} WHERE apply_id = #{0}</select>
 	
+	<select id="selectApplyUser"  resultType="java.util.HashMap">
+		SELECT apply_id,note,nick_name,head_img_url,sex,phone,weixin_id FROM apply left join
+		user on user.user_id = apply.user_id WHERE apply_id = #{0}
+	</select>
 </mapper>

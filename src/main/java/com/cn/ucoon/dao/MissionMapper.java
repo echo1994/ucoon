@@ -16,6 +16,8 @@ public interface MissionMapper {
 
 	int updateByPrimaryKey(Mission record);
 
+	int updateViewByPrimaryKey(Integer missionId);
+	
 	List<HashMap<String, String>> selectLimited(Integer startIndex,
 			Integer endIndex);
 

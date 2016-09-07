@@ -15,13 +15,16 @@
 		<result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
 		<result column="user_id" property="userId" jdbcType="INTEGER" />
 		<result column="view_count" property="viewCount" jdbcType="INTEGER" />
-		<result column="mission_price" property="missionPrice" jdbcType="INTEGER" />
+		<result column="mission_price" property="missionPrice" jdbcType="DECIMAL" />
 		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
 		<result column="mission_status" property="missionStatus" jdbcType="INTEGER" />
 	</resultMap>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >delete from mission
     where mission_id = #{missionId,jdbcType=INTEGER}</delete>
 	<insert id="insert" parameterType="com.cn.ucoon.pojo.Mission" >
+		<selectKey resultType="java.lang.Integer" keyProperty="missionId" order="AFTER">  
+                SELECT LAST_INSERT_ID()  
+        </selectKey>  
 		insert into mission (mission_id, mission_type_id, mission_title, mission_describe,
 		pictures,pic_count, people_count, place, start_time, end_time, publish_time, user_id,
 		view_count, mission_price , telephone,mission_status) values (#{missionId,jdbcType=INTEGER},
@@ -29,7 +32,7 @@
 		#{pictures,jdbcType=VARCHAR}, #{picCount,jdbcType=INTEGER},#{peopleCount,jdbcType=INTEGER},
 		#{place,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
 		#{publishTime,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER},
-		#{missionPrice,jdbcType=INTEGER},#{telephone,jdbcType=VARCHAR}, #{missionStatus,jdbcType=INTEGER})
+		#{missionPrice,jdbcType=DECIMAL},#{telephone,jdbcType=VARCHAR}, #{missionStatus,jdbcType=INTEGER})
 	</insert>
 	<update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Mission" >
 		update mission set mission_type_id = #{missionTypeId,jdbcType=INTEGER}, mission_title
@@ -38,10 +41,16 @@
 		people_count = #{peopleCount,jdbcType=INTEGER}, place = #{place,jdbcType=VARCHAR},
 		start_time = #{startTime,jdbcType=TIMESTAMP}, end_time = #{endTime,jdbcType=TIMESTAMP},
 		publish_time = #{publishTime,jdbcType=TIMESTAMP}, user_id = #{userId,jdbcType=INTEGER},
-		view_count = #{viewCount,jdbcType=INTEGER}, mission_price = #{missionPrice,jdbcType=INTEGER}
+		view_count = #{viewCount,jdbcType=INTEGER}, mission_price = #{missionPrice,jdbcType=DECIMAL}
 		, telephone = #{telephone,jdbcType=VARCHAR} ,mission_status= #{missionStatus,jdbcType=INTEGER}
 		where mission_id = #{missionId,jdbcType=INTEGER}
 	</update>
+	<update id="updateViewByPrimaryKey" parameterType="java.lang.Integer" >
+		update mission set view_count = view_count+1 WHERE  mission_id = #{missionId,jdbcType=INTEGER}
+	</update>
+	
+	
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer"
 		>
 		select mission_id, mission_type_id, mission_title, mission_describe, pictures,pic_count,
@@ -58,14 +67,14 @@
 	<select id="selectLimited" resultType="java.util.HashMap" >
 		SELECT mission_id, head_img_url, mission_title, mission_describe, place, publish_time,
 		mission_price,view_count FROM mission LEFT JOIN user ON user.user_id = mission.user_id
-		ORDER BY publish_time LIMIT #{0},#{1}
+		ORDER BY publish_time DESC LIMIT #{0},#{1}
 	</select>
 	
 	<!--  返回一定限定数量的mission记录   关键字    按时间顺序  index.jsp-->
 	<select id="selectLimitedbyKeyWord" resultType="java.util.HashMap" >
 		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
 		mission_price ,view_count FROM mission LEFT JOIN user ON user.user_id = mission.user_id
-		WHERE mission_title like #{0} or mission_describe like #{0} ORDER BY publish_time
+		WHERE mission_title like #{0} or mission_describe like #{0} ORDER BY publish_time DESC
 		LIMIT #{1},#{2}
 	</select>
 	
@@ -73,7 +82,7 @@
 	<select id="selectLimitedbyUserId" resultType="java.util.HashMap" >
 		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
 		mission_price ,view_count,mission_status FROM mission LEFT JOIN user ON user.user_id
-		= mission.user_id WHERE mission.user_id = #{0} ORDER BY publish_time LIMIT #{1},#{2}
+		= mission.user_id WHERE mission.user_id = #{0} ORDER BY publish_time DESC LIMIT #{1},#{2}
 	</select>
 	
 	<!-- 返回一定限定数量的mission记录 Userid/missionStatus 按时间顺序 mysend.jsp -已上架=0,已下架=1;未支付=2;已完成=3-->
@@ -81,7 +90,7 @@
 		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
 		mission_price ,view_count,mission_status FROM mission LEFT JOIN user ON user.user_id
 		= mission.user_id WHERE mission.user_id = #{0} AND mission_status = #{1} ORDER BY
-		publish_time LIMIT #{2},#{3}
+		publish_time DESC LIMIT #{2},#{3}
 	</select>
 	
 	<!-- 查询mission详情   -->

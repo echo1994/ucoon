@@ -1,10 +1,10 @@
 package com.cn.ucoon.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,8 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cn.ucoon.pojo.Mission;
+import com.cn.ucoon.pojo.MissionOrders;
+import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.service.MissionOrderService;
 import com.cn.ucoon.service.MissionService;
 import com.cn.ucoon.service.OrderService;
+import com.cn.ucoon.service.UserService;
+import com.cn.ucoon.util.PayUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,10 +39,17 @@ public class MissionController {
 
 	@Autowired
 	private MissionService missionService;
+	
+	@Autowired
+	private MissionOrderService missionOrderService;
 
 	@Autowired
 	private OrderService orderService;
 
+	@Autowired
+	private UserService userService;
+
+	
 	/**
 	 * 发布任务
 	 * 
@@ -49,17 +60,37 @@ public class MissionController {
 	 * @param request
 	 *            请求
 	 * @return 跳转页面
+	 * @throws ParseException 
 	 */
 	@RequestMapping(value = "/add-mission")
 	public String publishMission(
-			Mission mission,
+			@RequestParam(value = "missionTitle", required = false) String missionTitle,
+			@RequestParam(value = "missionDescribe", required = false) String missionDescribe,
+			@RequestParam(value = "missionPrice", required = false) Double missionPrice,
+			@RequestParam(value = "peopleCount", required = false) Integer peopleCount,
+			@RequestParam(value = "place", required = false) String place,
+			@RequestParam(value = "startTime", required = false) String startTime,
+			@RequestParam(value = "endTime", required = false) String endTime,
+			@RequestParam(value = "telephone", required = false) String telephone,
 			@RequestParam(value = "imgUpload", required = false) MultipartFile[] file,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws ParseException {
 
-		System.out.println(mission);
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");//小写的mm表示的是分钟  
+		Date endDate=sdf.parse(endTime);
+		Date StartDate=sdf.parse(startTime);
+		Mission mission = new Mission();
+		mission.setEndTime(endDate);
+		mission.setMissionDescribe(missionDescribe);
+		mission.setMissionPrice(new BigDecimal(missionPrice));
+		mission.setMissionTitle(missionTitle);
+		mission.setPeopleCount(peopleCount);
+		mission.setPlace(place);
+		mission.setStartTime(StartDate);
+		mission.setTelephone(telephone);
+		
+		
 		String path = ImageController.MISSION_IMAGE_LOCATION;
-		String userId = "1"; // (String)
-								// request.getSession().getAttribute("user_id");
+		Integer userId = (Integer) request.getSession().getAttribute("user_id");
 		String timestamp = String.valueOf(System.currentTimeMillis());
 		String uuid = String.valueOf(UUID.randomUUID());
 		uuid = uuid.replace("-", "");
@@ -84,13 +115,30 @@ public class MissionController {
 		}
 
 		mission.setPictures(userId + timestamp + uuid);
-		mission.setUserId(Integer.parseInt(userId));
+		mission.setUserId(userId);
 		mission.setViewCount(0);
-		mission.setMissionStatus(1);
+		mission.setMissionStatus(0); //待支付
 		mission.setPicCount(file.length);
 		mission.setPublishTime(new Date());
-		missionService.publishMission(mission);
-		return "redirect:mysend";
+		MissionOrders missionOrders = new MissionOrders();
+		if(missionService.publishMission(mission)){
+			
+			System.out.println("mission_id:" + mission.getMissionId());
+			
+			missionOrders.setMissionId(mission.getMissionId());
+			missionOrders.setMissionOrderNum(PayUtil.getOrdersNum(userId, mission.getMissionId()));
+			missionOrders.setOrderTime(new Date());
+			missionOrders.setState(0);//未支付
+			missionOrders.setUserId(userId);
+			missionOrderService.makeOrders(missionOrders);
+		}
+		//存order，mission，微信支付时取
+		request.getSession().setAttribute("orders", missionOrders);
+		request.getSession().setAttribute("mission", mission);
+		
+		
+		//任务发布，订单生成,跳转支付界面
+		return "redirect:/mission-pay";
 	}
 
 	/**
@@ -123,13 +171,11 @@ public class MissionController {
 					startIndex, endIndex);
 		} else if (userId != null) {
 			if (missionStatus == null) {
-				userId = 1;// (Integer)
-							// request.getSession().getAttribute("user_id");
+				userId = (Integer) request.getSession().getAttribute("user_id");
 				missions = missionService.selectLimitedbyUserId(userId,
 						startIndex, endIndex);
 			} else {
-				userId = 1;// (Integer)
-				// request.getSession().getAttribute("user_id");
+				userId =  (Integer)request.getSession().getAttribute("user_id");
 				missions = missionService.selectLimitedbyUserIdAndStatus(
 						userId, missionStatus, startIndex, endIndex);
 			}
@@ -185,13 +231,12 @@ public class MissionController {
 		// 3改变任务状态
 		// 4退款
 		Integer userId = missionService.selectUserIdByMissionId(missionId);
-		Integer cuserId = 1;//(Integer) request.getSession()
-				//.getAttribute("user_id");
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
 		if (cuserId != null && cuserId == userId) {
 			System.out.println(cuserId);
 			System.out.println(userId);
 			Mission mission = missionService.selectByPrimaryKey(missionId);
-			Integer price = mission.getMissionPrice();
+			BigDecimal price = mission.getMissionPrice();
 			Integer peopleCount = mission.getPeopleCount();
 			Integer orderCount = orderService.selectOrdersCountByM(missionId);
 			if (orderCount < peopleCount) {
@@ -215,12 +260,22 @@ public class MissionController {
 
 	@RequestMapping(value = "/task-info/{missionId}")
 	public ModelAndView taskInfo(@PathVariable("missionId") Integer missionId,
-			ModelAndView mv) {
+			ModelAndView mv,HttpServletRequest request) {
+		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
+		
 		HashMap<String, String> mdetails = null;
 		mdetails = missionService.selectForMissionDetails(missionId);
+		User user = userService.getUserById(user_id);
+		
 		System.out.println(mdetails);
 		mv.addObject("mdetails", mdetails);
+		mv.addObject("user", user);
 		mv.setViewName("task-info");
+		
+		
+		//浏览量
+		missionService.viewCount(missionId);
+		
 		return mv;
 	}
 

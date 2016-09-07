@@ -2,7 +2,6 @@ package com.cn.ucoon.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -117,30 +116,27 @@ public class WeChatController {
 			// 拉取用户信息出现异常，跳转授权失败url
 			return "auth_error.html";
 		}
+		session.setAttribute("user_id", user.getUserId());
 
-		model.addAttribute("user", user);
-		model.addAttribute("user_id", user.getUserId());
-
-		List<User> userList = this.userService.getAllUser();
-		model.addAttribute("userList", userList);
-		System.out.println(userList);
-		return "test";
+		String url = (String) session.getAttribute("lastUrl");
+		System.out.println(url);
+		return  "redirect:" + url;
 
 	}
 	
 	@RequestMapping(value = "/sign", method = RequestMethod.GET)  
     public @ResponseBody Map<String, String> getJSSDKVal(@RequestParam(value="url") String url) {  
 		Map<String, String> map=WeixinUtil.getJSSDK(url);
-		return map;  
+		return map;
     }  
 
+	@RequestMapping(value = "/test", method = RequestMethod.GET)  
+    public @ResponseBody int test() {  
+		System.out.println();
+
+		int json = WeixinUtil.customSend("ogF_wvuJ_E4axtC729eTozgyyJTM", "text", "空小二", "根龙傻逼");
+		return json;
+    }  
 	
-	@RequestMapping(value = "/test")
-	public void test(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("进来了");
-		// 微信加密签名
-		
-	}
 	
 }

@@ -18,6 +18,8 @@ public interface ApplyMapper {
 
 	List<HashMap<String, String>> selectApplybyUMID(Integer userId,
 			Integer missionId);
+	
+	List<HashMap<String, String>> selectApplyUser(Integer applyId);
 
 	List<HashMap<String, String>> selectByMissionId(Integer missionId);
 

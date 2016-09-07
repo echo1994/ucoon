@@ -1,7 +1,5 @@
 package com.cn.ucoon.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +12,7 @@ import com.cn.ucoon.dao.OrderMapper;
 import com.cn.ucoon.pojo.Apply;
 import com.cn.ucoon.pojo.Orders;
 import com.cn.ucoon.service.ApplyService;
-import com.cn.ucoon.service.OrderService;
+import com.cn.ucoon.util.PayUtil;
 
 @Service
 public class ApplyServiceImpl implements ApplyService {
@@ -54,7 +52,7 @@ public class ApplyServiceImpl implements ApplyService {
 				applyMapper.updateStateByApplyId(applyId, 1);// 1表示申请被确认接受
 				Apply apply = applyMapper.selectByPrimaryKey(applyId);
 				System.out.println(apply);
-				Orders orders = new Orders(getOrdersNum(apply.getUserId(),
+				Orders orders = new Orders(PayUtil.getOrdersNum(apply.getUserId(),
 						apply.getMissionId()), apply.getUserId(),
 						apply.getMissionId(), new Date(), 0);
 				System.out.println(orders);
@@ -69,21 +67,17 @@ public class ApplyServiceImpl implements ApplyService {
 		return true;
 	}
 
-	public String getOrdersNum(Integer userId, Integer missionId) {
-		Calendar calendar = Calendar.getInstance();
-		Date date = calendar.getTime();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-		String nums = dateFormat.format(date) + missionId
-				+ (int) (Math.random() * 10) + userId
-				+ (int) (Math.random() * 10);
-
-		return nums;
-	}
 
 	@Override
 	public Apply selectByPrimaryKey(Integer applyId) {
 		// TODO Auto-generated method stub
 		return applyMapper.selectByPrimaryKey(applyId);
+	}
+
+	@Override
+	public List<HashMap<String, String>> selectApplyUser(Integer applyId) {
+		// TODO Auto-generated method stub
+		return applyMapper.selectApplyUser(applyId);
 	}
 
 }

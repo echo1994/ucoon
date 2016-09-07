@@ -5,10 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.pojo.User;
@@ -81,5 +83,25 @@ public class UserController {
 		
 		return json.toJSONString();
 	} 
+	
+	/**
+	 * 获取用户信息
+	 * 
+	 * @param userId
+	 *            页面传的userId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/orderUser/{userId}", method = RequestMethod.GET)
+	public ModelAndView getOrderUserDetails(
+			@PathVariable(value = "userId") Integer userId, ModelAndView mv,
+			HttpServletRequest request) {
+		User user = null;
+		user = this.userService.getUserById(userId);
+		mv.setViewName("order-user-details");
+		mv.addObject("u", user);
+		return mv;
+	}
+
 	
 }

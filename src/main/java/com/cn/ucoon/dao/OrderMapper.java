@@ -23,4 +23,6 @@ public interface OrderMapper {
 			Integer missionId);
 
 	Integer selectOrdersCountByM(Integer missionId);
+	
+	List<HashMap<String, String>> selectorderDetailsByOrderId(Integer orderId);
 }

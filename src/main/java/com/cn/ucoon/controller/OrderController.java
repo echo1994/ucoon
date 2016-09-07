@@ -6,12 +6,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.cn.ucoon.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -108,4 +109,17 @@ public class OrderController {
 		return "" + count;
 	}
 
+	@RequestMapping(value = "/orderDetail/{orderId}")
+	public ModelAndView getorderDetailsByOrderId(
+			@PathVariable(value = "orderId") Integer orderId, ModelAndView mv) {
+		List<HashMap<String, String>> oulist = null;
+		oulist = orderService.selectorderDetailsByOrderId(orderId);
+		mv.setViewName("order-info");
+		if (oulist.size() > 0) {
+			mv.addObject("ou", oulist.get(0));
+		}else{
+			mv.addObject("ou", null);
+		}
+		return mv;
+	}
 }

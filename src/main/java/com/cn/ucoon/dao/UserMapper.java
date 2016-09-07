@@ -23,5 +23,9 @@ public interface UserMapper {
 
     //获取用户头像
 	String selectUserHeadUrl(String userId);
+	
+	//根据user_id获取open_id
+	String selectOpenId(Integer userId);
+	
     
 }

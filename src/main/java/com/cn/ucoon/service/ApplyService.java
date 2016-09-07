@@ -10,6 +10,8 @@ public interface ApplyService {
 			Integer missionId);
 
 	List<HashMap<String, String>> selectByMissionId(Integer missionId);
+	
+	List<HashMap<String, String>> selectApplyUser(Integer applyId);
 
 	int addAppliment(Apply apply);
 

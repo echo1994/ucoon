@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -239,18 +240,16 @@ public class PayUtil {
        
     }
     
-    //商户订单号 年月日时分秒+随机码(1)+用户id最后一位+随机码(1)
-    public static String getOrderId(String userId){
-    	SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
-    	int start=(int)(Math.random()*10);
-    	int end=(int)(Math.random()*10);
-    	String userid = userId.substring(userId.length()-1);
-    	String orderid = df.format(new Date()) + start + userid + end;
-    	
-    	return orderid;
-    }
     
-    public static void main(String[] args) {
-    	System.out.println(getOrderId("2223"));
+    public static String getOrdersNum(Integer userId, Integer missionId) {
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		String nums = dateFormat.format(date) + missionId
+				+ (int) (Math.random() * 10) + userId
+				+ (int) (Math.random() * 10);
+
+		return nums;
 	}
+    
 }

@@ -34,5 +34,12 @@ public class OrderServiceImpl implements OrderService {
 		// TODO Auto-generated method stub
 		return orderMapper.selectOrdersCountByM(missionId);
 	}
+
+	@Override
+	public List<HashMap<String, String>> selectorderDetailsByOrderId(
+			Integer orderId) {
+		// TODO Auto-generated method stub
+		return orderMapper.selectorderDetailsByOrderId(orderId);
+	}
 	
 }

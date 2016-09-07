@@ -1,16 +1,21 @@
 package com.cn.ucoon.dao;
 
-import com.cn.ucoon.pojo.Comment;
+import com.cn.ucoon.pojo.Comments;
+
+import java.util.HashMap;
 import java.util.List;
 
 public interface CommentMapper {
     int deleteByPrimaryKey(Integer commentId);
 
-    int insert(Comment record);
+    int insert(Comments record);
 
-    Comment selectByPrimaryKey(Integer commentId);
+    Comments selectByPrimaryKey(Integer commentId);
 
-    List<Comment> selectAll();
+    List<Comments> selectAll();
 
-    int updateByPrimaryKey(Comment record);
+    int updateByPrimaryKey(Comments record);
+    
+    List<HashMap<String, Object>> selectLimitedbyMissionId(Integer missionId,
+			Integer startIndex, Integer endIndex);
 }

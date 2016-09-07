@@ -2,7 +2,7 @@ package com.cn.ucoon.pojo;
 
 import java.util.Date;
 
-public class CommentChild {
+public class CommentsChild {
     private Integer commentChildId;
 
     private Integer commentId;

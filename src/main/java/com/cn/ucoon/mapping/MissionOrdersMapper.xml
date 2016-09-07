@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.MissionOrdersMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.MissionOrders" >
+    <id column="mission_order_id" property="missionOrderId" jdbcType="INTEGER" />
+    <result column="mission_order_num" property="missionOrderNum" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="mission_id" property="missionId" jdbcType="INTEGER" />
+    <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
+    <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mission_orders
+    where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.MissionOrders" >
+  	<selectKey resultType="java.lang.Integer" keyProperty="missionOrderId" order="AFTER">  
+                SELECT LAST_INSERT_ID()  
+    </selectKey>  
+    insert into mission_orders (mission_order_id, mission_order_num, 
+      user_id, mission_id, order_time, 
+      finish_time, state)
+    values (#{missionOrderId,jdbcType=INTEGER}, #{missionOrderNum,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, #{orderTime,jdbcType=TIMESTAMP}, 
+      #{finishTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.MissionOrders" >
+    update mission_orders
+    set mission_order_num = #{missionOrderNum,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      mission_id = #{missionId,jdbcType=INTEGER},
+      order_time = #{orderTime,jdbcType=TIMESTAMP},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=INTEGER}
+    where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
+    state
+    from mission_orders
+    where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
+    state
+    from mission_orders
+  </select>
+</mapper>

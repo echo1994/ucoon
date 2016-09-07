@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cn.ucoon.dao.CommentChildMapper" >
-  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.CommentChild" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.CommentsChild" >
     <id column="comment_child_id" property="commentChildId" jdbcType="INTEGER" />
     <result column="comment_id" property="commentId" jdbcType="INTEGER" />
     <result column="fromuser_id" property="fromuserId" jdbcType="INTEGER" />
@@ -10,19 +10,26 @@
     <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from comment_child
-    where comment_child_id = #{commentChildId,jdbcType=INTEGER}
+    delete from comments_child
+    where comment_child_id = #{commentId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.cn.ucoon.pojo.CommentChild" >
-    insert into comment_child (comment_child_id, comment_id, fromuser_id, 
+  <delete id="deleteByCommentsId" parameterType="java.lang.Integer" >
+    delete from comments_child
+    where comment_id = #{commentChildId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.CommentsChild" >
+    insert into comments_child (comment_child_id, comment_id, fromuser_id, 
       touser_id, content, comment_time
       )
     values (#{commentChildId,jdbcType=INTEGER}, #{commentId,jdbcType=INTEGER}, #{fromuserId,jdbcType=INTEGER}, 
       #{touserId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP}
       )
+       <selectKey keyProperty="commentChildId" resultType="java.lang.Integer" order="AFTER">
+			select LAST_INSERT_ID() 
+		</selectKey> 
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.CommentChild" >
-    update comment_child
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.CommentsChild" >
+    update comments_child
     set comment_id = #{commentId,jdbcType=INTEGER},
       fromuser_id = #{fromuserId,jdbcType=INTEGER},
       touser_id = #{touserId,jdbcType=INTEGER},
@@ -32,11 +39,21 @@
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select comment_child_id, comment_id, fromuser_id, touser_id, content, comment_time
-    from comment_child
+    from comments_child
     where comment_child_id = #{commentChildId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select comment_child_id, comment_id, fromuser_id, touser_id, content, comment_time
-    from comment_child
+    from comments_child
   </select>
+  
+  <!--  特定条件所有的comments_child记录      Commentsid  	按时间顺序   task_info.jsp-全部-->
+  <select id="selectbyCommentsId" resultType="java.util.HashMap" >
+	SELECT a.user_id as from_id,a.nick_name as from_name, b.user_id as to_id,b.nick_name as to_name,c.comment_id,c.comment_time,c.content,c.comment_child_id from 
+	(SELECT * FROM user where user_id in (SELECT comments_child.fromuser_id from comments_child WHERE comments_child.comment_id=#{0})) as a,
+	(SELECT * FROM user where user_id in (SELECT comments_child.touser_id from comments_child WHERE comments_child.comment_id=#{0})) as b,
+	comments_child as c where c.comment_id=#{0} and c.fromuser_id = a.user_id and c.touser_id = b.user_id ORDER BY c.comment_time ASC
+  </select>
+  
+  
 </mapper>

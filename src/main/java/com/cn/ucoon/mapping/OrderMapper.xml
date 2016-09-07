@@ -44,4 +44,9 @@
 	<select id="selectOrderbyUMID" resultType="java.util.HashMap">SELECT * FROM orders WHERE user_id=#{0} and mission_id=#{1}</select>
 	
 	<select id="selectOrdersCountByM" resultType="java.lang.Integer">SELECT COUNT(*) FROM orders WHERE mission_id = #{0}</select>
+	
+	<select id="selectorderDetailsByOrderId" resultType="java.util.HashMap">
+		SELECT * from orders LEFT JOIN user on user.user_id = orders.user_id WHERE order_id=
+		#{0}
+	</select>
 </mapper>

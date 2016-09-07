@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.cn.ucoon.pojo.Apply;
 import com.cn.ucoon.service.ApplyService;
 import com.cn.ucoon.service.MissionService;
-import com.cn.ucoon.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,8 +37,7 @@ public class ApplyController {
 	public String addAppliment(
 			@RequestParam(value = "missionId") Integer missionId,
 			HttpServletRequest request, HttpServletResponse response) {
-		Integer userId = 1;// (Integer)
-							// request.getSession().getAttribute("user_id");
+		Integer userId =  (Integer) request.getSession().getAttribute("user_id");
 		List<HashMap<String, String>> applys = null;
 		applys = applyService.selectApplybyUMID(userId, missionId);
 		if (applys == null || applys.size() == 0) {
@@ -99,7 +98,7 @@ public class ApplyController {
 			@RequestParam(value = "missionId", required = true) Integer missionId,
 			HttpServletRequest request) {
 		List<HashMap<String, String>> applys = null;
-		Integer currentUserId = 1; // Integer.parseInt(request.getParameter("user_id"));
+		Integer currentUserId =  Integer.parseInt(request.getParameter("user_id"));
 		Integer userId = missionService.selectUserIdByMissionId(missionId);
 		if (true) {// 条件userId == currentUserId
 			applys = applyService.selectByMissionId(missionId);
@@ -130,6 +129,7 @@ public class ApplyController {
 			return "false";
 		}
 	}
+
 	/*
 	 * @RequestMapping(value = "/confirmAppliment", method = RequestMethod.POST)
 	 * public String confirmAppliment(
@@ -140,5 +140,20 @@ public class ApplyController {
 	 * HttpServletRequest request) { if (applyService.confirmApply(userIds,
 	 * missionId)) { return "true"; } else { return "false"; } }
 	 */
-	
+
+	@RequestMapping(value = "getApplyUser/{applyId}")
+	public ModelAndView getApplyUser(
+			@PathVariable(value = "applyId") Integer applyId, ModelAndView mv) {
+		List<HashMap<String, String>> aulist = null;
+		aulist = applyService.selectApplyUser(applyId);
+		if (aulist.size() > 0) {
+			mv.addObject("au", aulist.get(0));
+		} else {
+			mv.addObject("au", null);
+		}
+		
+		mv.addObject("aId", applyId);
+		mv.setViewName("user-info");
+		return mv;
+	}
 }

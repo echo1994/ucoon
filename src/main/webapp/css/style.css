@@ -1,4 +1,4 @@
-﻿			html,
+			html,
 			body {
 				background-color: #efeff4;
 			}
@@ -71,21 +71,27 @@
 			
 			
 			/*底部导航栏*/
-			.mui-bar .icon-me,
-			.mui-bar .icon-we,
-			.mui-bar .icon-who{
-				font-size: 32px;
-			}
-			.mui-bar-tab .mui-tab-item .mui-icon{
-				width: 32px;
+			.mui-bar .mui-tab-item .tab-icon{
+				margin: 5px auto 0 auto;
+				width: 35px;
 				height: 26px;
-				line-height: 26px;
-				top: 5px;
+
+			}
+			.tab-me{background: url(../images/me.png) no-repeat center;background-size: 90%;}
+			.tab-we{background: url(../images/we.png) no-repeat center;background-size: 100%;}
+			.tab-who{background: url(../images/who.png) no-repeat center;background-size: 100%;}
+			.tab-me-cur{background: url(../images/me-cur.png) no-repeat center;background-size: 90%;}
+			.tab-we-cur{background: url(../images/we-cur.png) no-repeat center;background-size: 100%;}
+			.tab-who-cur{background: url(../images/who-cur.png) no-repeat center;background-size: 100%;}
+			
+			.mui-bar .mui-tab-item span{
+				font-size: 12px;
+				line-height: 16px;
+				display: block;
 			}
 			.mui-bar-tab .mui-tab-item.mui-active{
-				color: #C3D94F;
+				color: #555;
 			}
-			
 			
 			/*任务信息 切换按钮*/
 			.task-select{
@@ -594,12 +600,258 @@
 .task-info-description .imgbox img{
 	width: 300px;
 }
+
+
+/*订单详情*/
+.order-model{
+	background: #fff;
+	margin-bottom: 10px;
+}
+.order-model .model-col{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	padding: 0 20px;
+	color: #999;
+	border-bottom: 1px solid #eee;
+	font-size: 14px;
+}
+.order-model .model-col .order-maker{
+	display: block;
+	position: relative;
+
+}
+.order-model .model-col img{
+	position: absolute;
+	top: 7.5px;
+	right: 15px;
+	display: block;
+	height: 35px;
+	width: 35px;
+	border-radius: 50%;
+}
+.order-model .model-col .status{
+	color: #C3D94F;
+}
+.order-check{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	color: #fff;
+	background: #C3D94F;
+}
+/* 个人详情 */
+.more-mes{
+	margin-top: 2px;
+}
+.more-mes .mes-col{
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	width: 50%;
+	border-left: 1px solid #eee;
+	font-size: 12px;
+	background: #fff;
+}
+.more-mes .mes-col .lab{
+	margin-right: 5px;
+}
+.more-mes .mes-col i{
+	color: #C3D94F;
+	font-size: 20px;
+	
+}
+.liuyan{
+	margin-top: 10px;
+	width: 100%;
+	min-height: 100px;
+	background: #fff;
+	overflow: hidden;
+}
+.liuyan .liu-title{
+	margin: 5px 0 0 10px;
+}
+.liuyan .liu-cont{
+	padding: 5px 10px;
+	color: #999;
+}
+
+
+/* 评论 */
 .discus{
 	margin: 10px 0 50px 0;
 	background: #fff;
 }
+.discus .m-discus{
+	margin: 5px 0;
+}
 .discus .pinglun{
 	padding: 10px 10px 5px 10px;
 }
+.discus .pinglunn-btn{
+	padding: 1px 6px;
+	color: #999;
+}
 
+.discus-col{
+	border-top: 1px solid #eee;
+}
+.discus-col .father img{
+	margin: 6px 6px 6px 10px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+.discus-col .father .f-m p{
+	font-size: 12px;
+	color: #666;
+}
+.discus-col .father .f-m p i{
+	font-size: 12px;
+}
+.discus-col .father .f-m p:first-child{
+	padding-top: 6px;
+}
+.discus-col .father .f-m p:nth-child(2){
+	padding-bottom: 6px;
+}
+.discus-col .f-r{
+	padding: 20px 10px 0 10px;
+}
+.discus-col .f-r p{
+	color: #666;
+	font-size: 12px;
+}
+
+.discus-col .son{
+	margin-left: 54px;
+	padding: 5px 0;
+	border-top: 1px solid #eee;
+}
+.discus-col .son .s-m p{
+	font-size: 12px;
+	color: #666;
+}
+.discus-col .s-r{
+	padding: 10px 10px 0 10px;
+}
+.discus-col .s-r p{
+	color: #666;
+	font-size: 12px;
+}
+/* 财富中心 */
+.g-twobox{
+	width: 100%;
+	margin: 0 auto;
+}
+.g-twobox .col{
+	width: 49.5%;
+	height:100px;
+	margin-bottom: 3px;
+	background: #fff;
+}
+.g-twobox .col h3{
+	text-align: center;
+	margin: 30px 0 10px 0;
+	font-size: 14px;
+	font-weight: normal;
+	color: #999;
+}
+.g-twobox .col p{
+	text-align: center;
+	font-size: 26px;
+	color: #C3D94F;
+}
+.contrl-btn{
+	margin: 20px auto;
+	width: 100%;
+}
+.contrl-btn button{
+	display: block;
+	background: #C3D94F;
+	border-radius: 5px;
+	width: 70%;
+	color: #fff;
+	padding: 0;
+	height: 40px;
+	margin: 15px auto;
+}
+
+
+/* 支付订单 */
+.order-mes{
+	text-align: center;
+	line-height: 25px;
+	padding: 20px;
+	background: #fff;
+	
+}
+.order-mes .price{
+	color: #C3D94F;
+	font-size: 24px;
+}
+.order-mes p{
+	color: #999;
+	font-size: 12px;
+}
+.pay-way{
+	
+}
+.pay-way li i{
+	line-height: 50px;
+	padding: 0 10px;
+	
+}
+.pay-way li span{
+	color: #555;
+	font-size: 14px;
+}
+.pay-way li .icon-me{
+	color: #C3D94F;
+	font-size: 24px;
+}
+.pay-way li .icon-wechat-pay{
+	color: #00c800;
+	font-size: 20px;
+	padding: 0 12px;
+}
+.pay-way li .icon-alipay{
+	color: #00aaee;
+	font-size: 20px;
+	padding: 0 12px;
+}
+.pay-way li .icon-card{
+	font-size: 14px;
+	color: #999;
+	padding: 0 13px;
+}
+.pay-way li{
+	background: #fff;
+	line-height: 50px;
+	border-bottom: 1px solid #eee;
+}
+.pay-way li .circle{
+	display: block;
+	border-radius: 50%;
+	margin: 15px 10px 0 0;
+	font-size: 0;
+	line-height: 0;
+	width: 20px;
+	height: 20px;
+	border: 1px solid #999;
+}
+.pay-way li .circle-active{
+	border: 1px solid #C3D94F;
+	background: #C3D94F;
+}
+.pay-btn{
+	display: block;
+	margin: 50px auto 0 auto;
+	width: 80%;
+	line-height: 30px;
+	background: #C3D94F;
+}
 

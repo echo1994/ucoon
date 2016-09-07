@@ -88,7 +88,7 @@
 													+ "	<div class='mui-pull-left time-add-content'>"
 													+ "		<i class='mui-icon iconfont icon-time'></i><span"
 											+"		class='add-task-time'>"
-													+ getMonthDay(data[i].publish_time)
+													+ getDateDiff(data[i].publish_time)
 													+ "</span>"
 													+ "		</div>"
 													+ "		<div class='mui-pull-left'>"
@@ -113,6 +113,65 @@
 
 		return month + day;
 	}
+	
+	
+	function getDateDiff (dateStr) {
+	    var publishTime = dateStr/1000,
+	        d_seconds,
+	        d_minutes,
+	        d_hours,
+	        d_days,
+	        timeNow = parseInt(new Date().getTime()/1000),
+	        d,
+	
+	        date = new Date(publishTime*1000),
+	        Y = date.getFullYear(),
+	        M = date.getMonth() + 1,
+	        D = date.getDate(),
+	        H = date.getHours(),
+	        m = date.getMinutes(),
+	        s = date.getSeconds();
+	        //小于10的在前面补0
+	        if (M < 10) {
+	            M = '0' + M;
+	        }
+	        if (D < 10) {
+	            D = '0' + D;
+	        }
+	        if (H < 10) {
+	            H = '0' + H;
+	        }
+	        if (m < 10) {
+	            m = '0' + m;
+	        }
+	        if (s < 10) {
+	            s = '0' + s;
+	        }
+	
+	    d = timeNow - publishTime;
+	    d_days = parseInt(d/86400);
+	    d_hours = parseInt(d/3600);
+	    d_minutes = parseInt(d/60);
+	    d_seconds = parseInt(d);
+	
+	    if(d_days > 0 && d_days < 3){
+	        return d_days + '天前';
+	    }else if(d_days <= 0 && d_hours > 0){
+	        return d_hours + '小时前';
+	    }else if(d_hours <= 0 && d_minutes > 0){
+	        return d_minutes + '分钟前';
+	    }else if (d_seconds < 60) {
+	        if (d_seconds <= 0) {
+	            return '刚刚发表';
+	        }else {
+	            return d_seconds + '秒前';
+	        }
+	    }else if (d_days >= 3 && d_days < 30){
+	        return M + '-' + D + '&nbsp;' + H + ':' + m;
+	    }else if (d_days >= 30) {
+	        return Y + '-' + M + '-' + D + '&nbsp;' + H + ':' + m + ':' + s;
+	    }
+	}   
 </script>
 <body>
 	<div id="offCanvasWrapper"
@@ -125,9 +184,9 @@
 				<div class="mui-scroll">
 					<div class="basic-mes">
 						<!--头像-->
-						<img src="images/home_pic2.jpg">
+						<img src="${user.headImgUrl}">
 						<div class="ucoon-user">
-							满血复活的大魔王<i class="mui-icon iconfont icon-man"></i>
+							${user.nickName }<i class="mui-icon iconfont icon-man"></i>
 						</div>
 						<!--五星评分-->
 						<div class="user-score">
@@ -142,9 +201,9 @@
 						<!--个性签名-->
 						<p class="user-talk">陪吃配喝陪睡觉，有钱样样都行</p>
 						<!--财富情况-->
-						<div class="treasure">
-							<span class=""><i class="mui-icon iconfont icon-qian"></i>58.9</span>
-							<span class=""><i class="mui-icon iconfont icon-love"></i>66</span>
+						<div class="treasure" id="wealth">
+								<span class=""><i class="mui-icon iconfont icon-qian"></i>58.9</span>
+								<span class=""><i class="mui-icon iconfont icon-love"></i>66</span>
 						</div>
 						<!--侧滑菜单列表-->
 						<ul class="aside-menu">
@@ -155,6 +214,10 @@
 							<li id="info"><i class="mui-icon mui-icon-info"></i>关于我们</li>
 						</ul>
 						<script type="text/javascript">
+							$('#wealth').bind('tap',function(){
+								window.location.href="wealth/";
+							})
+							
 							$('#wode').bind('tap',function(){
 								window.location.href="";
 							})
@@ -167,9 +230,7 @@
 							$('#wode').bind('tap',function(){
 								window.location.href="";
 							})
-							$('#wode').bind('tap',function(){
-								window.location.href="";
-							})
+							
 						</script>
 					</div>
 				</div>
@@ -190,17 +251,20 @@
 			</header>
 			<!--底部导航菜-->
 			<nav class="mui-bar mui-bar-tab" id="nav-tap-bar">
-				<a class="mui-tab-item mui-active" id="ucoon-me" href="index"> <span
-					class="mui-icon iconfont icon-me"></span> <span
-					class="mui-tab-label">我有空</span>
-				</a> <a class="mui-tab-item" id="ucoon-we" href="we"> <span
-					class="mui-icon iconfont icon-we"></span> <span
-					class="mui-tab-label">都有空</span>
-				</a> <a class="mui-tab-item" id="ucoon-who" href="who-new"> <span
-					class="mui-icon iconfont icon-who"></span> <span
-					class="mui-tab-label">谁有空</span>
+				<a class="mui-tab-item mui-active" id="ucoon-me" href="index">
+					<span class="tab-icon tab-me-cur"></span>
+					<span class="tab-name mui-tab-label">我有空</span>
+				</a>
+				<a class="mui-tab-item" id="ucoon-we" href="we">
+					<span class="tab-icon tab-we"></span>
+					<span class="tab-name mui-tab-label">都有空</span>
+				</a>
+				<a class="mui-tab-item" id="ucoon-who" href="who-new">
+					<span class="tab-icon tab-who"></span>
+					<span class="tab-name mui-tab-label">谁有空</span>
 				</a>
 			</nav>
+			
 			<!--主界面中间区域-->
 			<div id="offCanvasContentScroll"
 				class="mui-content mui-scroll-wrapper">
@@ -275,133 +339,7 @@
 											</div>
 										</div>
 									</div>
-							</a></li>
-							<li class="task-col clearfix"><a href="#"> <img
-									class="mui-pull-left" src="images/muwu.jpg">
-									<div class="task-price mui-pull-right">
-										<i class="mui-icon iconfont icon-qian"></i> <span
-											class="task-price-num">50.0</span>
-									</div>
-									<div class="task-detail">
-										<p class="task-title">买福鼎肉片</p>
-										<p class="task-description">孙厝桥洞下的浮动肉片3份现在就要</p>
-										<div class="time-add clearfix">
-											<div class="mui-pull-left time-add-content">
-												<i class="mui-icon iconfont icon-time"></i><span
-													class="add-task-time">07月30日</span>
-											</div>
-											<div class="mui-pull-left">
-												<i class="mui-icon mui-icon-location"></i><span
-													class="distance">2.9公里</span>
-											</div>
-										</div>
-									</div>
-							</a></li>
-							<li class="task-col clearfix"><a href="#"> <img
-									class="mui-pull-left" src="images/home_pic3.jpg">
-									<div class="task-price mui-pull-right">
-										<i class="mui-icon iconfont icon-qian"></i> <span
-											class="task-price-num">20.4</span>
-									</div>
-									<div class="task-detail">
-										<p class="task-title">代拿快递</p>
-										<p class="task-description">诚毅玻璃房顺丰快递，下去6点钱</p>
-										<div class="time-add clearfix">
-											<div class="mui-pull-left time-add-content">
-												<i class="mui-icon iconfont icon-time"></i><span
-													class="add-task-time">07月30日</span>
-											</div>
-											<div class="mui-pull-left">
-												<i class="mui-icon mui-icon-location"></i><span
-													class="distance">0.2公里</span>
-											</div>
-										</div>
-									</div>
-							</a></li>
-							<li class="task-col clearfix"><a href="#"> <img
-									class="mui-pull-left" src="images/plumber.jpg">
-									<div class="task-price mui-pull-right">
-										<i class="mui-icon iconfont icon-qian"></i> <span
-											class="task-price-num">50.0</span>
-									</div>
-									<div class="task-detail">
-										<p class="task-title">求代课</p>
-										<p class="task-description">周五上午1-2节建发楼201着玩手机就行，就发给及分工及分工和分工会覆盖点个名地方司法所的范德萨</p>
-										<div class="time-add clearfix">
-											<div class="mui-pull-left time-add-content">
-												<i class="mui-icon iconfont icon-time"></i><span
-													class="add-task-time">07月30日</span>
-											</div>
-											<div class="mui-pull-left">
-												<i class="mui-icon mui-icon-location"></i><span
-													class="distance">1.2公里</span>
-											</div>
-										</div>
-									</div>
-							</a></li>
-							<li class="task-col clearfix"><a href="#"> <img
-									class="mui-pull-left" src="images/home_pic2.jpg">
-									<div class="task-price mui-pull-right">
-										<i class="mui-icon iconfont icon-qian"></i> <span
-											class="task-price-num">250.0</span>
-									</div>
-									<div class="task-detail">
-										<p class="task-title">求代课</p>
-										<p class="task-description">周五上午1-2节建发楼201着玩手机就行，就发给及分工及分工和分工会覆盖点个名地方司法所的范德萨</p>
-										<div class="time-add clearfix">
-											<div class="mui-pull-left time-add-content">
-												<i class="mui-icon iconfont icon-time"></i><span
-													class="add-task-time">07月30日</span>
-											</div>
-											<div class="mui-pull-left">
-												<i class="mui-icon mui-icon-location"></i><span
-													class="distance">1.2公里</span>
-											</div>
-										</div>
-									</div>
-							</a></li>
-							<li class="task-col clearfix"><a href="#"> <img
-									class="mui-pull-left" src="images/muwu.jpg">
-									<div class="task-price mui-pull-right">
-										<i class="mui-icon iconfont icon-qian"></i> <span
-											class="task-price-num">50.0</span>
-									</div>
-									<div class="task-detail">
-										<p class="task-title">买福鼎肉片</p>
-										<p class="task-description">孙厝桥洞下的浮动肉片3份现在就要</p>
-										<div class="time-add clearfix">
-											<div class="mui-pull-left time-add-content">
-												<i class="mui-icon iconfont icon-time"></i><span
-													class="add-task-time">07月30日</span>
-											</div>
-											<div class="mui-pull-left">
-												<i class="mui-icon mui-icon-location"></i><span
-													class="distance">2.9公里</span>
-											</div>
-										</div>
-									</div>
-							</a></li>
-							<li class="task-col clearfix"><a href="#"> <img
-									class="mui-pull-left" src="images/home_pic3.jpg">
-									<div class="task-price mui-pull-right">
-										<i class="mui-icon iconfont icon-qian"></i> <span
-											class="task-price-num">0.4</span>
-									</div>
-									<div class="task-detail">
-										<p class="task-title">代拿快递</p>
-										<p class="task-description">诚毅玻璃房顺丰快递，下去6点钱</p>
-										<div class="time-add clearfix">
-											<div class="mui-pull-left time-add-content">
-												<i class="mui-icon iconfont icon-time"></i><span
-													class="add-task-time">07月30日</span>
-											</div>
-											<div class="mui-pull-left">
-												<i class="mui-icon mui-icon-location"></i><span
-													class="distance">0.2公里</span>
-											</div>
-										</div>
-									</div>
-							</a></li> -->
+							</a></li>-->
 						</ul>
 					</div>
 				</div>

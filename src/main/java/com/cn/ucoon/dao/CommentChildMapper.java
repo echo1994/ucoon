@@ -1,16 +1,24 @@
 package com.cn.ucoon.dao;
 
-import com.cn.ucoon.pojo.CommentChild;
+import com.cn.ucoon.pojo.CommentsChild;
+
+import java.util.HashMap;
 import java.util.List;
 
 public interface CommentChildMapper {
     int deleteByPrimaryKey(Integer commentChildId);
 
-    int insert(CommentChild record);
+    int deleteByCommentsId(Integer commentId);
 
-    CommentChild selectByPrimaryKey(Integer commentChildId);
+    int insert(CommentsChild record);
 
-    List<CommentChild> selectAll();
+    CommentsChild selectByPrimaryKey(Integer commentChildId);
 
-    int updateByPrimaryKey(CommentChild record);
+    List<CommentsChild> selectAll();
+
+    int updateByPrimaryKey(CommentsChild record);
+    
+    List<HashMap<String, Object>> selectbyCommentsId(Integer commentsId);
+    
+   
 }

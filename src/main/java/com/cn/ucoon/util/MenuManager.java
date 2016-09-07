@@ -63,9 +63,9 @@ public class MenuManager {
 		// btn13.setKey("13");
 		
 		ViewButton btn11 = new ViewButton();
-		btn11.setName("聊天");
+		btn11.setName("主页");
 		btn11.setType("view");
-		btn11.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx14236620e0b8201e&redirect_uri=http%3A%2F%2Fdq7kesuqpw.proxy.qqbrowser.cc%2Fucoon%2Fwx%2Foauth&response_type=code&scope=snsapi_userinfo&state=echo#wechat_redirect");
+		btn11.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx14236620e0b8201e&redirect_uri=http%3A%2F%2Fwx.ucoon.cn%2Fucoon%2F&response_type=code&scope=snsapi_userinfo&state=echo#wechat_redirect");
 
 	
 		

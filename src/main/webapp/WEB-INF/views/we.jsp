@@ -71,18 +71,19 @@
 				<!--底部导航菜-->
 				<nav class="mui-bar mui-bar-tab" id="nav-tap-bar">
 					<a class="mui-tab-item " id="ucoon-me" href="index">
-						<span class="mui-icon iconfont icon-me"></span>
-						<span class="mui-tab-label">我有空</span>
+						<span class="tab-icon tab-me"></span>
+						<span class="tab-name mui-tab-label">我有空</span>
 					</a>
 					<a class="mui-tab-item mui-active" id="ucoon-we" href="we">
-						<span class="mui-icon iconfont icon-we" ></span>
-						<span class="mui-tab-label">都有空</span>
+						<span class="tab-icon tab-we-cur"></span>
+						<span class="tab-name mui-tab-label">都有空</span>
 					</a>
 					<a class="mui-tab-item" id="ucoon-who" href="who-new">
-						<span class="mui-icon iconfont icon-who"></span>
-						<span class="mui-tab-label">谁有空</span>
+						<span class="tab-icon tab-who"></span>
+						<span class="tab-name mui-tab-label">谁有空</span>
 					</a>
 				</nav>
+				<button class="mui-btn mui-fab mui-btn-primary mui-btn-outlined" style="position: absolute;bottom: 80px;left:70%; z-index: 10;">发布</button>
 				<!--主界面中间区域-->
 				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
 						<div class="mui-scroll ">
@@ -242,6 +243,7 @@
 						</div>
 					</div>
 				</div>
+				
 				<!-- off-canvas backdrop -->
 				<div class="mui-off-canvas-backdrop"></div>
 			</div>

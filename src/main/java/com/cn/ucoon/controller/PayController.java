@@ -1,13 +1,19 @@
 package com.cn.ucoon.controller;
 
+import java.math.BigDecimal;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,15 +22,27 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.cn.ucoon.pojo.Mission;
+import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.wx.JsAPIConfig;
+import com.cn.ucoon.pojo.wx.Template;
+import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.pojo.wx.UnifiedOrderRespose;
+import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.util.MessageUtil;
 import com.cn.ucoon.util.PayUtil;
+import com.cn.ucoon.util.WeixinUtil;
 
 @Controller
 @RequestMapping("/pay")
 public class PayController {
 
+	
+	@Resource
+	private UserService userService;
+
+	
+	
 	//支付预支付处理，生成prepayid编号，存放在session中，在支付时效验
 	@RequestMapping("/prepay")
 	public String prepay(Model model) {
@@ -46,37 +64,43 @@ public class PayController {
 	
 	// 微信支付
 	@ResponseBody
-	@RequestMapping(value = "/getPay/{prepay_id}")  
-	public JSONObject pay(@PathVariable("prepay_id") String prepay_id) throws Exception {  
+	@RequestMapping(value = "/getPay")  
+	public JSONObject pay() throws Exception {  
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
        
 		JSONObject json = new JSONObject();
 		
-		String pre_prepay_id = (String) request.getSession().getAttribute("prepayid");
-		if(pre_prepay_id==null||prepay_id == null||!prepay_id.equals(pre_prepay_id)){
+		//String pre_prepay_id = (String) request.getSession().getAttribute("prepayid");
+		/*if(pre_prepay_id==null||prepay_id == null||!prepay_id.equals(pre_prepay_id)){
 			json.put("result_type", "error");
 			json.put("msg", "支付失败");
 			return json;
-		}
+		}*/
 		
 		json.put("result_type", "success");
 		
+		Mission mission = (Mission) request.getSession().getAttribute("mission");
+		MissionOrders orders = (MissionOrders) request.getSession().getAttribute("orders");
+		
 		System.out.println("=============我是访问IP："+getIpAddr(request)+ "==================");
-		String ip = "219.228.251.28";
-		System.out.println(ip);
-		String body = "test";
-		String fee = "1";
-		String notify_url = "http://www.jmutong.com/ucoon/pay/payresult";;
+		String ip = getIpAddr(request);
+		String body = "有空ucoon-任务发布";
+		int fee = mission.getMissionPrice().multiply(new BigDecimal(100)).intValue();
+		System.out.println(fee);
+		String notify_url = "http://wx.ucoon.cn/ucoon/pay/payresult";;
 		String trade_type = "JSAPI";
 		
+		//这里如果没有登录，跳转到登录界面
+		int user_id = (int) request.getSession().getAttribute("user_id");
+		System.out.println("user_id" + user_id);
 		
-		String openid = "ogF_wvuJ_E4axtC729eTozgyyJTM";
 		
-		String userId = "1";
-		String orderId = PayUtil.getOrderId(userId);
+		String openid = userService.getOpenIdbyUserId(user_id);
+		
+		String orderId = orders.getMissionOrderNum();
 		System.out.println("本次订单:" + orderId);
 		//生成订单  
-		String orderInfo = PayUtil.createOrderInfo(orderId, ip, body, fee, notify_url, trade_type,openid); 
+		String orderInfo = PayUtil.createOrderInfo(orderId, ip, body, fee + "", notify_url, trade_type,openid); 
 	    //调统一下单API  
 		UnifiedOrderRespose unifiedOrderRespose = PayUtil.httpOrder(orderInfo);  
 		
@@ -104,9 +128,38 @@ public class PayController {
 		try {
             Map<String, String> map = new MessageUtil().parseXml(request);
             if (map.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
-                String orderId = map.get("out_trade_no");
-                System.out.println("收到支付结果订单：" + orderId);
-                //这里写成功后的业务逻辑
+            	//这里写成功后的业务逻辑：  改订单状态，发模板消息等
+            	
+            	
+            	
+            	String orderId = map.get("out_trade_no");
+            	
+            	System.out.println("收到支付结果订单：" + orderId);
+                String time = map.get("time_end");
+                String total_fee = map.get("total_fee");
+                String openid = map.get("openid");
+                if(map.get("is_subscribe").equalsIgnoreCase("Y")){
+                	Template tem=new Template();  
+                	tem.setTemplateId("azcHIxhzpMgkzMvYM2kdmRxrf4ciwII2FTp9dRitoms");  
+                	tem.setTopColor("#00DD00");  
+                	tem.setToUser(openid);  
+                	tem.setUrl("http://wx.ucoon.cn/ucoon/"); //到时候改为任务列表
+                	      
+                	List<TemplateParam> paras=new ArrayList<TemplateParam>();  
+                	paras.add(new TemplateParam("first","任务订单支付成功，已发布到任务大厅","#FF3333"));  
+                	paras.add(new TemplateParam("keyword1",strToDateLong(time),"#0044BB"));  
+                	paras.add(new TemplateParam("keyword2","任务名称","#0044BB"));  
+                	paras.add(new TemplateParam("keyword3",(Double.valueOf(total_fee) / 100) + "","#0044BB"));  
+                	paras.add(new TemplateParam("keyword4","支付成功","#0044BB"));
+                	paras.add(new TemplateParam("remark","感谢您的使用","#0044BB"));  
+                	tem.setTemplateParamList(paras);  
+                	          
+                	boolean result=WeixinUtil.sendTemplateMsg(tem); 
+                	System.out.println("模板消息结果：" + result);
+                	
+                }
+               
+                
                 //orderService.updateConfirm(orderId);
             }
        } catch (Exception e) {
@@ -148,5 +201,14 @@ public class PayController {
 			return request.getRemoteAddr();
 		}
 	}
+	
+	 public String strToDateLong(String strDate) {
+		  SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+		  ParsePosition pos = new ParsePosition(0);
+		  Date strtodate = formatter.parse(strDate, pos);
+		  SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+		  String dateString = formatter2.format(strtodate);
+		  return dateString;
+		 }
 
 }

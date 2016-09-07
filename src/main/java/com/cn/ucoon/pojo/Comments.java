@@ -2,7 +2,7 @@ package com.cn.ucoon.pojo;
 
 import java.util.Date;
 
-public class Comment {
+public class Comments {
     private Integer commentId;
 
     private Integer userId;
@@ -52,4 +52,14 @@ public class Comment {
     public void setCommentTime(Date commentTime) {
         this.commentTime = commentTime;
     }
+
+	@Override
+	public String toString() {
+		return "Comments [commentId=" + commentId + ", userId=" + userId
+				+ ", missionId=" + missionId + ", content=" + content
+				+ ", commentTime=" + commentTime + "]";
+	}
+    
+    
+    
 }
