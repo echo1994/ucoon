@@ -12,13 +12,13 @@ import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.service.MissionService;
 
 @Service
+@Transactional
 public class MissionServiceImpl implements MissionService {
 
 	@Autowired
 	private MissionMapper missionMapper;
 
 	@Override
-	@Transactional
 	public boolean publishMission(Mission mission) {
 		// TODO Auto-generated method stub
 		

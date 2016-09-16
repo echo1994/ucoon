@@ -232,3 +232,8 @@ Caused by: java.lang.IllegalStateException: No suitable default RequestUpgradeSt
 [INFO] [2016-09-06 10:10:58][com.cn.ucoon.util.MenuManager]菜单创建成功！
 [INFO] [2016-09-06 10:12:52][com.cn.ucoon.util.MenuManager]菜单创建成功！
 [INFO] [2016-09-06 10:14:03][com.cn.ucoon.util.MenuManager]菜单创建成功！
+[ERROR] [2016-09-12 15:00:00][com.cn.ucoon.util.WeixinUtil]https request error:{}
+java.lang.ClassCastException: sun.net.www.protocol.http.HttpURLConnection cannot be cast to javax.net.ssl.HttpsURLConnection
+	at com.cn.ucoon.util.WeixinUtil.httpRequest(WeixinUtil.java:171)
+	at com.cn.ucoon.util.MapDistanceUtil.getLatAndLngbyPlaceName(MapDistanceUtil.java:62)
+	at com.cn.ucoon.util.MapDistanceUtil.main(MapDistanceUtil.java:166)

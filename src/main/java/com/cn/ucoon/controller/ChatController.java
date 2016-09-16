@@ -1,7 +1,6 @@
 package com.cn.ucoon.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.service.UserService;
 
 @Controller
@@ -23,20 +21,12 @@ public class ChatController {
 	private UserService userService;
 
 	// 进入聊天列表
-	@RequestMapping(value = "/chatlist", method = RequestMethod.GET)
-	public String testRequestParam(@RequestParam(value = "code") String code,
-			@RequestParam(value = "state") String state, Model model,
+	@RequestMapping(value = "/chat-list", method = RequestMethod.GET)
+	public String testRequestParam( Model model,
 			HttpSession session) {
-		System.out.println("网页授权code------>" + code);
+		
 
-		// 判断state是否为echo -》开发者识别码
-		if (state == null || !state.equals("echo")) {
-			// 异常授权，跳转授权失败url
-			return "auth_error.html";
-		}
-
-		int user_id = (int) (session.getAttribute("user_id") == null ? 0
-				: session.getAttribute("user_id"));
+		/*int user_id = (int) session.getAttribute("user_id");
 
 		User user = null;
 		if (user_id == 0) {
@@ -55,8 +45,8 @@ public class ChatController {
 
 		List<User> userList = this.userService.getAllUser();
 		model.addAttribute("userList", userList);
-		System.out.println(userList);
-		return "test";
+		System.out.println(userList);*/
+		return "chat-list";
 
 	}
 

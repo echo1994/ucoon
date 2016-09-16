@@ -210,6 +210,7 @@
 							<li id="wode"><i class="mui-icon iconfont icon-wode"></i>我的信息</li>
 							<li id="mysend"><i class="mui-icon iconfont icon-plane"></i>我发布的</li>
 							<li id="myservice"><i class="mui-icon iconfont icon-service"></i>我服务的</li>
+							<li id="chat-list"><i class="mui-icon iconfont icon-service"></i>消息中心</li>
 							<li id="help"><i class="mui-icon mui-icon-help"></i>帮助联系</li>
 							<li id="info"><i class="mui-icon mui-icon-info"></i>关于我们</li>
 						</ul>
@@ -227,6 +228,15 @@
 							$('#myservice').bind('tap',function(){
 								window.location.href="myservice";
 							})
+							
+							$('#chat-list').bind('tap',function(){
+								window.location.href="chat/chat-list";
+							})
+							
+							$('#help').bind('tap',function(){
+								window.location.href="feedback";
+							})
+							
 							$('#wode').bind('tap',function(){
 								window.location.href="";
 							})

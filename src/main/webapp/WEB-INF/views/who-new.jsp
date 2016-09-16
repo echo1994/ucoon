@@ -96,35 +96,39 @@ html, body {
 		</form>
 		<button class="send-btn" id="send-btn">发布</button>
 		<script type="text/javascript">
-			function toVaild() {
-				var ec = 0;
-				var isprint = false;
-				$("input[type=text]").each(function() {
-					if ($(this).val() == '' && isprint == false) {
-						alert($($(this).prev()).text() + '不能为空');
-						ec++;
-						isprint = true;
-					}
-				});
-				var reg1 = /^[0-9]+(\.[0-9]+)?$/;
-				if (!reg1.test($('#missionPrice').val()) && isprint == false) {
-					alert("请填写正确售价");
+		function toVaild() {
+			var ec = 0;
+			var isprint = false;
+			$("input[type=text]").each(function() {
+				if ($(this).val() == '' && isprint == false) {
+					alert($($(this).prev()).text() + '不能为空');
 					ec++;
+					isprint = true;
 				}
-				if (!reg1.test($('#peopleCount').val()) && isprint == false) {
-					alert("请填写正确人数");
-					ec++;
-				}
-				if (!(/^1[3|4|5|7|8]\d{9}$/.test($('#telephone').val()))
-						&& isprint == false) {
-					alert("请填写正确手机号");
-					ec++;
-				}
-				if (ec > 0) {
-					return false;
-				}
+			});
+			var reg1 = /^[0-9]+(\.[0-9]+)?$/;
+			if (!reg1.test($('#missionPrice').val()) && isprint == false) {
+				alert("请填写正确售价");
+				ec++;
+				isprint = true;
 			}
-		</script>
+			if (!reg1.test($('#peopleCount').val()) && isprint == false) {
+				alert("请填写正确人数");
+				ec++;
+				isprint = true;
+			}
+			if (!(/^1[3|4|5|7|8]\d{9}$/.test($('#telephone').val()))
+					&& isprint == false) {
+				alert("请填写正确手机号");
+				ec++;
+				isprint = true;
+			}
+			if (ec > 0) {
+				return false;
+			}
+		}
+	</script>
+
 	</div>
 	<div id="l-map" style="display: none"></div>
 	<div id="searchResultPanel"

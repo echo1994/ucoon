@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.ActivityMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Activity" >
+    <id column="activity_id" property="activityId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="activity_name" property="activityName" jdbcType="VARCHAR" />
+    <result column="activity_time" property="activityTime" jdbcType="TIMESTAMP" />
+    <result column="activity_place" property="activityPlace" jdbcType="VARCHAR" />
+    <result column="activity_detail_place" property="activityDetailPlace" jdbcType="VARCHAR" />
+    <result column="activity_desc" property="activityDesc" jdbcType="VARCHAR" />
+    <result column="activity_create_time" property="activityCreateTime" jdbcType="TIMESTAMP" />
+    <result column="activity_lng" property="activityLng" jdbcType="VARCHAR" />
+    <result column="activity_lat" property="activityLat" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from activity
+    where activity_id = #{activityId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Activity" >
+    insert into activity (activity_id, user_id, activity_name, 
+      activity_time, activity_place, activity_detail_place, 
+      activity_desc, activity_create_time, activity_lng, 
+      activity_lat)
+    values (#{activityId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{activityName,jdbcType=VARCHAR}, 
+      #{activityTime,jdbcType=TIMESTAMP}, #{activityPlace,jdbcType=VARCHAR}, #{activityDetailPlace,jdbcType=VARCHAR}, 
+      #{activityDesc,jdbcType=VARCHAR}, #{activityCreateTime,jdbcType=TIMESTAMP}, #{activityLng,jdbcType=VARCHAR}, 
+      #{activityLat,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Activity" >
+    update activity
+    set user_id = #{userId,jdbcType=INTEGER},
+      activity_name = #{activityName,jdbcType=VARCHAR},
+      activity_time = #{activityTime,jdbcType=TIMESTAMP},
+      activity_place = #{activityPlace,jdbcType=VARCHAR},
+      activity_detail_place = #{activityDetailPlace,jdbcType=VARCHAR},
+      activity_desc = #{activityDesc,jdbcType=VARCHAR},
+      activity_create_time = #{activityCreateTime,jdbcType=TIMESTAMP},
+      activity_lng = #{activityLng,jdbcType=VARCHAR},
+      activity_lat = #{activityLat,jdbcType=VARCHAR}
+    where activity_id = #{activityId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select activity_id, user_id, activity_name, activity_time, activity_place, activity_detail_place, 
+    activity_desc, activity_create_time, activity_lng, activity_lat
+    from activity
+    where activity_id = #{activityId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select activity_id, user_id, activity_name, activity_time, activity_place, activity_detail_place, 
+    activity_desc, activity_create_time, activity_lng, activity_lat
+    from activity
+  </select>
+  
+	<select id="selectLimited" resultType="java.util.HashMap" >
+		SELECT activity_id, activity_name, activity_time, activity_place, activity_detail_place, activity_desc,
+		activity_create_time,activity_lng,activity_lat,nick_name,head_img_url FROM activity LEFT JOIN user ON user.user_id = activity.user_id
+		ORDER BY #{2} DESC LIMIT #{0},#{1}
+	</select>
+	
+	<select id="selectNearby" resultType="java.util.HashMap">
+	    SELECT activity_id, activity_name, activity_time, activity_place, activity_detail_place, activity_desc,
+		activity_create_time,nick_name,head_img_url,activity.user_id,
+	    ROUND(lat_lng_distance(#{0}, #{1}, activity_lat, activity_lng), 2) AS distance 
+	    FROM activity LEFT JOIN user ON user.user_id = activity.user_id
+	    WHERE 
+	    <![CDATA[ activity_lat > #{2} AND activity_lat < #{3} AND activity_lng > #{4} AND activity_lng < #{5} ]]>
+	    ORDER BY distance ASC 
+	    LIMIT #{6},#{7}
+	</select>
+	
+	<select id="selectLimitedbyKeyWord" resultType="java.util.HashMap" >
+		SELECT activity_id, activity_name, activity_time, activity_place, activity_detail_place, activity_desc,
+		activity_create_time,activity_lng,activity_lat,nick_name,head_img_url FROM activity LEFT JOIN user ON user.user_id = activity.user_id
+		WHERE activity_name like #{0} or activity_desc like #{0} or activity_place like #{0} or activity_detail_place like #{0} ORDER BY activity_create_time DESC
+		LIMIT #{1},#{2}
+	</select>
+	
+	<select id="selectLimitedbyUserId" resultType="java.util.HashMap" >
+		SELECT activity_id, activity_name, activity_time, activity_place, activity_detail_place, activity_desc,
+		activity_create_time,activity_lng,activity_lat,nick_name,head_img_url FROM activity LEFT JOIN user ON user.user_id
+		= activity.user_id WHERE activity.user_id = #{0} ORDER BY activity_create_time DESC LIMIT #{1},#{2}
+	</select>
+  
+</mapper>

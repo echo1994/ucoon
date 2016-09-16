@@ -9,6 +9,11 @@
 		<session-timeout>30</session-timeout>
 	</session-config>
 	
+	<error-page>
+	    <error-code>404</error-code>
+	    <location>/html/404.html</location>
+	</error-page>
+	
 	<!-- Spring和mybatis的配置文件 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>

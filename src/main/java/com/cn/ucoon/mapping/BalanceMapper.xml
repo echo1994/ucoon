@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.BalanceMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Balance" >
+    <id column="balance_id" property="balanceId" jdbcType="INTEGER" />
+    <result column="consuming_records" property="consumingRecords" jdbcType="VARCHAR" />
+    <result column="consuming_time" property="consumingTime" jdbcType="TIMESTAMP" />
+    <result column="plus_or_minus" property="plusOrMinus" jdbcType="VARCHAR" />
+    <result column="quantity" property="quantity" jdbcType="DECIMAL" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from balance
+    where balance_id = #{balanceId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Balance" >
+    insert into balance (balance_id, consuming_records, consuming_time, 
+      plus_or_minus, quantity)
+    values (#{balanceId,jdbcType=INTEGER}, #{consumingRecords,jdbcType=VARCHAR}, #{consumingTime,jdbcType=TIMESTAMP}, 
+      #{plusOrMinus,jdbcType=VARCHAR}, #{quantity,jdbcType=DECIMAL})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Balance" >
+    update balance
+    set consuming_records = #{consumingRecords,jdbcType=VARCHAR},
+      consuming_time = #{consumingTime,jdbcType=TIMESTAMP},
+      plus_or_minus = #{plusOrMinus,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=DECIMAL}
+    where balance_id = #{balanceId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity
+    from balance
+    where balance_id = #{balanceId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity
+    from balance
+  </select>
+</mapper>

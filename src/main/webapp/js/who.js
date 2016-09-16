@@ -3,17 +3,7 @@ filecount = 0;
 $(document)
 		.ready(
 				function(e) {
-					wx.ready(function () {
-						//页面加载时调用
-						wx.checkJsApi({
-						    jsApiList: [
-						      'chooseWXPay'
-						    ],
-						    success: function (res) {
-						      alert(JSON.stringify(res));
-						    }
-						 });
-					});		
+					
 					// 判断浏览器是否有FileReader接口
 					if (typeof FileReader == 'undefined') {
 						$("#destination")
@@ -291,7 +281,7 @@ var addimgCo = document.getElementById('addimgCo');
 addimgCo.addEventListener('tap', function() {
 	$('#imgUpload').click();
 });
-
+//添加图片事件绑定
 var formSub = document.getElementById('send-btn');
 formSub.addEventListener('tap', function() {
 	// 微信支付
@@ -330,4 +320,4 @@ formSub.addEventListener('tap', function() {
 //	
 //});
 
-// 添加图片事件绑定
+

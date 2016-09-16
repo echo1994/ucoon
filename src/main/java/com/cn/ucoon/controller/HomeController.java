@@ -49,4 +49,10 @@ public class HomeController {
 		request.setAttribute("ip", ip);
 		return "chooseAllocation";
 	}
+	
+	@RequestMapping(value = "/feedback")
+	public String feedback() {
+		
+		return "feedback";
+	}
 }

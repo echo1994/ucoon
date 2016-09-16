@@ -1,6 +1,7 @@
 			html,
 			body {
 				background-color: #efeff4;
+				
 			}
 			p{
 				margin: 0;
@@ -73,7 +74,7 @@
 			/*底部导航栏*/
 			.mui-bar .mui-tab-item .tab-icon{
 				margin: 5px auto 0 auto;
-				width: 35px;
+				width: 36px;
 				height: 26px;
 
 			}
@@ -849,9 +850,48 @@
 }
 .pay-btn{
 	display: block;
-	margin: 50px auto 0 auto;
+	margin: 0px auto 0 auto;
 	width: 80%;
 	line-height: 30px;
 	background: #C3D94F;
 }
 
+/* 消息列表 */
+.chat-list{
+	margin: 0;
+}
+.list-col{
+	border-top: 1px solid #eee;
+	background: #fff;
+	padding: 5px 0;
+}
+.list-col img{
+	margin: 6px 6px 6px 10px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+.list-col  .f-m p{
+	font-size: 12px;
+	color: #666;
+}
+.list-col  .f-m p:first-child{
+	padding-top: 6px;
+}
+.list-col .f-m p:nth-child(2){
+	padding-bottom: 6px;
+	color: #999;
+	overflow : hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+}
+.list-col .f-r{
+	padding: 10px 10px 0 10px;
+}
+.list-col .f-r p{
+	color: #666;
+	font-size: 12px;
+		
+}  
