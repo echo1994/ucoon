@@ -70,10 +70,10 @@
 				<p class="order-id">订单编号：${sessionScope.orders.missionOrderNum }</p>
 			</div>
 			<ul class="pay-way">
-				<li><i class="mui-icon iconfont icon-me fl"></i><span>余额支付</span><i class="circle circle-active fr"></i></li>
-				<li><i class="mui-icon iconfont icon-wechat-pay fl"></i><span>微信支付</span><i class="circle fr"></i></li>
-				<li><i class="mui-icon iconfont icon-alipay fl"></i><span>支付宝</span><i class="circle fr"></i></li>
-				<li><i class="mui-icon iconfont icon-card fl"></i><span>银行卡</span><i class="circle fr"></i></li>
+				<li class="payment"><i class="mui-icon iconfont icon-me fl"></i><span>余额支付</span><i class="circle fr me"></i></li>
+				<li class="payment"><i class="mui-icon iconfont icon-wechat-pay fl"></i><span>微信支付</span><i class="circle fr wechat circle-active"></i></li>
+				<li class="payment"><i class="mui-icon iconfont icon-alipay fl"></i><span>支付宝</span><i class="circle fr alipay"></i></li>
+				<li class="payment"><i class="mui-icon iconfont icon-card fl"></i><span>银行卡</span><i class="circle fr card"></i></li>
 			</ul>
 			<button class="pay-btn" id="pay">确认支付<span><fmt:formatNumber value="${sessionScope.mission.missionPrice }" type="currency"/></span></button>
 		
@@ -108,37 +108,66 @@
 			
 				var ui = {
 					body: doc.querySelector('body'),
-					pay: doc.querySelector('#pay')
+					pay: doc.querySelector('#pay'),
 				};
+				var payWay = "wechat";
+				
+				$(".payment").each(function(index, value) {
+					this.addEventListener('tap', function(event) {
+						var li = this;
+						var classList = li.lastChild.classList;
+						if (!classList.contains('circle-active')) {
+							var active = li.parentNode.querySelector('.circle-active');
+							active.classList.remove('circle-active');
+							classList.add('circle-active');
+							
+						}
+						if(classList.contains('me')){
+							payWay = "me";
+						} else if(classList.contains('wechat')){
+							payWay = "wechat";
+						} else if(classList.contains('alipay')){
+							payWay = "alipay";
+						} else{
+							payWay = "card";
+						}
+					});
+				
+				})
+				
 				
 				ui.pay.addEventListener('tap', function(event) {
+					if(payWay == "wechat"){
+						$.ajax({
+						    url: "/ucoon/pay/getPay/",
+						    success: function(result){
+						    	if(result.result_type == "error"){
+						    		alert(result.msg);
+						    		return;
+						    	}
+						    	
+						    	var config = eval("(" + result.msg + ")");
+						    	
+					    	    wx.chooseWXPay({
+							       timestamp: config.timestamp,
+							       nonceStr: config.nonce,
+							       package:config.packageName,
+							       signType: config.signType, // 注意：新版支付接口使用 MD5 加密
+							       paySign: config.signature,
+							       success: function (res) {
+								        // 支付成功后的回调函数
+								        alert("支付成功");
+								        window.location.href="/ucoon/mysend";
+								   }
+							    }) 
+						    },
+						  	dataType: "json",
+						  	async:true
+						}); 
+					}else{
+						alert("暂时只支持微信支付");
+					}
 					
-					$.ajax({
-					    url: "/ucoon/pay/getPay/",
-					    success: function(result){
-					    	if(result.result_type == "error"){
-					    		alert(result.msg);
-					    		return;
-					    	}
-					    	
-					    	var config = eval("(" + result.msg + ")");
-					    	
-				    	    wx.chooseWXPay({
-						       timestamp: config.timestamp,
-						       nonceStr: config.nonce,
-						       package:config.packageName,
-						       signType: config.signType, // 注意：新版支付接口使用 MD5 加密
-						       paySign: config.signature,
-						       success: function (res) {
-							        // 支付成功后的回调函数
-							        alert("支付成功");
-							        window.location.href="/ucoon/mysend";
-							   }
-						    }) 
-					    },
-					  	dataType: "json",
-					  	async:true
-					}); 
 				  
 		
 				})

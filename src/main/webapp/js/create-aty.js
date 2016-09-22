@@ -1,3 +1,6 @@
+
+
+
 mui.init({ 
 	swipeBack:true //启用右滑关闭功能
 });
@@ -288,21 +291,21 @@ function initLocation(point) {
 	var gc = new BMap.Geocoder();
 	var s;
 	gc.getLocation(point, function(rs) {
-		var addComp = rs.addressComponents;
-		s = addComp.province + "" + addComp.city + "" + addComp.district + ""
-				+ addComp.street + "" + addComp.streetNumber;
-		current_city = addComp.city;//定位当前城市，改变默认城市
+	var addComp = rs.addressComponents;
+	s = addComp.province + "" + addComp.city + "" + addComp.district + ""
+			+ addComp.street + "" + addComp.streetNumber;
+	current_city = addComp.city;//定位当前城市，改变默认城市
 
-		setPlace(s);
-		address_temp = s;
-		lng_temp = pp.lng;
-		lat_temp = pp.lat;
-		var myGeo = new BMap.Geocoder();
-		myGeo.getPoint(s, function(point) {
-			$("#suggestId").val(s);
-			$("#menu-btn").val(s);
-		});
-	});
+	setPlace(s);
+	address_temp = s;
+	lng_temp = pp.lng;
+	lat_temp = pp.lat;
+//	var myGeo = new BMap.Geocoder();
+//	myGeo.getPoint(s, function(point) {
+		$("#suggestId").val(s);
+		$("#menu-btn").val(s);
+//	});
+});
 	
 }
 
@@ -328,10 +331,6 @@ function setPlace(myValue){
 var formSub = document.getElementById('send-btn');
 formSub.addEventListener('tap', function() {
 	
-	
-	
-	
 	$('.mui-input-group').submit();
 	
-		
 });

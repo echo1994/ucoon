@@ -7,6 +7,7 @@
     <result column="Acquisition_time" property="acquisitionTime" jdbcType="TIMESTAMP" />
     <result column="plus_or_minus" property="plusOrMinus" jdbcType="VARCHAR" />
     <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from credits
@@ -14,25 +15,33 @@
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Credits" >
     insert into credits (credits_id, Acquisition_type, Acquisition_time, 
-      plus_or_minus, quantity)
+      plus_or_minus, quantity, user_id
+      )
     values (#{creditsId,jdbcType=INTEGER}, #{acquisitionType,jdbcType=VARCHAR}, #{acquisitionTime,jdbcType=TIMESTAMP}, 
-      #{plusOrMinus,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER})
+      #{plusOrMinus,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}
+      )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Credits" >
     update credits
     set Acquisition_type = #{acquisitionType,jdbcType=VARCHAR},
       Acquisition_time = #{acquisitionTime,jdbcType=TIMESTAMP},
       plus_or_minus = #{plusOrMinus,jdbcType=VARCHAR},
-      quantity = #{quantity,jdbcType=INTEGER}
+      quantity = #{quantity,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER}
     where credits_id = #{creditsId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select credits_id, Acquisition_type, Acquisition_time, plus_or_minus, quantity
+    select credits_id, Acquisition_type, Acquisition_time, plus_or_minus, quantity, user_id
     from credits
     where credits_id = #{creditsId,jdbcType=INTEGER}
   </select>
+   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select credits_id, Acquisition_type, Acquisition_time, plus_or_minus, quantity, user_id
+    from credits
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select credits_id, Acquisition_type, Acquisition_time, plus_or_minus, quantity
+    select credits_id, Acquisition_type, Acquisition_time, plus_or_minus, quantity, user_id
     from credits
   </select>
 </mapper>

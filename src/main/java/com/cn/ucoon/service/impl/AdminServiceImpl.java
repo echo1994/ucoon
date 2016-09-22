@@ -5,12 +5,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cn.ucoon.dao.AdminMapper;
 import com.cn.ucoon.pojo.Admin;
 import com.cn.ucoon.service.AdminService;
 
 @Service
+@Transactional
 public class AdminServiceImpl implements AdminService{
 
 	@Resource

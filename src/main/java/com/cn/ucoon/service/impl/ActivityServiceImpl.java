@@ -48,7 +48,6 @@ public class ActivityServiceImpl implements ActivityService {
 				String lat = (String) list.get(i).get("activity_lat");
 				String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
 						longitude);
-				System.out.println(distance);
 				list.get(i).put("distance", distance);
 
 			}
@@ -60,7 +59,6 @@ public class ActivityServiceImpl implements ActivityService {
 				String lat = (String) list.get(i).get("activity_lat");
 				String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
 						longitude);
-				System.out.println(distance);
 				list.get(i).put("distance", distance);
 
 			}
@@ -89,21 +87,21 @@ public class ActivityServiceImpl implements ActivityService {
 		
 		List<HashMap<String, Object>> list = null;
 
-		list = activityMapper.selectLimited(startIndex, endIndex,
-				"activity_create_time");
+		list = activityMapper.selectLimitedbyKeyWord(keyWord, startIndex,
+				endIndex);
 
+		
+		
 		for (int i = 0; i < list.size(); i++) {
 			String lng = (String) list.get(i).get("activity_lng");
 			String lat = (String) list.get(i).get("activity_lat");
 			String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
 					longitude);
-			System.out.println(distance);
 			list.get(i).put("distance", distance);
 
 		}
 		
-		return activityMapper.selectLimitedbyKeyWord(keyWord, startIndex,
-				endIndex);
+		return list;
 	}
 
 	@Override

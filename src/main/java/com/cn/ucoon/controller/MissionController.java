@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +74,9 @@ public class MissionController {
 			@RequestParam(value = "startTime", required = false) String startTime,
 			@RequestParam(value = "endTime", required = false) String endTime,
 			@RequestParam(value = "telephone", required = false) String telephone,
+			@RequestParam(value = "detailPlace", required = false) String detailPlace,
+			@RequestParam(value = "missionLng", required = false) String missionLng,
+			@RequestParam(value = "missionLat", required = false) String missionLat,
 			@RequestParam(value = "imgUpload", required = false) MultipartFile[] file,
 			HttpServletRequest request) throws ParseException {
 
@@ -84,9 +89,11 @@ public class MissionController {
 		mission.setMissionPrice(new BigDecimal(missionPrice));
 		mission.setMissionTitle(missionTitle);
 		mission.setPeopleCount(peopleCount);
-		mission.setPlace(place);
+		mission.setPlace(place+detailPlace);
 		mission.setStartTime(StartDate);
 		mission.setTelephone(telephone);
+		mission.setMissionLat(missionLat);
+		mission.setMissionLng(missionLng);
 		
 		
 		String path = ImageController.MISSION_IMAGE_LOCATION;
@@ -164,23 +171,45 @@ public class MissionController {
 			@RequestParam(value = "keyWord", required = false) String keyWord,
 			@RequestParam(value = "startIndex", required = true) Integer startIndex,
 			@RequestParam(value = "endIndex", required = true) Integer endIndex,
+			@RequestParam(value = "latitude", required = false) String latitude,
+			@RequestParam(value = "longitude", required = false) String longitude,
+			@RequestParam(value = "type", required = false) String type,
 			HttpServletRequest request) {
-		List<HashMap<String, String>> missions = null;
+		List<HashMap<String, Object>> missions = null;
 		if (keyWord != null && keyWord != "") {
 			missions = missionService.getMissionByKeyWord("%" + keyWord + "%",
-					startIndex, endIndex);
+					startIndex, endIndex,latitude,longitude);
 		} else if (userId != null) {
+			
+			userId = (Integer) request.getSession().getAttribute("user_id");
+			List<Integer> list = new ArrayList<Integer>();
 			if (missionStatus == null) {
-				userId = (Integer) request.getSession().getAttribute("user_id");
 				missions = missionService.selectLimitedbyUserId(userId,
 						startIndex, endIndex);
-			} else {
-				userId =  (Integer)request.getSession().getAttribute("user_id");
+			} else if(missionStatus == 1){
+				list.add(1);
+				list.add(2);
+				
 				missions = missionService.selectLimitedbyUserIdAndStatus(
-						userId, missionStatus, startIndex, endIndex);
-			}
+						userId,  list, startIndex, endIndex);
+			} else if(missionStatus == 2){
+				list.add(3);
+				list.add(4);
+				missions = missionService.selectLimitedbyUserIdAndStatus(
+						userId,  list, startIndex, endIndex);
+			} else if(missionStatus == 3){
+				list.add(0);
+				missions = missionService.selectLimitedbyUserIdAndStatus(
+						userId,  list, startIndex, endIndex);
+			} else if(missionStatus == 4){
+				list.add(5);
+				missions = missionService.selectLimitedbyUserIdAndStatus(
+						userId, list, startIndex, endIndex);
+			} 
 		} else {
-			missions = missionService.getMissionLimited(startIndex, endIndex);
+			
+			//取出的任务： 已支付，被选择的执行人 还小于需要的人数
+			missions = missionService.getMissionLimited(startIndex, endIndex,latitude,longitude,type);
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonfromList = "";

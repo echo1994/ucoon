@@ -14,9 +14,10 @@
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-<title></title>
+<title>任务大厅</title>
 <script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/mui.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <link href="css/mui.min.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
@@ -24,18 +25,60 @@
 <script type="text/javascript">
 	var currentPage = 0;
 	var onePageNums = 10;
+	var latitude = "";
+	var longitude = "";
+	var URL = window.location.href.split('#')[0]; //获取当前页面的url
+	URL = encodeURIComponent(URL);
+	var appid,nonceStr,signature,timestamp;
+	//ajax同步更新全局变量，异步无法更新
+	$.ajax({
+	    url: "/ucoon/wx/sign?url="+URL,
+	    success: function(result){
+	    	appid = result.appId;
+	    	timestamp=result.timestamp;
+	    	nonceStr=result.nonceStr;
+	    	signature=result.signature;
+	    },
+	  	dataType: "json",
+	  	async:false
+	});
+	
+	wx.config({
+	    debug: false,
+	    appId: appid,
+	    timestamp: timestamp,
+	    nonceStr: nonceStr,
+	    signature: signature,
+	    jsApiList: [
+	      'checkJsApi',
+	      'openLocation',
+	      'getLocation'
+	    ]
+	});
+	wx.ready(function(){
+	
+		wx.getLocation({
+		    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+		    success: function (res) {
+		        latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+		        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+		        var speed = res.speed; // 速度，以米/每秒计
+		        var accuracy = res.accuracy; // 位置精度
+		       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
+		    }
+		});
+	});
 	$(document).ready(
 			function() {
-				setTimeout(loaddata(0, 10, '', true), 1000);
+			
+				
 				$(".mui-input-clear").bind(
 						"keyup",
 						function(e) {
-							if (e.keyCode == 13) {
 								initIndex();
 								loaddata(currentPage * onePageNums,
 										(currentPage + 1) * onePageNums - 1,
-										this.value, true);
-							}
+										this.value, true,'all');
 						})
 				$(".clearfix").bind(
 						"tap",
@@ -43,13 +86,37 @@
 							window.location.href = "mission/task-info/"
 									+ $(this).attr("data-m");
 						})
+						
+						
+				
+				$('.task-select-title-col').on('tap', function() {
+					var li = this;
+					var classList = li.classList;
+					if (!classList.contains('title-active')) {
+						var active = li.parentNode.querySelector('.title-active');
+						active.classList.remove('title-active');
+						classList.add('title-active');
+						
+					}
+					initIndex();
+					//加载数据
+					if(classList.contains('all')){
+						loaddata(currentPage * onePageNums,
+										(currentPage + 1) * onePageNums - 1,
+										this.value, true,'all');
+					} else{
+						loaddata(currentPage * onePageNums,
+										(currentPage + 1) * onePageNums - 1,
+										this.value, true,'nearby');
+					}
+				});
 
 			})
 	function initIndex() {
 		currentPage = 0;
 		onePageNums = 10;
 	}
-	function loaddata(startIndex, endIndex, keyWord, clearable) {
+	function loaddata(startIndex, endIndex, keyWord, clearable,type) {
 		$
 				.ajax({
 					url : 'mission/getMissionsLimited',
@@ -57,6 +124,9 @@
 						startIndex : startIndex,
 						endIndex : endIndex,
 						keyWord : keyWord,
+						latitude : latitude,
+						longitude : longitude,
+						type : type
 					},
 					async : false,
 					type : 'post',
@@ -70,7 +140,7 @@
 							$(".task")
 									.append(
 											"<li class='task-col clearfix' data-m='"+data[i].mission_id+"'><a href=' '> <img"
-									+"class='mui-pull-left' src='"+data[i].head_img_url+"'>"
+									+" class='mui-pull-left' src='"+data[i].head_img_url+"'>"
 													+ "<div class='task-price mui-pull-right'>"
 													+ "<i class='mui-icon iconfont icon-qian'></i> <span"
 											+"class='task-price-num'>"
@@ -93,7 +163,7 @@
 													+ "		</div>"
 													+ "		<div class='mui-pull-left'>"
 													+ "			<i class='mui-icon mui-icon-location'></i><span"
-										+"			class='distance'>1.2公里</span>"
+										+"			class='distance'>" +   data[i].distance + "</span>"
 													+ "		</div>"
 													+ "	</div>"
 													+ "</div>" + "</a></li> ");
@@ -186,24 +256,41 @@
 						<!--头像-->
 						<img src="${user.headImgUrl}">
 						<div class="ucoon-user">
-							${user.nickName }<i class="mui-icon iconfont icon-man"></i>
+							${user.nickName }
+							<c:choose>
+								 <c:when test="${user.sex == 2}">
+								 <i class="mui-icon iconfont icon-woman"></i>
+								 </c:when>
+								 <c:otherwise>
+									<i class="mui-icon iconfont icon-man"></i>
+								 </c:otherwise>
+							</c:choose>
 						</div>
-						<!--五星评分-->
+						<!--五星评分,默认5星-->
 						<div class="user-score">
 							<span class="fivestar"> <i
 								class="mui-icon iconfont icon-star"></i> <i
 								class="mui-icon iconfont icon-star"></i> <i
 								class="mui-icon iconfont icon-star"></i> <i
-								class="mui-icon iconfont icon-star-half"></i> <i
+								class="mui-icon iconfont icon-star-half"></i> 
+								<i
 								class="mui-icon iconfont icon-star-empty"></i>
 							</span>
 						</div>
 						<!--个性签名-->
-						<p class="user-talk">陪吃配喝陪睡觉，有钱样样都行</p>
+						<c:choose>
+						 <c:when test="${!empty user.signature}">
+						 <p class="user-talk">${user.signature }</p>
+						 </c:when>
+						 <c:otherwise>
+						 <p class="user-talk">用一句话介绍自己吧:) 这里加个修改的图片</p>
+						 </c:otherwise>
+						 </c:choose>
+						
 						<!--财富情况-->
 						<div class="treasure" id="wealth">
-								<span class=""><i class="mui-icon iconfont icon-qian"></i>58.9</span>
-								<span class=""><i class="mui-icon iconfont icon-love"></i>66</span>
+								<span class=""><i class="mui-icon iconfont icon-qian"></i>${balance }</span>
+								<span class=""><i class="mui-icon iconfont icon-love"></i>${credits }</span>
 						</div>
 						<!--侧滑菜单列表-->
 						<ul class="aside-menu">
@@ -261,7 +348,7 @@
 			</header>
 			<!--底部导航菜-->
 			<nav class="mui-bar mui-bar-tab" id="nav-tap-bar">
-				<a class="mui-tab-item mui-active" id="ucoon-me" href="index">
+				<a class="mui-tab-item mui-active" id="ucoon-me" href="">
 					<span class="tab-icon tab-me-cur"></span>
 					<span class="tab-name mui-tab-label">我有空</span>
 				</a>
@@ -320,7 +407,7 @@
 					<div class="task-select">
 						<!--选择导航-->
 						<div class="task-select-title">
-							<div class="task-select-title-col mui-pull-left">
+							<div class="task-select-title-col mui-pull-left all">
 								<span class="title-active">全部</span>
 							</div>
 							<div class="task-select-title-col mui-pull-left">
@@ -361,7 +448,72 @@
 
 
 	<script>
-		mui.init();
+		mui.init({
+			pullRefresh: {
+				container: '#offCanvasContentScroll',
+				down: {
+					callback: pulldownRefresh
+				},
+				up: {
+					contentrefresh: '正在加载...',
+					callback: pullupRefresh
+				}
+			}
+		});
+		
+		var count = 0;
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+
+//					var table = document.body.querySelector('.mui-table-view');
+
+//					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+
+//					for (var i = cells.length, len = i + 3; i < len; i++) {
+
+//						var li = document.createElement('li');
+
+//						li.className = 'mui-table-view-cell';
+
+//						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
+
+//						//下拉刷新，新纪录插到最前面；
+
+//						table.insertBefore(li, table.firstChild);
+
+//					}
+
+					mui('#offCanvasContentScroll').pullRefresh().endPulldownToRefresh(); //refresh completed
+
+				}, 1500);
+			}
+			
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui('#offCanvasContentScroll').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+//					var table = document.body.querySelector('.mui-table-view');
+
+//					var cells = document.body.querySelectorAll('.mui-table-view-cell');
+
+//					for (var i = cells.length, len = i + 20; i < len; i++) {
+
+//						var li = document.createElement('li');
+
+//						li.className = 'mui-table-view-cell';
+
+//						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
+
+//						table.appendChild(li);
+
+//					}
+				}, 1500);
+			}
 		//主界面和侧滑菜单界面均支持区域滚动；
 		mui('#offCanvasSideScroll').scroll();
 		mui('#offCanvasContentScroll').scroll();

@@ -4,6 +4,7 @@ import com.cn.ucoon.pojo.Mission;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface MissionMapper {
 	int deleteByPrimaryKey(Integer missionId);
@@ -18,20 +19,22 @@ public interface MissionMapper {
 
 	int updateViewByPrimaryKey(Integer missionId);
 	
-	List<HashMap<String, String>> selectLimited(Integer startIndex,
+	List<HashMap<String, Object>> selectLimited(Integer startIndex,
 			Integer endIndex);
 
-	List<HashMap<String, String>> selectLimitedbyKeyWord(String keyWord,
+	List<HashMap<String, Object>> selectLimitedbyKeyWord(String keyWord,
 			Integer startIndex, Integer endIndex);
 
-	List<HashMap<String, String>> selectLimitedbyUserId(Integer userId,
+	List<HashMap<String, Object>> selectLimitedbyUserId(Integer userId,
 			Integer startIndex, Integer endIndex);
 
-	List<HashMap<String, String>> selectLimitedbyUserIdAndStatus(
-			Integer userId, Integer missionStatus, Integer startIndex,
-			Integer endIndex);
+	List<HashMap<String, Object>> selectLimitedbyUserIdAndStatus(Map<String, Object> map);
 
 	HashMap<String, String> selectForMissionDetails(Integer missionId);
 
 	Integer selectUserIdByMissionId(Integer missionId);
+	
+	List<HashMap<String, Object>> selectNearby(Double lat, Double lon,
+			String minLat, String maxLat, String minLng, String maxLng,
+			Integer rowStart, Integer rowEnd);
 }

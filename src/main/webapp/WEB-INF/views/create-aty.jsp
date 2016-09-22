@@ -36,7 +36,7 @@
 		<form class="mui-input-group who-form-content" method="post"
 			action="activity/add-activity" enctype="multipart/form-data"  onsubmit="return toVaild()" >
 			<h2 class="title-who">
-				<i class="mui-icon iconfont icon-plane"></i>创建活动
+				<i class="mui-icon iconfont icon-plane"></i>发布活动
 			</h2>
 			<div class="mui-input-row who-form">
 				<label>活动名称</label> <input type="text" name="activityName"
@@ -44,10 +44,11 @@
 			</div>
 			<div class="mui-input-row who-form">
 				<label>活动时间</label> <input id='result1' name="activityTime" type="text"
-					data-options='{"value":"2016-08-08 10:10","beginYear":2016,"endYear":2020}'
+					data-options=''
 					class="btn mui-btn mui-btn-block ui-alert" placeholder="点击选择时间"/>
 
 			</div>
+		
 			<div class="mui-input-row who-form">
 				<label>活动地点</label> <input type="text" name="activityPlace"
 					placeholder="点击选择地址" id="menu-btn">
@@ -83,6 +84,27 @@
 				if (ec > 0) {
 					return false;
 				}
+			}
+			
+			var date = new Date();
+			var datez = getMonthDay2(date);
+			var dataoptions = "{\"value\":\"" + datez
+					+ "\",\"beginYear\":2016,\"endYear\":2020}";
+			$("#result1").attr("data-options", dataoptions);
+			function getMonthDay2(timestamp) {
+				var date = new Date(timestamp);
+				year = date.getYear() + 1900 + '-';
+				month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) + "-"
+						: date.getMonth() + 1 + "-";
+				day = date.getDate() + 1 < 10 ? "0" + date.getDate() + " " : date
+						.getDate()
+						+ " ";
+				hour = date.getHours() < 10 ? "0" + date.getHours() + ":" : date
+						.getHours()
+						+ ":";
+				minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date
+						.getMinutes();
+				return year + month + day + hour + minute;
 			}
 		</script>
 

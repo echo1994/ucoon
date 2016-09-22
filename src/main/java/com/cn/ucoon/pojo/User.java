@@ -37,6 +37,10 @@ public class User {
 
     private Integer state;
 
+    private String latitude;
+
+    private String longitude;
+
     public Integer getUserId() {
         return userId;
     }
@@ -171,5 +175,21 @@ public class User {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude == null ? null : latitude.trim();
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude == null ? null : longitude.trim();
     }
 }

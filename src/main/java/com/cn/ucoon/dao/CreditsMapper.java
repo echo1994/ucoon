@@ -9,8 +9,12 @@ public interface CreditsMapper {
     int insert(Credits record);
 
     Credits selectByPrimaryKey(Integer creditsId);
+    
+    List<Credits> selectByUserId(Integer userId);
 
     List<Credits> selectAll();
 
     int updateByPrimaryKey(Credits record);
+    
+    
 }

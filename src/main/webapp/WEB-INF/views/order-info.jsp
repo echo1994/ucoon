@@ -28,7 +28,9 @@ body {
 </head>
 <script type="text/javascript">
 	$(function() {
-		$('.status').text(${ou.state} == "0" ? "正在服务" : "已完成");
+		${ou.state} == "0" ? $('.order-check').css("display", "block") : $(
+				'.order-check').css("display", "none");
+		$('.status').text(${ou.state} == "0" ? "正在服务" : "正在审核");
 		$('.num').text(${ou.order_num});
 		$('.ot').text("${ou.order_time}");
 		$('.ft').text("${ou.finish_num}" == "" ? "未完成" : "${ou.finish_num}");
@@ -36,7 +38,24 @@ body {
 		$('.phone').text(${ou.phone});
 
 		$('.u').bind('click', function() {
-			window.location.href='user/orderUser/'+$(this).attr("data-u");
+			window.location.href = 'user/orderUser/' + $(this).attr("data-u");
+		});
+		$('.order-check').bind('click', function() {
+			$.ajax({
+				url : 'orders/finishOrder/' + $(this).attr("data-o"),
+				data : {},
+				async : false,
+				type : 'post',
+				dataType : 'text',
+				success : function(data) {
+					if (data == "true") {
+						alert("操作成功");
+					} else {
+						alert("提交失败，请重试");
+					}
+					window.history.go(0);
+				}
+			});
 		});
 	})
 </script>

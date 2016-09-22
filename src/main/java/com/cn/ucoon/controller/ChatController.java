@@ -26,26 +26,13 @@ public class ChatController {
 			HttpSession session) {
 		
 
-		/*int user_id = (int) session.getAttribute("user_id");
+		Integer user_id = (int) session.getAttribute("user_id");
 
-		User user = null;
-		if (user_id == 0) {
-			user = this.userService.getUserByCode(code);
-		} else {
-			user = this.userService.getUserById(user_id);
-		}
+		
 
-		if (user == null) {
-			// 拉取用户信息出现异常，跳转授权失败url
-			return "auth_error.html";
-		}
+//		model.addAttribute("user", user);
+//		model.addAttribute("user_id", user.getUserId());
 
-		model.addAttribute("user", user);
-		model.addAttribute("user_id", user.getUserId());
-
-		List<User> userList = this.userService.getAllUser();
-		model.addAttribute("userList", userList);
-		System.out.println(userList);*/
 		return "chat-list";
 
 	}

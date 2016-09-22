@@ -14,6 +14,8 @@ public class Balance {
 
     private BigDecimal quantity;
 
+    private Integer userId;
+
     public Integer getBalanceId() {
         return balanceId;
     }
@@ -52,5 +54,13 @@ public class Balance {
 
     public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

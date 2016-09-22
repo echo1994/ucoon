@@ -74,7 +74,6 @@
 	<mvc:resources mapping="/script/**" location="/script/" cache-period="31556926"/>
 	<mvc:resources mapping="/webuploader/**" location="/webuploader/" cache-period="31556926"/>
 	
-	<mvc:view-controller path="/we" view-name="we" />
 	<mvc:view-controller path="/index" view-name="index" />
 	<mvc:view-controller path="/who" view-name="who" />
 	<mvc:view-controller path="/who-new" view-name="who-new" />
@@ -95,6 +94,7 @@
 	  	<mvc:interceptor>   
 	    	<mvc:mapping path="/"/>
 	    	<mvc:mapping path="/who-new"/> 
+	    	<mvc:mapping path="/we"/> 
 	    	<mvc:mapping path="/mysend"/> 
 	    	<mvc:mapping path="/myservice"/> 
 	    	<mvc:mapping path="/mission-pay"/> 

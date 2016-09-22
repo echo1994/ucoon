@@ -122,4 +122,16 @@ public class OrderController {
 		}
 		return mv;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/finishOrder/{orderId}")
+	public String finishOrder(@PathVariable(value = "orderId") Integer orderId) {
+		Integer i=orderService.updateOrderStateFinished(orderId);
+		System.out.println(i);
+		if (i > 0) {
+			return "true";
+		} else {
+			return "false";
+		}
+	}
 }

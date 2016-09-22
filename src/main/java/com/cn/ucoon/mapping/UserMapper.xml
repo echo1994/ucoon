@@ -19,6 +19,8 @@
     <result column="province" property="province" jdbcType="VARCHAR" />
     <result column="city" property="city" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="latitude" property="latitude" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user
@@ -30,15 +32,17 @@
       birthday, phone, name, 
       head_img_url, intro, credit, 
       regist_time, country, province, 
-      city, state)
+      city, state, latitude, 
+      longitude)
     values (#{userId,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
       #{weixinId,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{signature,jdbcType=VARCHAR}, 
       #{birthday,jdbcType=TIMESTAMP}, #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{headImgUrl,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}, #{credit,jdbcType=REAL}, 
       #{registTime,jdbcType=TIMESTAMP}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
-      #{city,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER})
+      #{city,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{latitude,jdbcType=VARCHAR}, 
+      #{longitude,jdbcType=VARCHAR})
   </insert>
-  <insert id="regist" parameterType="com.cn.ucoon.pojo.User">
+   <insert id="regist" parameterType="com.cn.ucoon.pojo.User">
 		insert into user (open_id,
 		nick_name,
 		sex,
@@ -75,21 +79,32 @@
       country = #{country,jdbcType=VARCHAR},
       province = #{province,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},
-      state = #{state,jdbcType=INTEGER}
+      state = #{state,jdbcType=INTEGER},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+    <update id="updateUserLatAndLng" parameterType="com.cn.ucoon.pojo.User" >
+    update user
+    set latitude = #{latitude,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR}
+    where open_id = #{openId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select user_id, open_id, nick_name, weixin_id, sex, signature, birthday, phone, name, 
-    head_img_url, intro, credit, regist_time, country, province, city, state
+    head_img_url, intro, credit, regist_time, country, province, city, state, latitude, 
+    longitude
     from user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select user_id, open_id, nick_name, weixin_id, sex, signature, birthday, phone, name, 
-    head_img_url, intro, credit, regist_time, country, province, city, state
+    head_img_url, intro, credit, regist_time, country, province, city, state, latitude, 
+    longitude
     from user
   </select>
-  <select id="selectByOpenId" resultMap="BaseResultMap"
+
+   <select id="selectByOpenId" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select user_id, open_id, nick_name, weixin_id, sex,
 		signature, birthday,
@@ -112,5 +127,4 @@
 		select open_id from user
 		where user_id = #{0}
 	</select>
-	
 </mapper>

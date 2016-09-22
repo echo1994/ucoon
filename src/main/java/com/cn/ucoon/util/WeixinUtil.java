@@ -67,6 +67,8 @@ public class WeixinUtil {
 	//客服发消息（POST）限5000000（次/天）
 	public final static String template_api_url = "	https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 		
+	//获取用户基本信息
+	public final static String user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	
 	private static Logger log = LoggerFactory.getLogger(WeixinUtil.class);
 
@@ -304,7 +306,7 @@ public class WeixinUtil {
 	
 	/**
 	 * 拉取用户信息
-	 * @param access_token
+	 * @param access_token 此access_token与基础支持的access_token不同
 	 * @param open_id
 	 * @return
 	 */
@@ -317,6 +319,27 @@ public class WeixinUtil {
 		// 如果请求成功
 		if (null == jsonObject) {
 			System.out.println("网页请求失败");
+			log.error("获取用户信息失败 errcode:{} errmsg:{}",
+						jsonObject.getIntValue("errcode"),
+						jsonObject.getString("errmsg"));
+		}
+		return jsonObject;
+	}
+	
+	/**
+	 * 拉取用户信息
+	 * @param access_token
+	 * @param open_id
+	 * @return
+	 */
+	public static JSONObject getBaseUserInfo(String open_id) {
+		//lang默认简体即： zh_CN
+		
+		String requestUrl = user_info_url.replace("ACCESS_TOKEN", getAccessToken().getToken()).replace(
+				"OPENID", open_id);
+		JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+		// 如果请求成功
+		if (null == jsonObject) {
 			log.error("获取用户信息失败 errcode:{} errmsg:{}",
 						jsonObject.getIntValue("errcode"),
 						jsonObject.getString("errmsg"));
@@ -344,7 +367,7 @@ public class WeixinUtil {
 		if (null != jsonObject) {
 			if (0 != jsonObject.getIntValue("errcode")) {
 				result = jsonObject.getIntValue("errcode");
-				log.error("创建菜单失败 errcode:{} errmsg:{}", jsonObject.getIntValue("errcode"), jsonObject.getString("errmsg"));
+				log.info("创建菜单失败 errcode:{} errmsg:{}", jsonObject.getIntValue("errcode"), jsonObject.getString("errmsg"));
 			}
 		}
 

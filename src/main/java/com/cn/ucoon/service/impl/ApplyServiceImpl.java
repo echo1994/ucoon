@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cn.ucoon.dao.ApplyMapper;
 import com.cn.ucoon.dao.OrderMapper;
@@ -15,6 +16,7 @@ import com.cn.ucoon.service.ApplyService;
 import com.cn.ucoon.util.PayUtil;
 
 @Service
+@Transactional
 public class ApplyServiceImpl implements ApplyService {
 
 	@Autowired

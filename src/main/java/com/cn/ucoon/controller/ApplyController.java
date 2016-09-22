@@ -98,7 +98,6 @@ public class ApplyController {
 			@RequestParam(value = "missionId", required = true) Integer missionId,
 			HttpServletRequest request) {
 		List<HashMap<String, String>> applys = null;
-		Integer currentUserId =  Integer.parseInt(request.getParameter("user_id"));
 		Integer userId = missionService.selectUserIdByMissionId(missionId);
 		if (true) {// 条件userId == currentUserId
 			applys = applyService.selectByMissionId(missionId);

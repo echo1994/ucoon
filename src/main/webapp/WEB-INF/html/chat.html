@@ -199,16 +199,21 @@
 						
 				GetArgsFromHref(url,fromuserid,touserid);
 				var websocket;
-				if ('WebSocket' in window) {  
-					mui.alert('连接方式：WebSocket', '系统消息', function() {});
-					websocket = new WebSocket("ws://dq7kesuqpw.proxy.qqbrowser.cc:8000/ucoon/echo?fromuserid=" + fromuserid);
-				} else if ('MozWebSocket' in window) {
-					mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
-					websocket = new MozWebSocket("ws://ucoon/echo");
-				} else {
-					mui.alert('连接方式：SockJS', '系统消息', function() {});
-					websocket = new SockJS("http://dq7kesuqpw.proxy.qqbrowser.cc:8000/ucoon/sockjs/echo");
+				var domain = window.location.host;
+				
+				var initWebSocket = function() {
+					if ('WebSocket' in window) {  
+						mui.alert('连接方式：WebSocket', '系统消息', function() {});
+						websocket = new WebSocket("ws://" + domain + "/ucoon/echo?fromuserid=" + fromuserid);
+					} else if ('MozWebSocket' in window) {
+						mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
+						websocket = new MozWebSocket("ws://ucoon/echo");
+					} else {
+						mui.alert('连接方式：SockJS', '系统消息', function() {});
+						websocket = new SockJS("http://" + domain + "/ucoon/sockjs/echo");
+					}
 				}
+				initWebSocket();
 				websocket.onopen = function(evnt) {
 					mui.alert('连接服务器成功!', '系统消息', function() {});
 				};
@@ -307,18 +312,29 @@
 					    "message_detail": "消息内容"
 					} 
 					 */ 
-					if (websocket != null) {
-						record.push(msg);
-						bindMsgList();
-						var timestamp = new Date().getTime();
-						var message_content = '{"from_user_id":"' + fromuserid
-								+ '","to_user_id":"' + touserid + '","message_type":"text"'
-								+ ',"post_time":"' + timestamp + '","message_detail":"'
-								+ msg.content + '"}';
-						websocket.send(message_content);
-					} else {
+					if (websocket.readyState != 1) {
+						//websocket session 失效后，重新建立链接
+						websocket.close();
+						initWebSocket();
+					} 
+					/* else {
+					
+						
 						mui.alert('未与服务器链接!', '系统消息', function() {});
-					}
+					} */
+					
+					
+					record.push(msg);
+					bindMsgList();
+					var timestamp = new Date().getTime();
+					var message_content = '{"from_user_id":"' + fromuserid
+							+ '","to_user_id":"' + touserid + '","message_type":"text"'
+							+ ',"post_time":"' + timestamp + '","message_detail":"'
+							+ msg.content + '"}';
+							
+					setTimeout(function() {
+						websocket.send(message_content);
+			        }, 500);
 					
 				};
 				

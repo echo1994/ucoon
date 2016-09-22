@@ -10,6 +10,8 @@ public interface BalanceMapper {
 
     Balance selectByPrimaryKey(Integer balanceId);
 
+    List<Balance> selectByUserId(Integer userId);
+    
     List<Balance> selectAll();
 
     int updateByPrimaryKey(Balance record);

@@ -15,17 +15,17 @@ public interface MissionService {
 	
 	public boolean publishMission(Mission mission);
 
-	public List<HashMap<String, String>> getMissionLimited(Integer startIndex,
-			Integer endIndex);
+	public List<HashMap<String, Object>> getMissionLimited(Integer startIndex,
+			Integer endIndex,String latitude,String longitude,String type);
 
-	public List<HashMap<String, String>> getMissionByKeyWord(String keyWord,
+	public List<HashMap<String, Object>> getMissionByKeyWord(String keyWord,
+			Integer startIndex, Integer endIndex,String latitude,String longitude);
+
+	public List<HashMap<String, Object>> selectLimitedbyUserId(Integer userId,
 			Integer startIndex, Integer endIndex);
 
-	public List<HashMap<String, String>> selectLimitedbyUserId(Integer userId,
-			Integer startIndex, Integer endIndex);
-
-	public List<HashMap<String, String>> selectLimitedbyUserIdAndStatus(
-			Integer userId, Integer missionStatus, Integer startIndex,
+	public List<HashMap<String, Object>> selectLimitedbyUserIdAndStatus(
+			Integer userId, List<Integer> list, Integer startIndex,
 			Integer endIndex);
 
 	public HashMap<String, String> selectForMissionDetails(

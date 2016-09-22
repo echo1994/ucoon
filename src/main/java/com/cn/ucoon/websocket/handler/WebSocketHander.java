@@ -34,7 +34,7 @@ public class WebSocketHander implements WebSocketHandler {
         String toUserID = (String) session.getAttributes().get("TOUSERID");
         String fromUserID = (String) session.getAttributes().get("FROMUSERID");
         if(fromUserID!= null){
-            //查询未读消息
+            //查询未读消息,及历史记录
 //            int count = 5;
 //            session.sendMessage(new TextMessage(count + ""));
         }
@@ -102,6 +102,29 @@ public class WebSocketHander implements WebSocketHandler {
         for (WebSocketSession user : users) {
         	System.out.println(user);
             if (user.getAttributes().get("FROMUSERID").equals(userID)) {
+                try {
+                    if (user.isOpen()) {
+                        user.sendMessage(message);
+                       
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }  
+                break;
+            }
+        }
+    }
+    
+    /**
+     * 给某个群发送消息
+     *
+     * @param groupID
+     * @param message
+     */
+    public void sendMessageToGroup(String groupID, TextMessage message) {
+        for (WebSocketSession user : users) {
+        	System.out.println(user);
+            if (user.getAttributes().get("FROMUSERID").equals(groupID)) {
                 try {
                     if (user.isOpen()) {
                         user.sendMessage(message);

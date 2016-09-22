@@ -35,6 +35,10 @@ public class Mission {
     private Integer missionStatus;
 
     private Integer picCount;
+    
+    private String missionLng;
+    
+    private String missionLat;
 
     public Integer getMissionId() {
         return missionId;
@@ -163,6 +167,24 @@ public class Mission {
     public void setPicCount(Integer picCount) {
         this.picCount = picCount;
     }
+    
+    
+
+	public String getMissionLng() {
+		return missionLng;
+	}
+
+	public void setMissionLng(String missionLng) {
+		this.missionLng = missionLng;
+	}
+
+	public String getMissionLat() {
+		return missionLat;
+	}
+
+	public void setMissionLat(String missionLat) {
+		this.missionLat = missionLat;
+	}
 
 	@Override
 	public String toString() {
@@ -174,8 +196,11 @@ public class Mission {
 				+ ", publishTime=" + publishTime + ", userId=" + userId
 				+ ", viewCount=" + viewCount + ", missionPrice=" + missionPrice
 				+ ", telephone=" + telephone + ", missionStatus="
-				+ missionStatus + ", picCount=" + picCount + "]";
+				+ missionStatus + ", picCount=" + picCount + ", missionLng="
+				+ missionLng + ", missionLat=" + missionLat + "]";
 	}
+
+	
     
     
     

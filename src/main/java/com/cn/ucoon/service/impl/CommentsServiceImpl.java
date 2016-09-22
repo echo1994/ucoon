@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cn.ucoon.dao.CommentChildMapper;
 import com.cn.ucoon.dao.CommentMapper;
@@ -14,6 +15,7 @@ import com.cn.ucoon.pojo.CommentsChild;
 import com.cn.ucoon.service.CommentsService;
 
 @Service
+@Transactional
 public class CommentsServiceImpl implements CommentsService {
 
 	

@@ -9,6 +9,7 @@
     <result column="message_type" property="messageType" jdbcType="INTEGER" />
     <result column="from_user_id" property="fromUserId" jdbcType="INTEGER" />
     <result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
+    <result column="message_nature_type" property="messageNatureType" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from messages
@@ -17,10 +18,10 @@
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Messages" >
     insert into messages (message_id, message_detail, message_status, 
       psot_time, message_type, from_user_id, 
-      to_user_id)
+      to_user_id, message_nature_type)
     values (#{messageId,jdbcType=INTEGER}, #{messageDetail,jdbcType=VARCHAR}, #{messageStatus,jdbcType=INTEGER}, 
       #{psotTime,jdbcType=TIMESTAMP}, #{messageType,jdbcType=INTEGER}, #{fromUserId,jdbcType=INTEGER}, 
-      #{toUserId,jdbcType=INTEGER})
+      #{toUserId,jdbcType=INTEGER}, #{messageNatureType,jdbcType=INTEGER})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Messages" >
     update messages
@@ -29,18 +30,19 @@
       psot_time = #{psotTime,jdbcType=TIMESTAMP},
       message_type = #{messageType,jdbcType=INTEGER},
       from_user_id = #{fromUserId,jdbcType=INTEGER},
-      to_user_id = #{toUserId,jdbcType=INTEGER}
+      to_user_id = #{toUserId,jdbcType=INTEGER},
+      message_nature_type = #{messageNatureType,jdbcType=INTEGER}
     where message_id = #{messageId,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select message_id, message_detail, message_status, psot_time, message_type, from_user_id, 
-    to_user_id
+    to_user_id, message_nature_type
     from messages
     where message_id = #{messageId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select message_id, message_detail, message_status, psot_time, message_type, from_user_id, 
-    to_user_id
+    to_user_id, message_nature_type
     from messages
   </select>
 </mapper>

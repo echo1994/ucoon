@@ -17,6 +17,8 @@ public class Messages {
 
     private Integer toUserId;
 
+    private Integer messageNatureType;
+
     public Integer getMessageId() {
         return messageId;
     }
@@ -71,5 +73,13 @@ public class Messages {
 
     public void setToUserId(Integer toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public Integer getMessageNatureType() {
+        return messageNatureType;
+    }
+
+    public void setMessageNatureType(Integer messageNatureType) {
+        this.messageNatureType = messageNatureType;
     }
 }

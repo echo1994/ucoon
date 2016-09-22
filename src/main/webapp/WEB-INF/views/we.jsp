@@ -83,7 +83,7 @@
 				        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
 				        var speed = res.speed; // 速度，以米/每秒计
 				        var accuracy = res.accuracy; // 位置精度
-				       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),5000);
+				       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
 				    }
 				});
 			
@@ -311,7 +311,28 @@
 		   }   
 		</script>
 		
-		
+		<style>
+			.send-btn-we{
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				background-color: #C3D94F;
+				border-radius: 50%;
+				color: #fff;
+				opacity: 0.8;
+				bottom: 100px;
+				right: 40px;
+				text-align: center;
+				
+				z-index: 8;
+				overflow: hidden;
+			}
+			.send-btn-we .iconfont{
+				/*display: block;*/
+				margin-top: 13px;
+				font-size: 24px;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable mui-scalable">
@@ -321,8 +342,18 @@
 					<div class="mui-scroll">
 						<div class="basic-mes">
 							<!--头像-->
-							<img src="images/home_pic2.jpg">
-							<div class="ucoon-user">满血复活的大魔王<i class="mui-icon iconfont icon-man"></i></div>
+							<img src="${user.headImgUrl}">
+							<div class="ucoon-user">${user.nickName }
+								<c:choose>
+									 <c:when test="${user.sex == 2}">
+									 <i class="mui-icon iconfont icon-woman"></i>
+									 </c:when>
+									 <c:otherwise>
+										<i class="mui-icon iconfont icon-man"></i>
+									 </c:otherwise>
+								 </c:choose>
+								
+							</div>
 							<!--五星评分-->
 							<div class="user-score">
 								<span class="fivestar">
@@ -334,11 +365,18 @@
 								</span>	
 							</div>
 							<!--个性签名-->
-							<p class="user-talk">陪吃配喝陪睡觉，有钱样样都行</p>
+							<c:choose>
+							 <c:when test="${!empty user.signature}">
+							 <p class="user-talk">${user.signature }</p>
+							 </c:when>
+							 <c:otherwise>
+							 <p class="user-talk">用一句话介绍自己吧:) 这里加个修改的图片~~~</p>
+							 </c:otherwise>
+							 </c:choose>
 							<!--财富情况-->
 							<div class="treasure" id="wealth">
-							    <span class=""><i class="mui-icon iconfont icon-qian"></i>58.9</span>
-								<span class=""><i class="mui-icon iconfont icon-love"></i>66</span>
+							    <span class=""><i class="mui-icon iconfont icon-qian"></i>${balance }</span>
+								<span class=""><i class="mui-icon iconfont icon-love"></i>${credits }</span>
 							</div>
 							<!--侧滑菜单列表-->
 							<ul class="aside-menu">
@@ -403,7 +441,7 @@
 				</header>
 				<!--底部导航菜-->
 				<nav class="mui-bar mui-bar-tab" id="nav-tap-bar">
-					<a class="mui-tab-item " id="ucoon-me" href="index">
+					<a class="mui-tab-item " id="ucoon-me" href="">
 						<span class="tab-icon tab-me"></span>
 						<span class="tab-name mui-tab-label">我有空</span>
 					</a>
@@ -416,9 +454,7 @@
 						<span class="tab-name mui-tab-label">谁有空</span>
 					</a>
 				</nav>
-				<button id="create" class="mui-btn mui-fab mui-btn-primary mui-btn-outlined" style="position: absolute;bottom: 80px;left:70%; z-index: 10;">
-					创建
-				</button>
+				<div class="send-btn-we" id="create"><i class="mui-icon iconfont icon-plane"></i> </div>
 				<script type="text/javascript">
 						$('#create').bind('tap',function(){
 							window.location.href="activity/create";

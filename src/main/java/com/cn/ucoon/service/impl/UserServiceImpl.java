@@ -6,15 +6,18 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.dao.UserMapper;
+import com.cn.ucoon.pojo.Balance;
 import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.util.TimeUtil;
 import com.cn.ucoon.util.WeixinUtil;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
 	@Resource
@@ -60,6 +63,9 @@ public class UserServiceImpl implements UserService {
 				user.setRegistTime(regist_time);//根据当前时间戳更新
 				
 				userDao.regist(user);
+				
+				
+				
 			}
 			
 			
@@ -91,10 +97,14 @@ public class UserServiceImpl implements UserService {
 		return userDao.selectOpenId(userId);
 	}
 
-//	public User getUserById(int userId) {
-//		// TODO Auto-generated method stub
-//		return this.userDao.selectByPrimaryKey(userId);
-//	}
-	
+
+	@Override
+	public void updatePosition(String latitude, String longitude) {
+		User user = new User();
+		user.setLatitude(latitude);
+		user.setLongitude(longitude);
+		userDao.updateUserLatAndLng(user);
+	}
+
 	
 }

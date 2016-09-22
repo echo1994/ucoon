@@ -34,6 +34,12 @@ public interface UserService {
 	public List<User> getAllUser();
 
 
+	/**
+	 * 更新用户地理位置
+	 * @param latitude
+	 * @param longitude
+	 */
+	public void updatePosition(String latitude,String longitude);
 	
 	
 	

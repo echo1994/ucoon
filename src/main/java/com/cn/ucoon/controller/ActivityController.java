@@ -45,7 +45,7 @@ public class ActivityController {
 			@RequestParam(value = "activityLat", required = false) String activityLat,
 			HttpServletRequest request) throws ParseException {
 
-		int user_id = 3;
+		Integer userId = (Integer) request.getSession().getAttribute("user_id");
 		
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");//小写的mm表示的是分钟  
 		Date ActivityDate=sdf.parse(activityTime);
@@ -58,7 +58,7 @@ public class ActivityController {
 		activity.setActivityName(activityName);
 		activity.setActivityPlace(activityPlace);
 		activity.setActivityTime(ActivityDate);
-		activity.setUserId(user_id);
+		activity.setUserId(userId);
 		
 		
 		if(activityService.saveActivity(activity)){

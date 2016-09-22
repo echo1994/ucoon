@@ -13,6 +13,8 @@ public class Credits {
 
     private Integer quantity;
 
+    private Integer userId;
+
     public Integer getCreditsId() {
         return creditsId;
     }
@@ -51,5 +53,13 @@ public class Credits {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

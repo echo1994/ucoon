@@ -42,46 +42,120 @@
 </head>
 <script type="text/javascript">
 	var activeIndex = "#onselling-span";
+	var currentPage = 0;
+	var onePageNums = 10;
 	$(function() {
-		loaddata(1, 0, 9, true);
-		var allstt = document.getElementById('allstt');
-		allstt.addEventListener('tap', function() {
-			$(activeIndex).attr("class", "");
-			$("#allstt-span").attr("class", "title-active");
-			activeIndex = "#allstt-span";
-			loaddata(null, 0, 9, true);
-		});
+		loaddata(1,currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, true);
+		
 
 		var onselling = document.getElementById('onselling');
 		onselling.addEventListener('tap', function() {
+			//已支付、申请退款,1-2
 			$(activeIndex).attr("class", "");
 			$("#onselling-span").attr("class", "title-active");
 			activeIndex = "#onselling-span";
-			loaddata(1, 0, 9, true);
+			loaddata(1, currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, true);
 		});
 
 		var offtheshelf = document.getElementById('offtheshelf');
 		offtheshelf.addEventListener('tap', function() {
+			//已下架：已取消、已退款,3-4
 			$(activeIndex).attr("class", "");
 			$("#offtheshelf-span").attr("class", "title-active");
 			activeIndex = "#offtheshelf-span";
-			loaddata(2, 0, 9, true);
+			loaddata(2,currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, true);
 		});
 		var tobepaid = document.getElementById('tobepaid');
 		tobepaid.addEventListener('tap', function() {
+			//未支付,0
 			$(activeIndex).attr("class", "");
 			$("#tobepaid-span").attr("class", "title-active");
 			activeIndex = "#tobepaid-span";
-			loaddata(0, 0, 9, true);
+			loaddata(3, currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, true);
+		});
+		
+		var allstt = document.getElementById('allstt');
+		allstt.addEventListener('tap', function() {
+			//已完成：待评价、已完成,5
+			$(activeIndex).attr("class", "");
+			$("#allstt-span").attr("class", "title-active");
+			activeIndex = "#allstt-span";
+			loaddata(4, currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, true);
 		});
 
 		$(".detail").bind(
+			//查看任务详情
+				"tap",
+				function() {
+					//window.location.href = "mission/more-info/"
+					//		+ $(this).attr("data-m");
+				})
+				
+		$(".pick").bind(
+			//选人
 				"tap",
 				function() {
 					window.location.href = "mission/more-info/"
 							+ $(this).attr("data-m");
 				})
 		$(".offshelf").bind("tap", function() {
+			//申请退款
+			var btnArray = ['否', '是'];
+		    mui.confirm('下架即申请退款，需管理员同意后才可退款至你的微信零钱中，确认？', '有空ucoon', btnArray, function(e) 
+		    {
+		        if (e.index == 1) 
+		        {
+		            $.ajax({
+						url : 'mission/missionOffShelf/' + $(this).attr("data-m"),
+						data : {},
+						async : false,
+						type : 'post',
+						dataType : 'text',
+						success : function(data) {
+							alert(data);
+							window.history.go(0);
+						}
+					})
+		        } 
+		        else 
+		        {
+		            
+		        }
+		    })
+			
+		})
+		
+		
+		$(".cancleoff").bind("tap", function() {
+			//确认完成
+			$.ajax({
+				url : 'mission/missionOffShelf/' + $(this).attr("data-m"),
+				data : {},
+				async : false,
+				type : 'post',
+				dataType : 'text',
+				success : function(data) {
+					alert(data);
+					window.history.go(0);
+				}
+			})
+		})
+		$(".sure").bind("tap", function() {
+			//确认完成
+			$.ajax({
+				url : 'mission/missionOffShelf/' + $(this).attr("data-m"),
+				data : {},
+				async : false,
+				type : 'post',
+				dataType : 'text',
+				success : function(data) {
+					alert(data);
+					window.history.go(0);
+				}
+			})
+		})
+		
+		$(".cancle").bind("tap", function() {
 			$.ajax({
 				url : 'mission/missionOffShelf/' + $(this).attr("data-m"),
 				data : {},
@@ -95,6 +169,11 @@
 			})
 		})
 	})
+	
+	function initIndex() {
+		currentPage = 0;
+		onePageNums = 10;
+	}
 	function loaddata(missionStatus, startIndex, endIndex, clearable) {
 		$
 				.ajax({
@@ -118,18 +197,46 @@
 							var handle = '';
 							switch (data[i].mission_status) {
 							case 1:
-								status = '已发布';
-								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button><button class='fr offshelf' data-m='"+data[i].mission_id+"'>下架</button>";
+								//这里要算人数
+								if(data[i].people_count == (data[i].selectpeople + data[i].donepeople)){
+									if(data[i].selectpeople == 0){
+										//执行者已完成 待确认
+										status = "任务已完成，待确认";
+										handle = "<button class='fr sure' data-m='"+data[i].mission_id+"'>确认完成</button><button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+									}else{
+										//任务正在进行
+										status = "正在进行中," + data[i].donepeople + "人已完成";
+										handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+									}
+									
+								}else{
+									status = "需要" + data[i].people_count + "人,报名" + data[i].totalpeople + "人,选择" + data[i].selectpeople + "人";
+									handle = "<button class='fr pick' data-m='"+data[i].mission_id+"'>选人</button><button class='fr offshelf' data-m='"+data[i].mission_id+"'>下架</button><button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+								}
+								
+								
 								break;
 							case 2:
-								status = '已下架';
-								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button><button class='fr del' data-m='"+data[i].mission_id+"'>删除</button>";
+								status = '退款审核中';
+								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button><button class='fr cancleoff' data-m='"+data[i].mission_id+"'>取消退款</button>";
 								break;
 							case 0:
 								status = '待支付';
-								handle = "<button class='fr pay' data-m='"+data[i].mission_id+"'>支付</button>";
+								handle = "<button class='fr pay' data-m='"+data[i].mission_id+"'>支付</button><button class='fr cancle' data-m='"+data[i].mission_id+"'>取消订单</button>";
 								break;
-							}
+							case 3:
+								status = '已退款';
+								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+								break;
+							case 4:
+								status = '已取消';
+								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+								break;
+							case 5:
+								status = '待评价';
+								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button><button class='fr sure' data-m='"+data[i].mission_id+"'>确认完成</button>";
+								break;
+							} 
 							$(".mysend")
 									.append(
 											"<li class='mysend-col'>"
@@ -176,16 +283,13 @@
 		hour = date.getHours() < 10 ? "0" + date.getHours() + ":" : date
 				.getHours()
 				+ ":";
-		minute = date.getMinutes() < 10 ? date.getMinutes() : date.getMinutes();
+		minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
 		return month + day + hour + minute;
 	}
 </script>
 <body>
 	<!--筛选导航-->
 	<div class="send-select">
-		<div class="send-select-col mui-pull-left" id="allstt">
-			<span id="allstt-span">全部</span>
-		</div>
 		<div class="send-select-col mui-pull-left" id="onselling">
 			<span class="title-active" id="onselling-span">已发布</span>
 		</div>
@@ -194,6 +298,9 @@
 		</div>
 		<div class="send-select-col mui-pull-left" id="tobepaid">
 			<span id="tobepaid-span">待支付</span>
+		</div>
+		<div class="send-select-col mui-pull-left" id="allstt">
+			<span id="allstt-span">已完成</span>
 		</div>
 	</div>
 

@@ -13,4 +13,6 @@ public interface OrderService {
 	Integer selectOrdersCountByM(Integer missionId);
 	
 	List<HashMap<String, String>> selectorderDetailsByOrderId(Integer orderId);
+	
+	Integer updateOrderStateFinished(Integer orderId);
 }

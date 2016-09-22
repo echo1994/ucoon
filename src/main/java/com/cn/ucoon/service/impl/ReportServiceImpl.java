@@ -3,6 +3,7 @@ package com.cn.ucoon.service.impl;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cn.ucoon.dao.ReportMapper;
 import com.cn.ucoon.pojo.Report;
@@ -10,6 +11,7 @@ import com.cn.ucoon.service.ReportService;
 
 
 @Service
+@Transactional
 public class ReportServiceImpl implements ReportService {
 
 	@Resource

@@ -27,5 +27,7 @@ public interface UserMapper {
 	//根据user_id获取open_id
 	String selectOpenId(Integer userId);
 	
+	int updateUserLatAndLng(User record);
+	
     
 }
