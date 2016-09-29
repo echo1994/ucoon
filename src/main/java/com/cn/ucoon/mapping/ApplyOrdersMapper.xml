@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.ApplyOrdersMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.ApplyOrders" >
+    <id column="apply_id" property="applyId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="mission_id" property="missionId" jdbcType="INTEGER" />
+    <result column="take_time" property="takeTime" jdbcType="TIMESTAMP" />
+    <result column="take_state" property="takeState" jdbcType="INTEGER" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
+    <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from apply_orders
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.ApplyOrders" >
+    insert into apply_orders (apply_id, user_id, mission_id, 
+      take_time, take_state, note, 
+      finish_time, order_num)
+    values (#{applyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, 
+      #{takeTime,jdbcType=TIMESTAMP}, #{takeState,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, 
+      #{finishTime,jdbcType=TIMESTAMP}, #{orderNum,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.ApplyOrders" >
+    update apply_orders
+    set user_id = #{userId,jdbcType=INTEGER},
+      mission_id = #{missionId,jdbcType=INTEGER},
+      take_time = #{takeTime,jdbcType=TIMESTAMP},
+      take_state = #{takeState,jdbcType=INTEGER},
+      note = #{note,jdbcType=VARCHAR},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP},
+      order_num = #{orderNum,jdbcType=VARCHAR}
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+  
+   <update id="updateNoteByPrimaryKey" parameterType="com.cn.ucoon.pojo.ApplyOrders" >
+    update apply_orders
+    set note = #{note,jdbcType=VARCHAR} 
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num
+    from apply_orders
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num
+    from apply_orders
+  </select>
+  
+  <select id="selectApplybyUMID" resultType="java.util.HashMap">SELECT * FROM apply_orders WHERE user_id=#{0} and mission_id=#{1}</select>
+	
+<select id="selectByMissionId" resultType="java.util.HashMap">
+	select apply_id,nick_name,sex,head_img_url,intro,take_time,take_state,note,finish_time,order_num
+	FROM apply_orders left join user on apply_orders.user_id = user.user_id where apply_orders.mission_id
+	= #{0} and apply_orders.take_state = 0
+</select>
+
+
+
+<!-- 链接用户表 -->
+<select id="selectApplyUser"  resultType="java.util.HashMap">
+	SELECT apply_id,note,nick_name,head_img_url,sex,phone,weixin_id FROM apply_orders left join
+	user on user.user_id = apply_orders.user_id WHERE apply_id = #{0}
+</select>
+
+
+	<!-- 获取限制数量的order记录  myservice.jsp  state:0正在服务,1已完成-->
+	<select id="selectOrdersLimited" resultType="java.util.HashMap">
+		SELECT apply_id, order_num, apply_orders.user_id, apply_orders.mission_id, take_time,finish_time,
+		apply_orders.take_state ,mission_title ,mission_price,head_img_url,people_count,
+		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople,
+		(select count(*) from evaluate where evaluate.mission_id=mission.mission_id and executor_evaluate IS NOT NULL and LENGTH(trim(executor_evaluate))>0) as isEvaluate 
+		FROM ((apply_orders left join
+		mission on apply_orders.mission_id = mission.mission_id) left join user on user.user_id
+		= mission.user_id) WHERE apply_orders.user_id = #{0} ORDER BY take_time LIMIT #{1},#{2}
+	</select>
+	
+	
+	<select id="selectOrdersCountByM" resultType="java.lang.Integer">SELECT COUNT(*) FROM apply_orders WHERE mission_id = #{0} and take_state=1</select>
+	
+	<select id="selectorderDetailsByApplyId" resultType="java.util.HashMap">
+		SELECT * from apply_orders LEFT JOIN user on user.user_id = apply_orders.user_id WHERE apply_id=
+		#{0}
+	</select>
+	
+	<select id="selectorderDetailsByUserIdAndMissionId" resultType="java.util.HashMap">
+		SELECT apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num,
+		(select count(*) from evaluate where evaluate.mission_id=apply_orders.mission_id and executor_evaluate IS NOT NULL and LENGTH(trim(executor_evaluate))>0) as isEvaluate 
+		from apply_orders WHERE user_id=#{0}  and mission_id=#{1} 
+	</select>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.BalanceOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.BalanceOrder" >
+    <id column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="VARCHAR" />
+    <result column="order_money" property="orderMoney" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="order_state" property="orderState" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from balance_order
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.BalanceOrder" >
+  	<selectKey resultType="java.lang.Integer" keyProperty="orderId" order="AFTER">  
+                SELECT LAST_INSERT_ID()  
+    </selectKey>  
+    insert into balance_order (order_id, order_num, order_type, 
+      order_money, user_id, order_state
+      )
+    values (#{orderId,jdbcType=INTEGER}, #{orderNum,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR}, 
+      #{orderMoney,jdbcType=DECIMAL}, #{userId,jdbcType=INTEGER}, #{orderState,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.BalanceOrder" >
+    update balance_order
+    set order_num = #{orderNum,jdbcType=VARCHAR},
+      order_type = #{orderType,jdbcType=VARCHAR},
+      order_money = #{orderMoney,jdbcType=DECIMAL},
+      user_id = #{userId,jdbcType=INTEGER},
+      order_state = #{orderState,jdbcType=INTEGER}
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateStatusbyOrdersId" parameterType="com.cn.ucoon.pojo.MissionOrders" >
+   update balance_order set order_state = #{orderState,jdbcType=INTEGER} WHERE  order_num= #{orderNum,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select order_id, order_num, order_type, order_money, user_id, order_state
+    from balance_order
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select order_id, order_num, order_type, order_money, user_id, order_state
+    from balance_order
+  </select>
+</mapper>
