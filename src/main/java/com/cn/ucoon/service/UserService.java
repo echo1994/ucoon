@@ -31,6 +31,14 @@ public interface UserService {
 	 */
 	public String getOpenIdbyUserId(Integer userId);
 	
+	
+	/**
+	 * 根据open_id获取user_id
+	 * @param userId
+	 * @return
+	 */
+	public Integer getUserIdbyOpenId(String openId);
+	
 	public List<User> getAllUser();
 
 

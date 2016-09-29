@@ -1,8 +1,6 @@
 package com.cn.ucoon.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.dao.UserMapper;
 import com.cn.ucoon.pojo.User;
-import com.cn.ucoon.pojo.wx.resp.Article;
-import com.cn.ucoon.pojo.wx.resp.NewsMessage;
 import com.cn.ucoon.pojo.wx.resp.TextMessage;
 import com.cn.ucoon.service.WeChatService;
 import com.cn.ucoon.util.MessageUtil;
@@ -169,11 +165,6 @@ public class WeChatServiceImpl implements WeChatService  {
 						
 						userDao.regist(user);
 					}
-					
-					
-					
-					
-				
 				}
 				// 取消订阅
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_UNSUBSCRIBE)) {
@@ -189,14 +180,16 @@ public class WeChatServiceImpl implements WeChatService  {
 				}
 				// 用户上报地址位置，更新用户地理位置信息
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_LOCATION)) {
-					System.out.println("1");
 					String latitude = requestMap.get("Latitude"); //纬度
 					String longitude = requestMap.get("Longitude"); //经度
 					String precision = requestMap.get("Precision"); //精确度
 					User user = new User();
+					user.setOpenId(openID);
 					user.setLatitude(latitude);
 					user.setLongitude(longitude);
 					userDao.updateUserLatAndLng(user);
+					textMessage.setContent("");
+					respMessage = MessageUtil.textMessageToXml(textMessage);
 				}
 			}
 

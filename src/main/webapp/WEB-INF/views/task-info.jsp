@@ -20,6 +20,7 @@
 <script src="js/jquery-2.1.4.min.js"></script>
 <script src="js/mui.min.js"></script>
 <script src="js/mui.imageViewer.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <link href="css/mui.min.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
@@ -63,6 +64,49 @@
 }
 </style>
 <script type="text/javascript">
+	var URL = window.location.href.split('#')[0]; //获取当前页面的url
+	URL = encodeURIComponent(URL);
+	var appid,nonceStr,signature,timestamp;
+	//ajax同步更新全局变量，异步无法更新
+	$.ajax({
+	    url: "/ucoon/wx/sign?url="+URL,
+	    success: function(result){
+	    	appid = result.appId;
+	    	timestamp=result.timestamp;
+	    	nonceStr=result.nonceStr;
+	    	signature=result.signature;
+	    },
+	  	dataType: "json",
+	  	async:false
+	});
+	
+	wx.config({
+	    debug: false,
+	    appId: appid,
+	    timestamp: timestamp,
+	    nonceStr: nonceStr,
+	    signature: signature,
+	    jsApiList: [
+	      'checkJsApi',
+	      'openLocation',
+	      'getLocation'
+	    ]
+	});
+	wx.ready(function(){
+	
+	/* 	wx.getLocation({
+		    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+		    success: function (res) {
+		        latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+		        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+		        var speed = res.speed; // 速度，以米/每秒计
+		        var accuracy = res.accuracy; // 位置精度
+		       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
+		    }
+		});  */
+	});
+	
+	
 	var currentPage = 0;
 	var onePageNums = 10;
 	$(function() {
@@ -73,7 +117,7 @@
 		$("#st").html(st);
 		$("#et").html(et);
 		$.ajax({
-			url : 'orders/getOrdersCountByM',
+			url : 'applyOrders/getOrdersCountByM',
 			data : {
 				missionId : ${mdetails.mission_id}
 			},
@@ -89,7 +133,6 @@
 		var imageViewer = new mui.ImageViewer('.content-image', {
 			dbl: false //单击放大，true双击放大
 		});
-		
 		var max = ${mdetails.pic_count};
 		for (var i = 0; i < max; i++) {
 			$("#imgbox").append(
@@ -97,6 +140,22 @@
 
 		}
 		imageViewer.findAllImage();
+		
+		$("#missionplace").click(function(){
+		
+			wx.openLocation({
+			    latitude: ${mdetails.mission_lat}, // 纬度，浮点数，范围为90 ~ -90
+			    longitude: ${mdetails.mission_lng}, // 经度，浮点数，范围为180 ~ -180。
+			    name: '${mdetails.mission_title}', // 位置名
+			    address: '${mdetails.mission_describe}', // 地址详情说明
+			    scale: 15, // 地图缩放级别,整形值,范围从1~28。默认为最大
+			    infoUrl: 'http://wx.ucoon.cn' // 更多信息
+			});
+		
+		});
+		
+		
+		
 		setTimeout(loadcommentdata(0, 10, ${mdetails.mission_id}), 1000);
 		
 		
@@ -106,8 +165,6 @@
 
 	function commentsItemClick(){
  		//绑定元素点击后 ajax执行后可执行$(document).on('click',"",function(){})
- 		
- 		
  		
 		$(document).on('click',"ul li.discus-col div.father",function(){
 			var item = $(this);
@@ -322,19 +379,28 @@
 		return month + day + hour + minute;
 	}
 	function syncApply() {
-		$.ajax({
-			url : 'apply/addAppliment',
-			data : {
-				missionId : ${mdetails.mission_id}
-			},
-			async : true,
-			type : 'post',
-			dataType : 'text',
-			success : function(data) {
-				alert(data);
-				
-			}
-		});
+	
+		 var btnArray = ['放弃', '领取'];
+         mui.confirm('您将领取任务“${mdetails.mission_title}”', '有空ucoon', btnArray, function(e) {
+             if (e.index == 1) {
+             	$.ajax({
+					url : 'applyOrders/addAppliment',
+					data : {
+						missionId : ${mdetails.mission_id}
+					},
+					async : true,
+					type : 'post',
+					dataType : 'text',
+					success : function(data) {
+						alert(data);
+						//申请成功跳转到我服务的
+						window.location.href = "myservice"
+					}
+				});
+             } else {
+             }
+         });
+		
 	}
 	
 	function loadcommentdata(startIndex, endIndex, missionId){
@@ -553,7 +619,15 @@
 			<!--头像-->
 			<img src="${mdetails.head_img_url}">
 			<div class="ucoon-user">
-				${mdetails.nick_name}<i class="mui-icon iconfont icon-man"></i>
+				${mdetails.nick_name}
+				<c:choose>
+				    <c:when test="${mdetails.sex == 2}">
+				       <i class="mui-icon iconfont icon-women"></i>
+				    </c:when>
+				    <c:otherwise>
+				        <i class="mui-icon iconfont icon-man"></i>
+				    </c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 		<div class="task-info-sec1">
@@ -565,8 +639,8 @@
 				<i class="mui-icon iconfont icon-qian"></i>${mdetails.mission_price}
 			</p>
 			<div class="bottom clearfix">
-				<span id="remain">剩余2个名额</span><span>${mdetails.view_count}次浏览</span><span
-					id="pt">08月09日</span>
+				<span id="remain">剩余-个名额</span><span>${mdetails.view_count}次浏览</span><span
+					id="pt">--月--日</span>
 			</div>
 		</div>
 		<div class="task-info-sec2">
@@ -576,15 +650,15 @@
 			</p>
 			<p>
 				<i class="mui-icon  mui-icon-location "></i><span>地点</span><span
-					class="innertxt">${mdetails.place}</span>
+					class="innertxt" id="missionplace">${mdetails.place}</span>
 			</p>
 			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>开始</span><span
-					class="innertxt" id="st">08-09 17:00</span>
+					class="innertxt" id="st">00-00 00:00</span>
 			</p>
 			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>截止</span><span
-					class="innertxt" id="et">08-09 19:00</span>
+					class="innertxt" id="et">00-00 00:00</span>
 			</p>
 		</div>
 		<div class="task-info-description">
@@ -595,7 +669,7 @@
 		</div>
 		<div class="discus">
 			<p class="pinglun">
-				<span>评论</span><span id="discusCount">(0)</span>
+				<span>评论</span><span id="discusCount">(-)</span>
 				<button class="fr pinglunn-btn" onclick="comment()">评论</button>
 			</p>
 			<ul class="m-discus">

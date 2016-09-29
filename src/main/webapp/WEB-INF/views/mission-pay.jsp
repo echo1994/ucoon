@@ -84,14 +84,14 @@
 			(function($, doc) {
 				wx.ready(function () {
 					//页面加载时调用
-					wx.checkJsApi({
+					/* wx.checkJsApi({
 					    jsApiList: [
 					      'chooseWXPay'
 					    ],
 					    success: function (res) {
 					      alert(JSON.stringify(res));
 					    }
-					 });
+					 }); */
 				});		
 			
 				$.init({
@@ -137,9 +137,24 @@
 				
 				
 				ui.pay.addEventListener('tap', function(event) {
+					var payUrl="";
+					var url = window.location.href; //获取当前页面的url
+					var args = url.split("?");
+					var retval = "";
+					/*参数为空*/
+					if(args[0] == url) {
+						payUrl = "/ucoon/pay/getPay/";
+					}else{
+						var str = args[1];
+						var arg1 = str.split("=");
+						var id = arg1[1];
+						payUrl = "/ucoon/pay/getPay/" + id;
+					}
+					
+				
 					if(payWay == "wechat"){
 						$.ajax({
-						    url: "/ucoon/pay/getPay/",
+						    url: payUrl,
 						    success: function(result){
 						    	if(result.result_type == "error"){
 						    		alert(result.msg);

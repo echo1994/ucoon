@@ -1,6 +1,5 @@
 package com.cn.ucoon.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ public class MissionServiceImpl implements MissionService {
 		if (type.equals("all")) {
 
 			list = missionMapper.selectLimited(startIndex, endIndex);
-
+			
 
 			for (int i = 0; i < list.size(); i++) {
 				String lng = (String) list.get(i).get("mission_lng");
@@ -157,5 +156,31 @@ public class MissionServiceImpl implements MissionService {
 	public void viewCount(Integer missionId) {
 		// TODO Auto-generated method stub
 		missionMapper.updateViewByPrimaryKey(missionId);
+	}
+
+	@Override
+	public boolean isPaid(Integer missionId) {
+		Integer status = missionMapper.selectStatusByMissionId(missionId);
+		
+		if(status == 1){
+			
+			//表示已支付
+			return true;
+			
+		}
+		
+		return false;
+	}
+
+	@Override
+	public Integer getUserIdByMissionId(Integer missionId) {
+		// TODO Auto-generated method stub
+		return missionMapper.getUserIdByMissionId(missionId);
+	}
+
+	@Override
+	public Integer countUnPaidMission(Integer userId) {
+		// TODO Auto-generated method stub
+		return missionMapper.selectUnPaidMissionByUserId(userId);
 	}
 }

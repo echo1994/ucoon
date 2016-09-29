@@ -55,9 +55,9 @@
 	<!-- 容器加载完毕后，缓存token和ticket -->
 	<bean id="beanDefineConfigue" class="com.cn.ucoon.listener.JobForWXAccessTokenListener"></bean>
 	
-	<!-- 用户登录状态监听器 -->
+	<!-- 用户登录状态监听器 --> 
 	<bean id="beanDefineLogin" class="com.cn.ucoon.listener.OnlineCountListener"></bean> 
 	
-
+ 
 
 </beans>

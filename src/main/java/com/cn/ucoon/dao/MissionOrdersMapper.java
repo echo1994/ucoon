@@ -13,4 +13,8 @@ public interface MissionOrdersMapper {
     List<MissionOrders> selectAll();
 
     int updateByPrimaryKey(MissionOrders record);
+    
+    MissionOrders selectByMissionId(Integer missionId);
+    
+    int updateMissionStatusbyOrdersId(MissionOrders record);
 }

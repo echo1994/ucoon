@@ -21,7 +21,7 @@ public interface MissionMapper {
 	
 	List<HashMap<String, Object>> selectLimited(Integer startIndex,
 			Integer endIndex);
-
+	
 	List<HashMap<String, Object>> selectLimitedbyKeyWord(String keyWord,
 			Integer startIndex, Integer endIndex);
 
@@ -37,4 +37,11 @@ public interface MissionMapper {
 	List<HashMap<String, Object>> selectNearby(Double lat, Double lon,
 			String minLat, String maxLat, String minLng, String maxLng,
 			Integer rowStart, Integer rowEnd);
+	
+	Integer selectStatusByMissionId(Integer missionId);
+	
+	Integer getUserIdByMissionId(Integer missionId);
+	
+	Integer selectUnPaidMissionByUserId(Integer userId);
+	
 }

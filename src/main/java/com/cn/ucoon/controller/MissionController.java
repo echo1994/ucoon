@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSONObject;
+import com.cn.ucoon.pojo.Evaluate;
 import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.service.EvaluateService;
 import com.cn.ucoon.service.MissionOrderService;
 import com.cn.ucoon.service.MissionService;
-import com.cn.ucoon.service.OrderService;
 import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.util.PayUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,11 +47,10 @@ public class MissionController {
 	private MissionOrderService missionOrderService;
 
 	@Autowired
-	private OrderService orderService;
-
-	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private EvaluateService evaluateService;
 	
 	/**
 	 * 发布任务
@@ -248,44 +248,86 @@ public class MissionController {
 			jsonfromList = "{}";
 		}
 		return jsonfromList;
+
 	}
 
+	
+	//退款
 	@RequestMapping(value = "missionOffShelf/{missionId}", produces = "text/html;charset=UTF-8;")
 	@ResponseBody
 	public String missionOffShelf(
 			@PathVariable(value = "missionId") Integer missionId,
 			HttpServletRequest request) {
 		// 1判断是否本人操作
-		// 2查询有几个订单，任务所需人数
+		// 2申请退款的条件：任务已支付且未执行
 		// 3改变任务状态
 		// 4退款
 		Integer userId = missionService.selectUserIdByMissionId(missionId);
 		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
 		if (cuserId != null && cuserId == userId) {
-			System.out.println(cuserId);
-			System.out.println(userId);
 			Mission mission = missionService.selectByPrimaryKey(missionId);
-			BigDecimal price = mission.getMissionPrice();
-			Integer peopleCount = mission.getPeopleCount();
-			Integer orderCount = orderService.selectOrdersCountByM(missionId);
-			if (orderCount < peopleCount) {
-				// 需要退款 price * ( peopleCount - orderCount)
-				/**
-				 * 退款代码
-				 */
-				mission.setMissionStatus(2);
-				missionService.updateByPrimaryKey(mission);// 下架
-				return "任务已下架，正在审核退款";
-			} else if (orderCount >= peopleCount) {
-				// 不需要退款
-				mission.setMissionStatus(2);
-				missionService.updateByPrimaryKey(mission);// 下架
-				return "任务已下架";
-			}
+			mission.setMissionStatus(2);
+			missionService.updateByPrimaryKey(mission);// 审核退款
+			return "客服正在审核退款，如有需要请拨打客服电话";
+		}
+		return "系统异常，请重试";
+	}
+	
+	//取消退款
+	@RequestMapping(value = "cancelOff/{missionId}", produces = "text/html;charset=UTF-8;")
+	@ResponseBody
+	public String cancelOff(
+			@PathVariable(value = "missionId") Integer missionId,
+			HttpServletRequest request) {
+		Integer userId = missionService.selectUserIdByMissionId(missionId);
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		if (cuserId != null && cuserId == userId) {
+			Mission mission = missionService.selectByPrimaryKey(missionId);
+			mission.setMissionStatus(1);
+			missionService.updateByPrimaryKey(mission);// 审核退款
+			return "已取消退款";
+		}
+		return "系统异常，请重试";
+	}
+	
+	//取消任务
+	@RequestMapping(value = "missionCancel/{missionId}", produces = "text/html;charset=UTF-8;")
+	@ResponseBody
+	public String missionCancel(
+			@PathVariable(value = "missionId") Integer missionId,
+			HttpServletRequest request) {
+		Integer userId = missionService.selectUserIdByMissionId(missionId);
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		if (cuserId != null && cuserId == userId) {
+			Mission mission = missionService.selectByPrimaryKey(missionId);
+			mission.setMissionStatus(4);
+			missionService.updateByPrimaryKey(mission);// 审核退款
+			return "已取消任务";
 		}
 		return "系统异常，请重试";
 
 	}
+	
+	//完成任务
+	@RequestMapping(value = "missionDone/{missionId}", produces = "text/html;charset=UTF-8;")
+	@ResponseBody
+	public String missionDone(
+			@PathVariable(value = "missionId") Integer missionId,
+			HttpServletRequest request) {
+		// 1判断是否本人操作
+		// 2改变任务状态
+		Integer userId = missionService.selectUserIdByMissionId(missionId);
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		if (cuserId != null && cuserId == userId) {
+			Mission mission = missionService.selectByPrimaryKey(missionId);
+			mission.setMissionStatus(5);
+			missionService.updateByPrimaryKey(mission);// 下架
+			return "任务完成";
+		}
+		return "系统异常，请重试";
+
+	}
+
 
 	@RequestMapping(value = "/task-info/{missionId}")
 	public ModelAndView taskInfo(@PathVariable("missionId") Integer missionId,
@@ -308,11 +350,131 @@ public class MissionController {
 		return mv;
 	}
 
+	
+	@RequestMapping(value = "/orderDetail/{applyId}")
+	public ModelAndView getorderDetailsByOrderId(
+			@PathVariable(value = "applyId") Integer applyId, ModelAndView mv) {
+		List<HashMap<String, String>> oulist = null;
+	//	oulist = applyService.selectorderDetailsByApplyId(applyId);
+		mv.setViewName("myservice-task-info");
+		if (oulist.size() > 0) {
+			mv.addObject("ou", oulist.get(0));
+		}else{
+			mv.addObject("ou", null);
+		}
+		return mv;
+	}
+	
+	@RequestMapping(value = "/mysend-task-info/{missionId}")
+	public ModelAndView mysendTaskInfo(@PathVariable("missionId") Integer missionId,
+			ModelAndView mv,HttpServletRequest request) {
+		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
+		
+		HashMap<String, String> mdetails = null;
+		mdetails = missionService.selectForMissionDetails(missionId);
+		User user = userService.getUserById(user_id);
+		
+		System.out.println(mdetails);
+		mv.addObject("mdetails", mdetails);
+		mv.addObject("user", user);
+		mv.setViewName("mysend-task-info");
+		
+		
+		return mv;
+	}
+	
 	@RequestMapping(value = "/more-info/{mid}")
 	public ModelAndView moreMinfo(@PathVariable(value = "mid") Integer mid,
 			ModelAndView mv) {
 		mv.addObject("mid", mid);
 		mv.setViewName("more-info");
 		return mv;
+	}
+	
+	
+	//发布者对执行者评价
+	@RequestMapping(value = "/evaluate_publish/{missionId}")
+	public ModelAndView evaluate(@PathVariable("missionId") Integer missionId,
+			ModelAndView mv,HttpServletRequest request) {
+		Integer user_id = (Integer) request.getSession().getAttribute("user_id");//发布者id
+		Evaluate evaluate = null;
+		evaluate = evaluateService.selectByMissionId(missionId);
+		if(evaluate == null){
+			//生成对象
+			evaluate = new Evaluate();
+			evaluate.setPublishId(user_id);
+			
+			evaluate.setMissionId(missionId);
+			Integer publishId = missionService.getUserIdByMissionId(missionId);
+			//evaluate.setExecutorId();
+			
+			evaluateService.insertEvaluate(evaluate);
+		}
+		
+		
+		User user = userService.getUserById(evaluate.getPublishId());
+		
+		mv.addObject("evaluate", evaluate);
+		mv.addObject("user", user);
+		
+		mv.setViewName("evaluate");
+		
+		
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/addEvaluate", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject addEvaluate(
+			@RequestParam(value = "content", required = true) String content,
+			@RequestParam(value = "missionId", required = true) Integer missionId,
+			@RequestParam(value = "score", required = true) Float score,
+			HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Integer user_id = (Integer) request.getSession()
+				.getAttribute("user_id");
+		
+		if(user_id == null || user_id == 0){
+			json.put("result", "error");
+			json.put("msg", "系统出错了");
+			return json;
+			
+		}
+		
+		if(score == null || score == 0){
+			json.put("result", "error");
+			json.put("msg", "分数不能为0");
+			return json;
+			
+		}
+		
+		Evaluate evaluate = new Evaluate();
+		
+		evaluate.setEpevaluateTime(new Date());
+		evaluate.setExecutorEvaluate(content);
+		evaluate.setExecutorScore(score);
+		evaluate.setMissionId(missionId);
+		
+		//更新评价表
+		
+		
+		
+	
+
+		if (evaluateService.updateExecutorByMissionId(evaluate)) {
+			json.put("result", "success");
+			json.put("msg", "评价成功");
+			
+			return json;
+		}
+
+
+		
+		
+		json.put("result", "error");
+		json.put("msg", "评价失败");
+
+		return json;
 	}
 }

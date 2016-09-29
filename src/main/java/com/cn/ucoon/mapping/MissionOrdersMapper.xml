@@ -35,11 +35,24 @@
       state = #{state,jdbcType=INTEGER}
     where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateMissionStatusbyOrdersId" parameterType="com.cn.ucoon.pojo.MissionOrders" >
+   update mission set mission_status = 1 WHERE  mission_id = (select mission_id from mission_orders where mission_order_num= #{missionOrderNum,jdbcType=VARCHAR})
+  </update>
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
     state
     from mission_orders
     where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByMissionId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
+    state
+    from mission_orders
+    where mission_id = #{missionId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 

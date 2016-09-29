@@ -106,5 +106,12 @@ public class UserServiceImpl implements UserService {
 		userDao.updateUserLatAndLng(user);
 	}
 
+
+	@Override
+	public Integer getUserIdbyOpenId(String openId) {
+		// TODO Auto-generated method stub
+		return userDao.selectUserId(openId);
+	}
+
 	
 }

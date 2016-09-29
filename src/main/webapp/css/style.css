@@ -1,7 +1,6 @@
 			html,
 			body {
 				background-color: #efeff4;
-				
 			}
 			p{
 				margin: 0;
@@ -438,6 +437,7 @@
 .send-select{
 	position: fixed;
 	top: 0;
+	z-index: 99;
 	height: 40px;
 	width: 100%;
 	background-color: #fff;
@@ -894,4 +894,4 @@
 	color: #666;
 	font-size: 12px;
 		
-}  
+}

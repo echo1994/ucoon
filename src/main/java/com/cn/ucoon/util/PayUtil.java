@@ -2,9 +2,13 @@ package com.cn.ucoon.util;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyStore;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,9 +19,24 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.EntityUtils;
+
 import com.cn.ucoon.pojo.wx.JsAPIConfig;
 import com.cn.ucoon.pojo.wx.PayCallback;
-import com.cn.ucoon.pojo.wx.UnifiedOrderRequest;
+import com.cn.ucoon.pojo.wx.PayRefund;
+import com.cn.ucoon.pojo.wx.PayRefundRespose;
+import com.cn.ucoon.pojo.wx.SendRedPack;
+import com.cn.ucoon.pojo.wx.SendRedPackRespose;
 import com.cn.ucoon.pojo.wx.UnifiedOrderRequestExt;
 import com.cn.ucoon.pojo.wx.UnifiedOrderRespose;
 import com.thoughtworks.xstream.XStream;
@@ -30,8 +49,73 @@ public class PayUtil {
 	private final static String Key = "350181199404211838malingkaiecho9";
 
 	// 商户id
-	private final static String MCH_ID = "1372543502";
+	public final static String MCH_ID = "1372543502";
 
+	//统一下单url
+	private final static String ORDER_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+	
+	//普通红包url
+	private final static String ORDERY_RED_URL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack";
+	
+	//退款url
+	private final static String REFUND_URL = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+	
+	/**
+     * 现金红包
+     * @Title: bindDevice 
+     * @return String   
+     * @throws
+     */
+    public static SendRedPackRespose sendRedPack(SendRedPack redPack) throws Exception{
+        String sign = createSendRedPackOrderSign(redPack);
+        redPack.setSign(sign);
+
+     	XStream xStream = new XStream(new XppDriver(new XmlFriendlyNameCoder(
+     				"_-", "_"))); 
+     						
+     	xStream.alias("xml", redPack.getClass());// 根元素名需要是xml
+        
+        
+        String xml = xStream.toXML(redPack);
+        String response = ssl(ORDERY_RED_URL,xml);
+        
+        xStream.alias("xml", SendRedPackRespose.class);
+        SendRedPackRespose respose = (SendRedPackRespose) xStream.fromXML(response);;
+        
+    
+		System.out.println(respose);
+		return respose;
+		
+    }
+    
+    /**
+     * 申请退款
+     * @Title: bindDevice 
+     * @return String   
+     * @throws
+     */
+    public static PayRefundRespose payRefund(PayRefund payRefund) throws Exception{
+        String sign = createPayRefundOrderSign(payRefund);
+        payRefund.setSign(sign);
+
+     	XStream xStream = new XStream(new XppDriver(new XmlFriendlyNameCoder(
+     				"_-", "_"))); 
+     						
+     	xStream.alias("xml", payRefund.getClass());// 根元素名需要是xml
+        
+        
+        String xml = xStream.toXML(payRefund);
+        String response = ssl(REFUND_URL,xml);
+        
+        xStream.alias("xml", PayRefundRespose.class);
+        PayRefundRespose respose = (PayRefundRespose) xStream.fromXML(response);;
+        
+    
+		System.out.println(respose);
+		return respose;
+		
+    }
+	
 	/**
 	 * 生成订单
 	 * 
@@ -77,10 +161,10 @@ public class PayUtil {
 	 * @return UnifiedOrderRespose
 	 */
 	public static UnifiedOrderRespose httpOrder(String orderInfo) {
-		String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+		
 		UnifiedOrderRespose unifiedOrderRespose = null;
 		try {
-			HttpURLConnection conn = (HttpURLConnection) new URL(url)
+			HttpURLConnection conn = (HttpURLConnection) new URL(ORDER_URL)
 					.openConnection();
 			// 加入数据
 			conn.setRequestMethod("POST");
@@ -124,7 +208,47 @@ public class PayUtil {
 		return null;
 	}
 	
+	/**
+	 * 红包配置
+	 * @param redPack
+	 * @return
+	 */
+	public static String createSendRedPackOrderSign(SendRedPack redPack){
+        StringBuffer sign = new StringBuffer();
+        sign.append("act_name=").append(redPack.getAct_name());
+        sign.append("&client_ip=").append(redPack.getClient_ip());
+        sign.append("&mch_billno=").append(redPack.getMch_billno());
+        sign.append("&mch_id=").append(redPack.getMch_id());
+        sign.append("&nonce_str=").append(redPack.getNonce_str());
+        sign.append("&re_openid=").append(redPack.getRe_openid());
+        sign.append("&remark=").append(redPack.getRemark());
+        sign.append("&send_name=").append(redPack.getSend_name());
+        sign.append("&total_amount=").append(redPack.getTotal_amount());
+        sign.append("&total_num=").append(redPack.getTotal_num());
+        sign.append("&wishing=").append(redPack.getWishing());
+        sign.append("&wxappid=").append(redPack.getWxappid());
+        sign.append("&key=").append(Key);
+        return MD5Util.MD5Encode(sign.toString(),"UTF-8").toUpperCase();
+    }
 	
+	/**
+	 * 退款配置
+	 * @param redPack
+	 * @return
+	 */
+	public static String createPayRefundOrderSign(PayRefund payRefund){
+        StringBuffer sign = new StringBuffer();
+        sign.append("appid=").append(payRefund.getAppid());
+        sign.append("&mch_id=").append(payRefund.getMch_id());
+        sign.append("&nonce_str=").append(payRefund.getNonce_str());
+        sign.append("&out_trade_no=").append(payRefund.getOut_trade_no());
+        sign.append("&out_refund_no=").append(payRefund.getOut_refund_no());
+        sign.append("&total_fee=").append(payRefund.getTotal_fee());
+        sign.append("&refund_fee=").append(payRefund.getRefund_fee());
+        sign.append("&op_user_id=").append(payRefund.getClass());
+        sign.append("&key=").append(Key);
+        return MD5Util.MD5Encode(sign.toString(),"UTF-8").toUpperCase();
+    }
 	
 	  /**
      * 获取支付配置
@@ -252,4 +376,63 @@ public class PayUtil {
 		return nums;
 	}
     
+    
+    private static String ssl(String url,String data){
+        StringBuffer message = new StringBuffer();
+        try {
+            KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+            FileInputStream instream = new FileInputStream(new File("D:/certs/apiclient_cert.p12"));
+            keyStore.load(instream, MCH_ID.toCharArray());
+         // Trust own CA and all self-signed certs
+            SSLContext sslcontext = SSLContexts.custom()
+                    .loadKeyMaterial(keyStore, MCH_ID.toCharArray())
+                    .build();
+            // Allow TLSv1 protocol only
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                    sslcontext,
+                    new String[] { "TLSv1" },
+                    null,
+                    SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+            CloseableHttpClient httpclient = HttpClients.custom()
+                    .setSSLSocketFactory(sslsf)
+                    .build();
+            HttpPost httpost = new HttpPost(url);
+
+            httpost.addHeader("Connection", "keep-alive");
+            httpost.addHeader("Accept", "*/*");
+            httpost.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+            httpost.addHeader("Host", "api.mch.weixin.qq.com");
+            httpost.addHeader("X-Requested-With", "XMLHttpRequest");
+            httpost.addHeader("Cache-Control", "max-age=0");
+            httpost.addHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0) ");
+            httpost.setEntity(new StringEntity(data, "UTF-8"));
+            System.out.println("executing request" + httpost.getRequestLine());
+
+            CloseableHttpResponse response = httpclient.execute(httpost);
+            try {
+                HttpEntity entity = response.getEntity();
+
+                System.out.println("----------------------------------------");
+                System.out.println(response.getStatusLine());
+                if (entity != null) {
+                    System.out.println("Response content length: " + entity.getContentLength());
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(),"UTF-8"));
+                    String text;
+                    while ((text = bufferedReader.readLine()) != null) {
+                        message.append(text);
+                    }
+
+                }
+                EntityUtils.consume(entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                response.close();
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        } 
+
+        return message.toString();
+    }
 }

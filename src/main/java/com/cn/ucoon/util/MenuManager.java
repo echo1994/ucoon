@@ -63,14 +63,14 @@ public class MenuManager {
 		// btn13.setKey("13");
 		
 		ViewButton btn11 = new ViewButton();
-		btn11.setName("主页");
+		btn11.setName("Echo");
 		btn11.setType("view");
 		btn11.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx14236620e0b8201e&redirect_uri=http%3A%2F%2Fwx.ucoon.cn%2Fucoon%2F&response_type=code&scope=snsapi_userinfo&state=echo#wechat_redirect");
 
 	
 		
 		ComplexButton mainBtn1 = new ComplexButton();
-		mainBtn1.setName("主页");
+		mainBtn1.setName("");
 		mainBtn1.setSub_button(new Button[] { btn11 });
 
 //		ComplexButton mainBtn2 = new ComplexButton();

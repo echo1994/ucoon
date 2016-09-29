@@ -33,15 +33,74 @@
 <script type="text/javascript">
 	($(function() {
 		loaddata(0, 9, true);
+		
+		
+		$(".cancelorder").on('tap',function(){
+			var btnArray = ['否', '是'];
+		    mui.confirm('是否取消订单，确认？', '有空ucoon', btnArray, function(e) 
+		    {
+		        if (e.index == 1) {
+					$.ajax({
+						url : 'applyOrders/cancelorder/' + $(".cancelorder").attr("data-m"),
+						data : {},
+						async : false,
+						type : 'post',
+						dataType : 'text',
+						success : function(data) {
+							alert(data);
+							window.history.go(0);
+						}
+					})
+				} else {
+		            
+		        }
+		    })
+		});
+		
+			
+		$(".done").on('tap',function(){
+			
+			var btnArray = ['还未完成', '我已完成'];
+		    mui.confirm('请确认您的任务已完成', '有空ucoon', btnArray, function(e) 
+		    {
+		        if (e.index == 1) {
+					$.ajax({
+						url : 'applyOrders/finishOrder/' + $(".done").attr("data-m"),
+						data : {},
+						async : false,
+						type : 'post',
+						dataType : 'text',
+						success : function(data) {
+							alert(data);
+							window.history.go(0);
+						}
+					}) 
+				} else {
+		            
+		        }
+		    })
+		});
+		
+		
+		$(".evaluate").on('tap',function(){
+			window.location.href = "applyOrders/evaluate/"
+							+ $(this).attr("data-m");
+		});
+		
+		$(".order").on('tap',function(){
+			window.location.href = "applyOrders/myservice-task-info/"
+							+ $(this).attr("data-m");
+		});
+		
+		
 	}))
 	function loaddata(startIndex, endIndex, clearable) {
 		$
 				.ajax({
-					url : 'orders/getOrdersLimited',
+					url : 'applyOrders/getOrdersLimited',
 					data : {
 						startIndex : 0,
-						endIndex : 9,
-						userId : 1
+						endIndex : 9
 					},
 					async : false,
 					type : 'post',
@@ -52,17 +111,45 @@
 						}
 						for (var i = 0; i < data.length; i++) {
 							var status = '';
-							switch (data[i].state) {
-							case 0:
-								status = '正在服务';
-								break;
-							case 1:
-								status = '已完成';
-								break;
+							var handle = '';
+							switch (data[i].take_state) {
+								case 0:
+									status = '待确认';
+									handle = "<button class='fr cancelorder' data-m='"+data[i].apply_id+"'>取消任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
+									break;
+								case 1:
+									if(data[i].selectpeople == data[i].people_count){
+										status = '可以开始执行任务';
+										handle = "<button class='fr done' data-m='"+data[i].apply_id+"'>完成任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
+									}else{
+										status = '发布人已确认，等待通知任务开始';
+										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
+									
+									}
+									break;
+								case 2:
+									if(data[i].isEvaluate > 0){
+										status = '已完成';
+										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									}else{
+										status = '待评价';
+										handle = "<button class='fr evaluate' data-m='"+data[i].mission_id+"'>评价</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									}								
+									//判断是否已评价
+									
+									break;
+								case 3:
+									status = '已取消';
+									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									
+									break;
+								case 4:
+									status = '被拒绝';
+									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									
+									break;
 							}
-							$(".mysend")
-									.append(
-											"<li class='mysend-col'>"
+							$(".mysend").append("<li class='mysend-col'>"
 													+ "<div class='m-t'>"
 													+ "<img class='fl' src='"+data[i].head_img_url+"'>"
 													+ "<div class='t-r fr'>"
@@ -70,7 +157,7 @@
 													+ status
 													+ "</p>"
 													+ "<p class='send-time'>"
-													+ getMonthDay(data[i].order_time)
+													+ getMonthDay(data[i].take_time)
 													+ "</p>"
 													+ "</div>"
 													+ "<div class='t-m'>"
@@ -84,8 +171,7 @@
 													+ "	</div>"
 													+ "</div>"
 													+ "<div class='m-b'>"
-													+ "	<button class='fr'>查看订单</button>"
-													+ "	<button class='fr'>联系Ta</button>"
+													+ handle
 													+ "</div></li>");
 						}
 					}

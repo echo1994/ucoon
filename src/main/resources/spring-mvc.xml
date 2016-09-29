@@ -98,6 +98,8 @@
 	    	<mvc:mapping path="/mysend"/> 
 	    	<mvc:mapping path="/myservice"/> 
 	    	<mvc:mapping path="/mission-pay"/> 
+	    	<mvc:mapping path="/mission/task-info/*"/> 
+	    	<mvc:mapping path="/wealth/"/> 
 	    	<mvc:exclude-mapping path=""/>  <!-- 不包含的 -->
 	    	<bean class="com.cn.ucoon.interceptor.UserLoginInterceptor"></bean>   
 	  	</mvc:interceptor>   

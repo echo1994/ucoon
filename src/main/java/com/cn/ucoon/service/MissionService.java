@@ -35,4 +35,11 @@ public interface MissionService {
 	
 	
 	public void viewCount(Integer missionId);
+	
+	
+	public boolean isPaid(Integer missionId);
+	
+	public Integer getUserIdByMissionId(Integer missionId);
+	
+	public Integer countUnPaidMission(Integer userId);
 }

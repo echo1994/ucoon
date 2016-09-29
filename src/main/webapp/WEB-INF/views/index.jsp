@@ -110,6 +110,7 @@
 										this.value, true,'nearby');
 					}
 				});
+				
 
 			})
 	function initIndex() {
@@ -139,7 +140,7 @@
 						for (var i = 0; i < data.length; i++) {
 							$(".task")
 									.append(
-											"<li class='task-col clearfix' data-m='"+data[i].mission_id+"'><a href=' '> <img"
+											"<li class='task-col clearfix' data-m='"+data[i].mission_id+"'><a href='mission/task-info/"+data[i].mission_id+"' > <img"
 									+" class='mui-pull-left' src='"+data[i].head_img_url+"'>"
 													+ "<div class='task-price mui-pull-right'>"
 													+ "<i class='mui-icon iconfont icon-qian'></i> <span"
@@ -169,7 +170,10 @@
 													+ "</div>" + "</a></li> ");
 
 						}
-
+						$('.task-col').on('tap', function() {
+							window.location.href = "mission/task-info/"
+											+ $(this).attr("data-m");
+						})
 					}
 				})
 	}

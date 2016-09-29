@@ -25,4 +25,19 @@ public class MissionOrderServiceImpl implements MissionOrderService {
 		return false;
 	}
 
+
+	@Override
+	public MissionOrders getOrdersbyMissionId(Integer missionId) {
+		// TODO Auto-generated method stub
+		return missionOrdersMapper.selectByMissionId(missionId);
+	}
+
+
+	@Override
+	public void updateMissionStatusbyOrdersId(MissionOrders record) {
+		// TODO Auto-generated method stub
+		//将支付状态更新为已支付
+		missionOrdersMapper.updateMissionStatusbyOrdersId(record);
+	}
+
 }

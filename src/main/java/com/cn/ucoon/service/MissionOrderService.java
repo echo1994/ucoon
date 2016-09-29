@@ -6,4 +6,7 @@ public interface MissionOrderService {
 
 	public boolean makeOrders(MissionOrders missionOrders);
 	
+	public MissionOrders getOrdersbyMissionId(Integer missionId);
+	
+	public void updateMissionStatusbyOrdersId(MissionOrders record);
 }

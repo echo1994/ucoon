@@ -14,4 +14,8 @@ public interface EvaluateMapper {
     List<Evaluate> selectAll();
 
     int updateByPrimaryKey(Evaluate record);
+    
+    Evaluate selectByMissionId(Integer missionId);
+    
+    int updateExecutorByMissionId(Evaluate evaluate);
 }

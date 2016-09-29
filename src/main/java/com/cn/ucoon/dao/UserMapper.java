@@ -29,5 +29,6 @@ public interface UserMapper {
 	
 	int updateUserLatAndLng(User record);
 	
-    
+	Integer selectUserId(String open_id);
+		
 }

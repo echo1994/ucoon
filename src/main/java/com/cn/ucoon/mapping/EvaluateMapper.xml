@@ -40,6 +40,16 @@
       and publish_id = #{publishId,jdbcType=INTEGER}
       and executor_id = #{executorId,jdbcType=INTEGER}
   </update>
+  
+   <update id="updateExecutorByMissionId" parameterType="com.cn.ucoon.pojo.Evaluate" >
+    update evaluate
+    set 
+      executor_evaluate = #{executorEvaluate,jdbcType=VARCHAR},
+      executor_score = #{executorScore,jdbcType=REAL},
+      epevaluate_time = #{epevaluateTime,jdbcType=TIMESTAMP}
+    where mission_id = #{missionId,jdbcType=INTEGER}
+  </update>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
     select mission_id, publish_id, executor_id, publish_evaluate, executor_evaluate, 
     publish_score, executor_score, epevaluate_time, peevaluate_time
@@ -52,5 +62,12 @@
     select mission_id, publish_id, executor_id, publish_evaluate, executor_evaluate, 
     publish_score, executor_score, epevaluate_time, peevaluate_time
     from evaluate
+  </select>
+  
+  <select id="selectByMissionId" resultMap="BaseResultMap">
+    select mission_id, publish_id, executor_id, publish_evaluate, executor_evaluate, 
+    publish_score, executor_score, epevaluate_time, peevaluate_time
+    from evaluate
+    where mission_id = #{0}
   </select>
 </mapper>
