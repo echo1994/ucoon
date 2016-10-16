@@ -1,10 +1,10 @@
 ﻿<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+String path = request.getContextPath();
+String basePath = request.getScheme() + "://"
++ request.getServerName() + ":" + request.getServerPort()
++ path + "/";
 %>
 <!DOCTYPE html>
 <html>
@@ -62,6 +62,58 @@
 	border-bottom: 0;
 	height: 70px;
 }
+
+     .mui-btn {
+         display: block;
+         width: 120px;
+         margin: 10px auto;
+     }
+
+     #info {
+         padding: 20px 10px;
+     }
+     .mui-popup-inner{
+         padding: 0;
+     }
+     .mui-popup-title{
+         padding: 10px 0;
+         font-size: 14px;
+     }
+
+     .mui-popup-text .inptel{
+         width: 58%;
+         padding: 5px;
+         margin: 0;
+     }
+     .mui-popup-text .inpyzm{
+         width: 90%;
+         padding: 5px;
+         margin: 10px 0 20px 0;
+     }
+
+     .get-btn{
+         padding: 5px;
+         height: 40px;
+         width: 80px;
+         margin-left: 5px;
+         background: #ccc;
+         color: #fff;
+         border: none;
+     }
+     button:enabled:active{
+         background: #ccc;
+     }
+
+     .mui-popup-button{
+         color: #C3D94F;
+     }
+	.task-info-sec2 .innertxt{
+		padding-left: 40px;
+	}
+.task-info-sec2 .innertxt-time{
+	padding-left: 13px;
+}
+
 </style>
 <script type="text/javascript">
 	var URL = window.location.href.split('#')[0]; //获取当前页面的url
@@ -69,7 +121,7 @@
 	var appid,nonceStr,signature,timestamp;
 	//ajax同步更新全局变量，异步无法更新
 	$.ajax({
-	    url: "/ucoon/wx/sign?url="+URL,
+	    url: "wx/sign?url="+URL,
 	    success: function(result){
 	    	appid = result.appId;
 	    	timestamp=result.timestamp;
@@ -110,9 +162,9 @@
 	var currentPage = 0;
 	var onePageNums = 10;
 	$(function() {
-		var pt = getMonthDay1("${mdetails.publish_time}");
-		var st = getMonthDay2("${mdetails.start_time}");
-		var et = getMonthDay2("${mdetails.end_time}");
+		var pt = getMonthDay1('${mdetails.publish_time}'.substring(0,'${mdetails.publish_time}'.indexOf('.')));
+		var st = getMonthDay2('${mdetails.start_time}'.substring(0,'${mdetails.start_time}'.indexOf('.')));
+		var et = getMonthDay2('${mdetails.end_time}'.substring(0,'${mdetails.end_time}'.indexOf('.')));
 		$("#pt").html(pt);
 		$("#st").html(st);
 		$("#et").html(et);
@@ -166,7 +218,7 @@
 	function commentsItemClick(){
  		//绑定元素点击后 ajax执行后可执行$(document).on('click',"",function(){})
  		
-		$(document).on('click',"ul li.discus-col div.father",function(){
+		$(document).on('tap',"ul li.discus-col div.father",function(){
 			var item = $(this);
 			var userId =item.find(".userId").val();
 			var commentId = item.find(".commentsId").val();
@@ -203,6 +255,7 @@
 										$(item).parent().fadeOut('slow');
 										$(item).parent().remove();
 										mui.toast('删除成功');
+										window.history.go(0);
 									}
 								});
 								
@@ -248,7 +301,8 @@
 										+"<input type=\"hidden\" class=\"commentsId\" value=\""  + data.msg.commentschild.commentId + "\" \>"
 										+"</div>";
 									
-									$(html).hide().appendTo($(item).parent()).show('slow');	
+									$(html).hide().appendTo($(item).parent()).show('slow');
+									window.history.go(0);	
 								}
 							})
 						} 
@@ -259,7 +313,7 @@
 			})
 		});
 		
-		$(document).on('click',"ul li.discus-col div.son",function(){
+		$(document).on('tap',"ul li.discus-col div.son",function(){
 			var item = $(this);
 			var fromUserId = item.find(".fromUserId").val();
 			var commentsChildId = item.find(".commentsChildId").val();
@@ -297,6 +351,7 @@
 										$(item).fadeOut('slow');
 										$(item).remove();
 										mui.toast('删除成功');
+										window.history.go(0);
 									}
 								});
 								
@@ -343,6 +398,7 @@
 										+"</div>";
 									
 									$(html).hide().appendTo($(item).parent()).show('slow');	
+									window.history.go(0);
 								}
 							})
 						} 
@@ -355,6 +411,7 @@
 	}
 
 	function getMonthDay1(timestamp) {
+		timestamp = timestamp.toString().replace(/-/g,"/");
 		var date = new Date(timestamp);
 		month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) + "月"
 				: date.getMonth() + 1 + "月";
@@ -365,6 +422,7 @@
 		return month + day;
 	}
 	function getMonthDay2(timestamp) {
+		timestamp = timestamp.toString().replace(/-/g,"/");
 		var date = new Date(timestamp);
 		month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) + "-"
 				: date.getMonth() + 1 + "-";
@@ -379,29 +437,147 @@
 		return month + day + hour + minute;
 	}
 	function syncApply() {
-	
-		 var btnArray = ['放弃', '领取'];
-         mui.confirm('您将领取任务“${mdetails.mission_title}”', '有空ucoon', btnArray, function(e) {
-             if (e.index == 1) {
-             	$.ajax({
-					url : 'applyOrders/addAppliment',
-					data : {
-						missionId : ${mdetails.mission_id}
-					},
-					async : true,
-					type : 'post',
-					dataType : 'text',
-					success : function(data) {
-						alert(data);
-						//申请成功跳转到我服务的
-						window.location.href = "myservice"
-					}
-				});
-             } else {
-             }
-         });
+		
+		//判断是否绑定手机
+		$.ajax({
+			url : 'user/isBindPhone',
+			type : 'get',
+			dataType : 'json',
+			success : function(data) {
+				if(data.result == "error"){
+					 var btnArray = ['取消', '绑定'];
+			        mui.confirm('手机绑定', '请先绑定手机', btnArray, function(e) {
+			            if (e.index == 1) {
+			            	var code = document.getElementById("code").value;
+			            	var phone = document.getElementById("tel").value;
+			                $.ajax({
+								url : 'checkMsg',
+								data : {
+										code : code,
+										phone : phone
+								},
+								type : 'post',
+								dataType : 'json',
+								success : function(data) {
+									if(data.result == "error"){
+										alert(data.msg);
+										return;
+									}
+									var btnArray = ['放弃', '领取'];
+							         mui.prompt('您将领取任务“${mdetails.mission_title}”', '给雇主说点什么吧~','有空ucoon', btnArray, function(e) {
+							             if (e.index == 1) {
+							             	$.ajax({
+												url : 'applyOrders/addAppliment',
+												data : {
+													missionId : ${mdetails.mission_id},
+													msg:e.value
+												},
+												async : true,
+												type : 'post',
+												dataType : 'text',
+												success : function(data) {
+													alert(data);
+													//申请成功跳转到我服务的
+													window.location.href = "myservice"
+												}
+											});
+							             } else {
+							             }
+							         });
+								}
+							})
+			            } else {
+			                
+			            }
+			        })
+			        document.querySelector('.mui-popup-text').innerHTML='<input id="tel" class="inptel" onkeyup="telTest()" autofocus type="tel" placeholder="请输入您的手机号"><button class="get-btn" id="getBtn">获取验证码</button><input class="inpyzm" type="tel" name="" id="code" placeholder="请输入验证码">'
+					return;
+				}
+				
+				var btnArray = ['放弃', '领取'];
+		         mui.prompt('您将领取任务“${mdetails.mission_title}”', '给雇主说点什么吧~','有空ucoon', btnArray, function(e) {
+		             if (e.index == 1) {
+		             	$.ajax({
+							url : 'applyOrders/addAppliment',
+							data : {
+								missionId : ${mdetails.mission_id},
+								msg:e.value
+							},
+							async : true,
+							type : 'post',
+							dataType : 'text',
+							success : function(data) {
+								alert(data);
+								//申请成功跳转到我服务的
+								window.location.href = "myservice"
+							}
+						});
+		             } else {
+		             }
+		         });
+			}
+		})
+		 
 		
 	}
+	
+	//手机验证
+    var reg =  /^[1][3-8]+\d{9}$/;
+	
+    function telTest() {
+        var getBtn = document.getElementById("getBtn");
+        var inpTelval = document.getElementById("tel").value;
+        if (reg.test(inpTelval)){
+            getBtn.style.background ="#C3D94F";
+            getBtn.addEventListener("click", send);
+        }else {
+            getBtn.style.background ="#ccc";
+            getBtn.removeEventListener("click", send);
+        }
+    }
+    
+    
+    function send(){
+    	var inpTelval = document.getElementById("tel").value;
+    	$.ajax({
+			url : 'sendMsg',
+			data : {
+					phone : inpTelval,
+			},
+			type : 'post',
+			dataType : 'json',
+			success : function(data) {
+				if(data.result == "error"){
+					alert(data.msg);
+					return;
+				}
+				setTime();
+			}
+		})
+    }
+    
+    //60s倒计时
+    var countdown=60;
+    function setTime() {
+        var getBtn = document.getElementById("getBtn");
+        var tel = document.getElementById("tel");
+        getBtn.style.background ="#ccc";
+        if (countdown == 0) {
+            getBtn.innerText="重新获取";
+            getBtn.style.background ="#C3D94F";
+            countdown = 60;
+            getBtn.addEventListener("click", send);
+            tel.readOnly=false;
+        } else {
+        	tel.readOnly=true;
+            getBtn.innerText="已发送(" + countdown + ")";
+            countdown--;
+            getBtn.removeEventListener("click", send);
+            setTimeout(function () {
+                setTime()
+            },1000)
+        }
+    }
 	
 	function loadcommentdata(startIndex, endIndex, missionId){
 		$.ajax({
@@ -652,13 +828,10 @@
 				<i class="mui-icon  mui-icon-location "></i><span>地点</span><span
 					class="innertxt" id="missionplace">${mdetails.place}</span>
 			</p>
+
 			<p>
-				<i class="mui-icon iconfont icon-time"></i><span>开始</span><span
-					class="innertxt" id="st">00-00 00:00</span>
-			</p>
-			<p>
-				<i class="mui-icon iconfont icon-time"></i><span>截止</span><span
-					class="innertxt" id="et">00-00 00:00</span>
+				<i class="mui-icon iconfont icon-time"></i><span>截止接单</span><span
+					class="innertxt innertxt-time" id="et">00-00 00:00</span><span>前</span>
 			</p>
 		</div>
 		<div class="task-info-description">

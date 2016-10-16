@@ -34,7 +34,7 @@
 			var appid,nonceStr,signature,timestamp;
 			//ajax同步更新全局变量，异步无法更新
 			$.ajax({
-			    url: "/ucoon/wx/sign?url="+URL,
+			    url: "wx/sign?url="+URL,
 			    success: function(result){
 			    	appid = result.appId;
 			    	timestamp=result.timestamp;
@@ -143,12 +143,12 @@
 					var retval = "";
 					/*参数为空*/
 					if(args[0] == url) {
-						payUrl = "/ucoon/pay/getPay/";
+						payUrl = "pay/getPay/";
 					}else{
 						var str = args[1];
 						var arg1 = str.split("=");
 						var id = arg1[1];
-						payUrl = "/ucoon/pay/getPay/" + id;
+						payUrl = "pay/getPay/" + id;
 					}
 					
 				
@@ -172,7 +172,7 @@
 							       success: function (res) {
 								        // 支付成功后的回调函数
 								        alert("支付成功");
-								        window.location.href="/ucoon/mysend";
+								        window.location.href="mysend";
 								   }
 							    }) 
 						    },

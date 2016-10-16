@@ -18,4 +18,8 @@ public interface EvaluateMapper {
     Evaluate selectByMissionId(Integer missionId);
     
     int updateExecutorByMissionId(Evaluate evaluate);
+    
+    Integer selectExecutorScoreByUserId(Integer userId);
+    
+    Integer selectPublishScoreByUserId(Integer userId);
 }

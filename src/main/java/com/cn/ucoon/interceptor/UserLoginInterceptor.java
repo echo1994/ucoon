@@ -6,11 +6,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cn.ucoon.util.WeixinUtil;
+
 public class UserLoginInterceptor implements HandlerInterceptor {
 
 	private final String USERSESSION = "user_id";
 
-	@Override
+	@Override 
 	public void afterCompletion(HttpServletRequest arg0,
 			HttpServletResponse arg1, Object arg2, Exception arg3)
 			throws Exception {
@@ -47,7 +49,7 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 		//保存当前url，用户授权后跳转回来
 		request.getSession().setAttribute("lastUrl", path);
 
-		response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx14236620e0b8201e&redirect_uri=http%3A%2F%2Fwx.ucoon.cn%2Fucoon%2Fwx%2Foauth&response_type=code&scope=snsapi_userinfo&state=echo#wechat_redirect");
+		response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeixinUtil.appid + "&redirect_uri=http%3A%2F%2F" + WeixinUtil.domian + "%2Fwx%2Foauth&response_type=code&scope=snsapi_userinfo&state=echo#wechat_redirect");
 		return false;
 	}
 

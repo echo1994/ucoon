@@ -25,14 +25,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.cn.ucoon.pojo.BalanceOrder;
 import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.wx.JsAPIConfig;
 import com.cn.ucoon.pojo.wx.PayRefund;
 import com.cn.ucoon.pojo.wx.PayRefundRespose;
-import com.cn.ucoon.pojo.wx.SendRedPack;
-import com.cn.ucoon.pojo.wx.SendRedPackRespose;
 import com.cn.ucoon.pojo.wx.Template;
 import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.pojo.wx.UnifiedOrderRespose;
@@ -47,6 +44,8 @@ import com.cn.ucoon.util.WeixinUtil;
 @RequestMapping("/pay")
 public class PayController {
 
+	
+	
 	@Resource
 	private UserService userService;
 
@@ -175,8 +174,8 @@ public class PayController {
 		int fee = mission.getMissionPrice().multiply(new BigDecimal(100))
 				.intValue();
 		System.out.println(fee);
-		String notify_url = "http://wx.ucoon.cn/ucoon/pay/payresult";
-		;
+		String notify_url = "http://wx.ucoon.cn/pay/payresult";
+
 		String trade_type = "JSAPI";
 
 		// 这里如果没有登录，跳转到登录界面
@@ -231,7 +230,7 @@ public class PayController {
 		int fee = mission.getMissionPrice().multiply(new BigDecimal(100))
 				.intValue();
 		System.out.println(fee);
-		String notify_url = "http://wx.ucoon.cn/ucoon/pay/payresult";
+		String notify_url = "http://wx.ucoon.cn/pay/payresult";
 		;
 		String trade_type = "JSAPI";
 
@@ -295,7 +294,7 @@ public class PayController {
 					tem.setTemplateId("azcHIxhzpMgkzMvYM2kdmRxrf4ciwII2FTp9dRitoms");
 					tem.setTopColor("#00DD00");
 					tem.setToUser(openid);
-					tem.setUrl("http://wx.ucoon.cn/ucoon/"); // 到时候改为任务列表
+					tem.setUrl("http://wx.ucoon.cn/"); // 到时候改为任务列表
 
 					List<TemplateParam> paras = new ArrayList<TemplateParam>();
 					paras.add(new TemplateParam("first", "任务订单支付成功，已发布到任务大厅",

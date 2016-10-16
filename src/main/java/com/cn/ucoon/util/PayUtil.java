@@ -30,6 +30,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cn.ucoon.pojo.wx.JsAPIConfig;
 import com.cn.ucoon.pojo.wx.PayCallback;
@@ -44,7 +46,13 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
 public class PayUtil {
-
+	
+	private static Logger log = LoggerFactory.getLogger(PayUtil.class);
+	
+	//D:/certs/apiclient_cert.p12
+	///data/certs/apiclient_cert.p12
+	private static String file_url = "D:/certs/apiclient_cert.p12";
+	
 	// 密钥
 	private final static String Key = "350181199404211838malingkaiecho9";
 
@@ -193,7 +201,7 @@ public class PayUtil {
 			unifiedOrderRespose = (UnifiedOrderRespose) xStream.fromXML(sb
 					.toString());
 			System.out.println(unifiedOrderRespose);
-			
+			log.info("支付结果：" + unifiedOrderRespose + "\n");
 			// 根据微信文档return_code 和result_code都为SUCCESS的时候才会返回code_url
 			if (null != unifiedOrderRespose
 					&& "SUCCESS".equals(unifiedOrderRespose.getReturn_code())
@@ -381,7 +389,7 @@ public class PayUtil {
         StringBuffer message = new StringBuffer();
         try {
             KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-            FileInputStream instream = new FileInputStream(new File("D:/certs/apiclient_cert.p12"));
+            FileInputStream instream = new FileInputStream(new File(file_url));
             keyStore.load(instream, MCH_ID.toCharArray());
          // Trust own CA and all self-signed certs
             SSLContext sslcontext = SSLContexts.custom()

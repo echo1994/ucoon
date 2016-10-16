@@ -1,5 +1,6 @@
 package com.cn.ucoon.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.cn.ucoon.pojo.User;
@@ -49,6 +50,46 @@ public interface UserService {
 	 */
 	public void updatePosition(String latitude,String longitude);
 	
+	/**
+	 * 更新签名
+	 * @param latitude
+	 * @param longitude
+	 */
+	public boolean updateUserSignature(User user);
 	
+	/**
+	 * 更新电话
+	 * @param latitude
+	 * @param longitude
+	 */
+	public boolean updateUserPhone(User user);
+	
+	/**
+	 * 更新微信号
+	 * @param latitude
+	 * @param longitude
+	 */
+	public boolean updateUserWxId(User user);
+	
+	
+	public boolean updateUserName(User user);
+	
+	
+	/**
+	 * 判断是否绑定手机
+	 * @param userId
+	 * @return
+	 */
+	public boolean isBindPhone(Integer userId);
+	
+	
+	/**
+	 * 获取用户的详细信息 包含评价信息
+	 * @param userId
+	 * @param startIndex
+	 * @param endIndex
+	 * @return
+	 */
+	public List<HashMap<String, Object>> selectDetailWithEvabyUserId(Integer userId);
 	
 }

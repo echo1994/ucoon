@@ -49,6 +49,7 @@ public class ApplyController {
 	@ResponseBody
 	public String addAppliment(
 			@RequestParam(value = "missionId") Integer missionId,
+			@RequestParam(value = "msg") String msg,
 			HttpServletRequest request, HttpServletResponse response) {
 		Integer userId =  (Integer) request.getSession().getAttribute("user_id");
 		List<HashMap<String, String>> applys = null;
@@ -70,7 +71,7 @@ public class ApplyController {
 			applyOrders.setTakeState(0);
 			applyOrders.setTakeTime(new Date());
 			applyOrders.setUserId(userId);
-			
+			applyOrders.setNote(msg);
 			
 			if (applyService.saveOrders(applyOrders)) {
 					
@@ -237,7 +238,7 @@ public class ApplyController {
 			ModelAndView mv,HttpServletRequest request) {
 		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
 		
-		HashMap<String, String> mdetails = null;
+		HashMap<String, Object> mdetails = null;
 		mdetails = missionService.selectForMissionDetails(missionId);
 		User user = userService.getUserById(user_id);
 		
@@ -303,7 +304,51 @@ public class ApplyController {
 		return "操作违规";
 	}
 	
+	
+	
+	
+	@ResponseBody
+	@RequestMapping(value="chosePeople/{applyId}", produces = "text/html;charset=UTF-8;")
+	public String chosePeople(@PathVariable(value = "applyId") Integer applyId,
+			HttpServletRequest request){
+		// 1判断是否发布者操作
+		// 2改变订单状态
+		ApplyOrders selectByPrimaryKey = applyService.selectByPrimaryKey(applyId);
+		Integer missionId = selectByPrimaryKey.getMissionId();
+		Mission mission = missionService.selectByPrimaryKey(missionId);
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		if (cuserId != null && cuserId == mission.getUserId()) {
+			selectByPrimaryKey.setTakeState(1);
+			if(applyService.updateStateByApplyId(selectByPrimaryKey)){
+				
+				return "success";
+			}
+			return "error";
+		}
+		return "操作违规";
+	}
 
+	@ResponseBody
+	@RequestMapping(value="cancelPeople/{applyId}", produces = "text/html;charset=UTF-8;")
+	public String cancelPeople(@PathVariable(value = "applyId") Integer applyId,
+			HttpServletRequest request){
+		// 1判断是否发布者操作
+		// 2改变订单状态
+		ApplyOrders selectByPrimaryKey = applyService.selectByPrimaryKey(applyId);
+		Integer missionId = selectByPrimaryKey.getMissionId();
+		Mission mission = missionService.selectByPrimaryKey(missionId);
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		if (cuserId != null && cuserId == mission.getUserId()) {
+			selectByPrimaryKey.setTakeState(0);
+			if(applyService.updateStateByApplyId(selectByPrimaryKey)){
+				
+				return "success";
+			}
+			return "error";
+		}
+		return "操作违规";
+	}
+	
 	@RequestMapping(value = "/saveNote", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject saveCommentChild(

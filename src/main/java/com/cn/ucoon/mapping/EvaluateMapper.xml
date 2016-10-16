@@ -70,4 +70,12 @@
     from evaluate
     where mission_id = #{0}
   </select>
+  
+  <select id="selectPublishScoreByUserId" resultType="java.lang.Integer">
+    select AVG(publish_score) from evaluate where executor_id = #{0} and publish_score IS NOT NULL
+  </select>
+  
+  <select id="selectExecutorScoreByUserId" resultType="java.lang.Integer">
+    select AVG(executor_score) from evaluate where publish_id = #{0} and executor_score IS NOT NULL
+  </select>
 </mapper>

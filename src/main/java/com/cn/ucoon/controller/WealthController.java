@@ -22,9 +22,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.cn.ucoon.pojo.Balance;
-import com.cn.ucoon.pojo.BalanceOrder;
-import com.cn.ucoon.pojo.Mission;
-import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.wx.JsAPIConfig;
 import com.cn.ucoon.pojo.wx.SendRedPack;
 import com.cn.ucoon.pojo.wx.SendRedPackRespose;
@@ -93,12 +90,13 @@ public class WealthController {
 		 */
 
 		Integer userId = (Integer) request.getSession().getAttribute("user_id");
-		BalanceOrder orders = new BalanceOrder();
-		orders.setOrderMoney(money);
+		Balance orders = new Balance();
+		orders.setQuantity(money);
 		orders.setOrderNum(PayUtil.getOrdersNum(userId, userId));
 		orders.setOrderState(0);// 未支付
-		orders.setOrderType("充值");
+		orders.setConsumingRecords("充值");
 		orders.setUserId(userId);
+		orders.setPlusOrMinus("plus");
 
 		if (!balanceService.insertBalanceOrder(orders)) {
 			json.put("result_type", "error");
@@ -117,10 +115,10 @@ public class WealthController {
 		json.put("result_type", "success");
 		String ip = getIpAddr(request);
 		String body = "有空ucoon-余额充值";
-		int fee = orders.getOrderMoney().multiply(new BigDecimal(100))
+		int fee = orders.getQuantity().multiply(new BigDecimal(100))
 				.intValue();
 		System.out.println(fee);
-		String notify_url = "http://wx.ucoon.cn/ucoon/wealth/payresult";
+		String notify_url = "http://wx.ucoon.cn/wealth/payresult";
 		;
 		String trade_type = "JSAPI";
 
@@ -188,12 +186,14 @@ public class WealthController {
 		 */
 
 		
-		BalanceOrder orders = new BalanceOrder();
-		orders.setOrderMoney(money);
+		Balance orders = new Balance();
+		orders.setQuantity(money);
 		orders.setOrderNum(PayUtil.getOrdersNum(userId, userId));
 		orders.setOrderState(0);// 未支付、未提现
-		orders.setOrderType("提现");
+		orders.setConsumingRecords("提现");
 		orders.setUserId(userId);
+		orders.setPlusOrMinus("minus");
+		
 
 		if (!balanceService.insertBalanceOrder(orders)) {
 			json.put("result_type", "error");
@@ -228,9 +228,6 @@ public class WealthController {
 		
 		SendRedPackRespose respose = PayUtil.sendRedPack(redPack);
 
-		//修改订单状态
-		BalanceOrder record = new BalanceOrder();
-		record.setOrderNum(orders.getOrderNum());
 		// 根据微信文档return_code 和result_code都为SUCCESS的时候才会返回code_url
 		if (null != respose && "SUCCESS".equals(respose.getReturn_code())
 				&& "SUCCESS".equals(respose.getResult_code())) {
@@ -240,7 +237,7 @@ public class WealthController {
 		
 
 			// 改订单状态
-			record.setOrderState(1);
+			orders.setOrderState(1);
 			
 
 			
@@ -249,9 +246,10 @@ public class WealthController {
 			json.put("msg", "提现失败");
 			
 			// 改订单状态
-			record.setOrderState(2);
+			orders.setOrderState(2);
 		}
-		balanceService.changeOrderStateByOrderNum(record);
+		orders.setConsumingTime(new Date());
+		balanceService.changeOrderStateByOrderNum(orders);
 		return json;
 	}
 
@@ -277,12 +275,12 @@ public class WealthController {
 				// 这里写成功后的业务逻辑： 改订单状态，发模板消息等
 				String orderId = map.get("out_trade_no");
 
-				BalanceOrder record = new BalanceOrder();
+				Balance record = new Balance(); 
 
 				// 改订单状态
 				record.setOrderState(1);
 				record.setOrderNum(orderId);
-
+				record.setConsumingTime(new Date());
 				balanceService.changeOrderStateByOrderNum(record);
 
 				System.out.println("收到充值结果订单：" + orderId);
@@ -291,21 +289,13 @@ public class WealthController {
 				String openid = map.get("openid");
 				Integer userId = userService.getUserIdbyOpenId(openid);
 
-				Balance balance = new Balance();
-				balance.setConsumingRecords("充值");
-				balance.setConsumingTime(new Date());
-				balance.setPlusOrMinus("plus");
-				balance.setQuantity(new BigDecimal(
-						(Double.valueOf(total_fee) / 100)));
-				balance.setUserId(userId);
-				balanceService.insertBlance(balance);
 
 				if (map.get("is_subscribe").equalsIgnoreCase("Y")) {
 					Template tem = new Template();
 					tem.setTemplateId("f9WOlW7QygvG9J3ZSW_lyk8KDML5RYhYjb7a5Af0klQ");
 					tem.setTopColor("#00DD00");
 					tem.setToUser(openid);
-					tem.setUrl("http://wx.ucoon.cn/ucoon/"); // 到时候改为任务列表
+					tem.setUrl("http://wx.ucoon.cn/"); // 到时候改为任务列表
 
 					List<TemplateParam> paras = new ArrayList<TemplateParam>();
 					paras.add(new TemplateParam("first", "您好，您已成功进行余额充值。",

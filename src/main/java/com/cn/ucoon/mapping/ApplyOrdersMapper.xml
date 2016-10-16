@@ -93,4 +93,21 @@
 		(select count(*) from evaluate where evaluate.mission_id=apply_orders.mission_id and executor_evaluate IS NOT NULL and LENGTH(trim(executor_evaluate))>0) as isEvaluate 
 		from apply_orders WHERE user_id=#{0}  and mission_id=#{1} 
 	</select>
+	
+	<!-- 查询APPLY_ORDERS可选人数   -->
+	<select id="selectunselectedpeople" resultType="java.util.HashMap">
+		SELECT apply_id,mission_id,user.user_id,nick_name,head_img_url,sex,weixin_id,signature,
+		phone, latitude,longitude,take_time,note,order_num
+		FROM apply_orders left join user on user.user_id = apply_orders.user_id WHERE mission_id
+		= #{0} and take_state=0
+	</select>
+	
+	<!-- 查询APPLY_ORDERS已选人数   -->
+	<select id="selectselectedpeople" resultType="java.util.HashMap">
+		SELECT apply_id,mission_id,user.user_id,nick_name,head_img_url,sex,weixin_id,signature,
+		phone, latitude,longitude,take_time,note,order_num
+		FROM apply_orders left join user on user.user_id = apply_orders.user_id WHERE mission_id
+		= #{0} and take_state=1
+	</select>
+	
 </mapper>

@@ -21,10 +21,57 @@
 <link href="css/mui.min.css" rel="stylesheet" />
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
+ <style>
+     .mui-btn {
+         display: block;
+         width: 120px;
+         margin: 10px auto;
+     }
+
+     #info {
+         padding: 20px 10px;
+     }
+     .mui-popup-inner{
+         padding: 0;
+     }
+     .mui-popup-title{
+         padding: 10px 0;
+         font-size: 14px;
+     }
+
+     .mui-popup-text .inptel{
+         width: 58%;
+         padding: 5px;
+         margin: 0;
+     }
+     .mui-popup-text .inpyzm{
+         width: 90%;
+         padding: 5px;
+         margin: 10px 0 20px 0;
+     }
+
+     .get-btn{
+         padding: 5px;
+         height: 40px;
+         width: 80px;
+         margin-left: 5px;
+         background: #ccc;
+         color: #fff;
+         border: none;
+     }
+     button:enabled:active{
+         background: #ccc;
+     }
+
+     .mui-popup-button{
+         color: #C3D94F;
+     }
+ </style>
 </head>
 <script type="text/javascript">
-	var currentPage = 0;
-	var onePageNums = 10;
+	var currentPage = 1;
+	var onePageNums = 20;
+	var currentType = "all";
 	var latitude = "";
 	var longitude = "";
 	var URL = window.location.href.split('#')[0]; //获取当前页面的url
@@ -32,7 +79,7 @@
 	var appid,nonceStr,signature,timestamp;
 	//ajax同步更新全局变量，异步无法更新
 	$.ajax({
-	    url: "/ucoon/wx/sign?url="+URL,
+	    url: "wx/sign?url="+URL,
 	    success: function(result){
 	    	appid = result.appId;
 	    	timestamp=result.timestamp;
@@ -64,7 +111,7 @@
 		        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
 		        var speed = res.speed; // 速度，以米/每秒计
 		        var accuracy = res.accuracy; // 位置精度
-		       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
+		       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),300);
 		    }
 		});
 	});
@@ -76,9 +123,7 @@
 						"keyup",
 						function(e) {
 								initIndex();
-								loaddata(currentPage * onePageNums,
-										(currentPage + 1) * onePageNums - 1,
-										this.value, true,'all');
+								loaddata((currentPage-1) * onePageNums,onePageNums,this.value, true,'all');
 						})
 				$(".clearfix").bind(
 						"tap",
@@ -101,25 +146,75 @@
 					initIndex();
 					//加载数据
 					if(classList.contains('all')){
-						loaddata(currentPage * onePageNums,
-										(currentPage + 1) * onePageNums - 1,
-										this.value, true,'all');
+						currentType = "nearby";
+						loaddata((currentPage-1) * onePageNums,
+							onePageNums,this.value, true,'all');
 					} else{
-						loaddata(currentPage * onePageNums,
-										(currentPage + 1) * onePageNums - 1,
-										this.value, true,'nearby');
+						currentType = "nearby";
+						loaddata((currentPage-1) * onePageNums,
+							onePageNums,this.value, true,'nearby');
 					}
 				});
 				
-
+	
+				
 			})
 	function initIndex() {
-		currentPage = 0;
-		onePageNums = 10;
+		boolean = false; 
+		mui('#offCanvasContentScroll').pullRefresh().refresh(true);	
+		currentPage = 1;
+		onePageNums = 20;
 	}
 	function loaddata(startIndex, endIndex, keyWord, clearable,type) {
-		$
-				.ajax({
+	
+	
+		if(latitude == ""){
+			//超时处理
+			var URL = window.location.href.split('#')[0]; //获取当前页面的url
+			URL = encodeURIComponent(URL);
+			var appid,nonceStr,signature,timestamp;
+			//ajax同步更新全局变量，异步无法更新
+			$.ajax({
+			    url: "wx/sign?url="+URL,
+			    success: function(result){
+			    	appid = result.appId;
+			    	timestamp=result.timestamp;
+			    	nonceStr=result.nonceStr;
+			    	signature=result.signature;
+			    },
+			  	dataType: "json",
+			  	async:false
+			});
+			
+			wx.config({
+			    debug: false,
+			    appId: appid,
+			    timestamp: timestamp,
+			    nonceStr: nonceStr,
+			    signature: signature,
+			    jsApiList: [
+			      'checkJsApi',
+			      'openLocation',
+			      'getLocation'
+			    ]
+			});
+			wx.ready(function(){
+	
+				wx.getLocation({
+				    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+				    success: function (res) {
+				        latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+				        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+				        var speed = res.speed; // 速度，以米/每秒计
+				        var accuracy = res.accuracy; // 位置精度
+				       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
+				    }
+				});
+			});
+		}
+		
+		var flag = false;
+		$.ajax({
 					url : 'mission/getMissionsLimited',
 					data : {
 						startIndex : startIndex,
@@ -137,6 +232,12 @@
 
 							$(".task").empty();
 						}
+						if(data.length == 0){
+							flag = true;
+						}else{
+							flag = false;
+						}
+						
 						for (var i = 0; i < data.length; i++) {
 							$(".task")
 									.append(
@@ -176,6 +277,7 @@
 						})
 					}
 				})
+				return flag;
 	}
 	function getMonthDay(timestamp) {
 		var date = new Date(timestamp);
@@ -272,13 +374,17 @@
 						</div>
 						<!--五星评分,默认5星-->
 						<div class="user-score">
-							<span class="fivestar"> <i
-								class="mui-icon iconfont icon-star"></i> <i
-								class="mui-icon iconfont icon-star"></i> <i
-								class="mui-icon iconfont icon-star"></i> <i
-								class="mui-icon iconfont icon-star-half"></i> 
-								<i
-								class="mui-icon iconfont icon-star-empty"></i>
+							<span class="fivestar"> 
+								<c:forEach varStatus="i" begin="1" end="${all}">
+									<i class="ui-icon iconfont icon-star"></i>
+								</c:forEach>
+								<c:forEach varStatus="i" begin="1" end="${blank}">
+									<i class="mui-icon iconfont icon-star-empty"></i>
+								</c:forEach>
+								
+								<c:if test="${half == true}">
+									<i class="mui-icon iconfont icon-star-half"></i> 
+								</c:if>
 							</span>
 						</div>
 						<!--个性签名-->
@@ -303,7 +409,7 @@
 							<li id="myservice"><i class="mui-icon iconfont icon-service"></i>我服务的</li>
 							<li id="chat-list"><i class="mui-icon iconfont icon-service"></i>消息中心</li>
 							<li id="help"><i class="mui-icon mui-icon-help"></i>帮助联系</li>
-							<li id="info"><i class="mui-icon mui-icon-info"></i>关于我们</li>
+							<li id="about"><i class="mui-icon mui-icon-info"></i>关于我们</li>
 						</ul>
 						<script type="text/javascript">
 							$('#wealth').bind('tap',function(){
@@ -311,7 +417,7 @@
 							})
 							
 							$('#wode').bind('tap',function(){
-								window.location.href="";
+								window.location.href="user/me";
 							})
 							$('#mysend').bind('tap',function(){
 								window.location.href="mysend";
@@ -328,9 +434,7 @@
 								window.location.href="feedback";
 							})
 							
-							$('#wode').bind('tap',function(){
-								window.location.href="";
-							})
+							
 							
 						</script>
 					</div>
@@ -360,10 +464,115 @@
 					<span class="tab-icon tab-we"></span>
 					<span class="tab-name mui-tab-label">都有空</span>
 				</a>
-				<a class="mui-tab-item" id="ucoon-who" href="who-new">
+				<a class="mui-tab-item" id="ucoon-who" href="javascript:void(0)">
 					<span class="tab-icon tab-who"></span>
 					<span class="tab-name mui-tab-label">谁有空</span>
 				</a>
+				
+				<script type="text/javascript">
+					$('#ucoon-who').bind('tap',function(){
+					
+						//判断是否绑定手机
+						$.ajax({
+							url : 'user/isBindPhone',
+							type : 'get',
+							dataType : 'json',
+							success : function(data) {
+								if(data.result == "error"){
+									 var btnArray = ['取消', '绑定'];
+							        mui.confirm('手机绑定', '请先绑定手机', btnArray, function(e) {
+							            if (e.index == 1) {
+							            	var code = document.getElementById("code").value;
+							            	var phone = document.getElementById("tel").value;
+							                $.ajax({
+												url : 'checkMsg',
+												data : {
+														code : code,
+														phone : phone
+												},
+												type : 'post',
+												dataType : 'json',
+												success : function(data) {
+													if(data.result == "error"){
+														alert(data.msg);
+														return;
+													}
+													window.location.href="who-new";
+												}
+											})
+							            } else {
+							                
+							            }
+							        })
+							        document.querySelector('.mui-popup-text').innerHTML='<input id="tel" class="inptel" onkeyup="telTest()" autofocus type="tel" placeholder="请输入您的手机号"><button class="get-btn" id="getBtn">获取验证码</button><input class="inpyzm" type="tel" name="" id="code" placeholder="请输入验证码">'
+									return;
+								}
+								
+								window.location.href="who-new";
+							}
+						})
+						
+					})
+					
+					//手机验证
+				    var reg =  /^[1][3-8]+\d{9}$/;
+					
+				    function telTest() {
+				        var getBtn = document.getElementById("getBtn");
+				        var inpTelval = document.getElementById("tel").value;
+				        if (reg.test(inpTelval)){
+				            getBtn.style.background ="#C3D94F";
+				            getBtn.addEventListener("click", send);
+				        }else {
+				            getBtn.style.background ="#ccc";
+				            getBtn.removeEventListener("click", send);
+				        }
+				    }
+				    
+				    
+				    function send(){
+				    	var inpTelval = document.getElementById("tel").value;
+				    	$.ajax({
+							url : 'sendMsg',
+							data : {
+									phone : inpTelval,
+							},
+							type : 'post',
+							dataType : 'json',
+							success : function(data) {
+								if(data.result == "error"){
+									alert(data.msg);
+									return;
+								}
+								setTime();
+							}
+						})
+				    }
+				    
+				    //60s倒计时
+				    var countdown=60;
+				    function setTime() {
+				        var getBtn = document.getElementById("getBtn");
+				        var tel = document.getElementById("tel");
+				        getBtn.style.background ="#ccc";
+				        if (countdown == 0) {
+				            getBtn.innerText="重新获取";
+				            getBtn.style.background ="#C3D94F";
+				            countdown = 60;
+				            getBtn.addEventListener("click", send);
+				            tel.readOnly=false;
+				        } else {
+				        	tel.readOnly=true;
+				            getBtn.innerText="已发送(" + countdown + ")";
+				            countdown--;
+				            getBtn.removeEventListener("click", send);
+				            setTimeout(function () {
+				                setTime()
+				            },1000)
+				        }
+				    }
+					
+				</script>
 			</nav>
 			
 			<!--主界面中间区域-->
@@ -456,6 +665,10 @@
 			pullRefresh: {
 				container: '#offCanvasContentScroll',
 				down: {
+				  	auto: true,//可选,默认false.自动下拉刷新一次
+				  	contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+				    contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+				    contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
 					callback: pulldownRefresh
 				},
 				up: {
@@ -465,58 +678,37 @@
 			}
 		});
 		
-		var count = 0;
 			/**
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
 				setTimeout(function() {
-
-//					var table = document.body.querySelector('.mui-table-view');
-
-//					var cells = document.body.querySelectorAll('.mui-table-view-cell');
-
-//					for (var i = cells.length, len = i + 3; i < len; i++) {
-
-//						var li = document.createElement('li');
-
-//						li.className = 'mui-table-view-cell';
-
-//						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
-
-//						//下拉刷新，新纪录插到最前面；
-
-//						table.insertBefore(li, table.firstChild);
-
-//					}
+					initIndex();
+					loaddata((currentPage-1) * onePageNums,
+							onePageNums,
+							'', true,currentType);
 
 					mui('#offCanvasContentScroll').pullRefresh().endPulldownToRefresh(); //refresh completed
 
-				}, 1500);
+				}, 300);
 			}
 			
+			var boolean = false; 
 			/**
 			 * 上拉加载具体业务实现
 			 */
 			function pullupRefresh() {
 				setTimeout(function() {
-					mui('#offCanvasContentScroll').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
-//					var table = document.body.querySelector('.mui-table-view');
-
-//					var cells = document.body.querySelectorAll('.mui-table-view-cell');
-
-//					for (var i = cells.length, len = i + 20; i < len; i++) {
-
-//						var li = document.createElement('li');
-
-//						li.className = 'mui-table-view-cell';
-
-//						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
-
-//						table.appendChild(li);
-
-//					}
-				}, 1500);
+//					initIndex();
+					
+					if(boolean == false){
+						currentPage++;
+						boolean = loaddata((currentPage-1) * onePageNums,
+							onePageNums,
+							'', false,currentType);
+					}
+					mui('#offCanvasContentScroll').pullRefresh().endPullupToRefresh(boolean); //参数为true代表没有更多数据了。
+				}, 300);
 			}
 		//主界面和侧滑菜单界面均支持区域滚动；
 		mui('#offCanvasSideScroll').scroll();
@@ -551,6 +743,8 @@
 				id : id
 			});
 		});
+		
+		
 	</script>
 
 </body>

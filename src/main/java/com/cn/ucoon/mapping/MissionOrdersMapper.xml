@@ -8,7 +8,6 @@
     <result column="mission_id" property="missionId" jdbcType="INTEGER" />
     <result column="order_time" property="orderTime" jdbcType="TIMESTAMP" />
     <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
-    <result column="state" property="state" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from mission_orders
@@ -20,10 +19,10 @@
     </selectKey>  
     insert into mission_orders (mission_order_id, mission_order_num, 
       user_id, mission_id, order_time, 
-      finish_time, state)
+      finish_time)
     values (#{missionOrderId,jdbcType=INTEGER}, #{missionOrderNum,jdbcType=VARCHAR}, 
       #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, #{orderTime,jdbcType=TIMESTAMP}, 
-      #{finishTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
+      #{finishTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.MissionOrders" >
     update mission_orders
@@ -31,8 +30,7 @@
       user_id = #{userId,jdbcType=INTEGER},
       mission_id = #{missionId,jdbcType=INTEGER},
       order_time = #{orderTime,jdbcType=TIMESTAMP},
-      finish_time = #{finishTime,jdbcType=TIMESTAMP},
-      state = #{state,jdbcType=INTEGER}
+      finish_time = #{finishTime,jdbcType=TIMESTAMP} 
     where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
   </update>
   
@@ -43,20 +41,17 @@
   
   
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
-    state
+    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time
     from mission_orders
     where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
   </select>
   <select id="selectByMissionId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
-    state
+    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time
     from mission_orders
     where mission_id = #{missionId,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time, 
-    state
+    select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time
     from mission_orders
   </select>
 </mapper>

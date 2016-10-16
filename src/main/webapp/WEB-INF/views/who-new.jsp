@@ -20,7 +20,7 @@
 
 <link rel="stylesheet" href="css/mui.min.css">
 <link rel="stylesheet" type="text/css" href="css/mui.picker.min.css" />
-<link href="css/style-new.css" rel="stylesheet" />
+<link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
 <link href="css/create-aty.css" rel="stylesheet" />
 
@@ -36,9 +36,51 @@
 	
 
 <style>
-html, body {
-	background-color: #efeff4;
-}
+	html, body {
+		background-color: #efeff4;
+	}
+	
+	.mui-btn-blue{
+		background: #c3d94f;
+		border: none;
+	}
+	.address{
+		position: relative;
+	}
+	.mui-input-row .addinput{
+		padding-right: 30px;
+	
+	}
+	
+	.mui-input-row .select{
+		position: absolute;
+		z-index: 9;
+		top: 13px;
+		right:1px;
+		width: 20px;
+		height: 20px;
+		font-size: 0;
+		margin: 3px 8px 3px 5px;
+		background: url("images/pulldown.png") no-repeat;
+		background-size: 20px 20px;
+	
+	}
+	.mui-input-row .tel{
+		padding-right: 30px;
+	}
+	.tip{
+		position: absolute;
+		font-size: 15px;
+		color: #999;
+		/*text-align: right;*/
+		/*padding:10px 50px 10px 0;*/
+
+		bottom:12px;
+		right: 10px;
+
+
+	}
+
 </style>
 </head>
 
@@ -55,7 +97,7 @@ html, body {
 					placeholder="如领快递，买盒饭等">
 			</div>
 			<div class="publish-des">
-				<textarea type="text" name="missionDescribe"
+				<textarea name="missionDescribe"
 					placeholder="选填，添加详细描述，有助于快速被接单哦！"></textarea>
 				<ul class="addimg">
 					<li style="position: relative;"><img id="addimgCo"
@@ -70,32 +112,27 @@ html, body {
 					placeholder="价格" id="price">
 			</div>
 			<div class="mui-input-row who-form">
-				<label>需要人数</label> <input type="text" name="peopleCount"
-					placeholder="请填写你需要的人数" id="peopleCount">
+				<label>需要人数</label> <input type="text" name="peopleCount" value="1"
+					placeholder="最少1人，最多5人" id="peopleCount">
+			</div>
+				<div class="mui-input-row who-form">
+				<label>执行地点</label>
+				<input class="tel" type="text" id="menu-btn" name="place" placeholder="点击选择地点"  value="">
+				<select class="select" id="sel" onchange="changeF()">
+					
+					<c:forEach items="${infos }" var="info">
+						<option value="${info.place }" data-m="${info.missionLng }" data-t="${info.missionLat }">${info.place }</option>
+					</c:forEach>	
+				</select>
 			</div>
 			<div class="mui-input-row who-form">
-				<label>活动地点</label> <input type="text" name="place"
-					placeholder="点击选择地点" id="menu-btn">
-			</div>
-			<div class="mui-input-row who-form">
-				<label>详细地点</label> <input type="text" name="detailPlace"
-					placeholder="选填，填写详细的地址">
-			</div>
-			<div class="mui-input-row who-form">
-				<label>开始时间</label> <input id='result1' name="startTime" type="text"
-					data-options='' placeholder="点击选择"
-					class="btn mui-btn mui-btn-block ui-alert"  />
-
-			</div>
-			<div class="mui-input-row who-form">
-				<label>截止时间</label> <input id='result2' name="endTime" type="text"
-					data-options='' placeholder="点击选择"
-					class="btn mui-btn mui-btn-block ui-alert" />
-
+				<label>截止接单</label>
+				<input id='showUserPicker' type="text" name="time" class="mui-btn mui-btn-block ui-alert" value="24小时候后">
 			</div>
 			<div class="mui-input-row who-form">
 				<label>联系电话</label> <input type="tel" name="telephone"
-					value="" placeholder="请填写你的电话" id="telephone">
+					value="${user.phone }" placeholder="请填写你的电话" id="telephone">
+				<p class="tip">(接单可见)</p>
 			</div>
 			<input type="hidden" name="missionLng" id="lng" placeholder="经度">
 			<input type="hidden" name="missionLat" id="lat" placeholder="纬度">
@@ -164,31 +201,24 @@ html, body {
 	</div>
 	<div id="menu-wrapper" class="menu-wrapper hidden">
 		<div id="menu" class="menu">
-			<p style="">
+			<p class="add-input-box">
 				<input type="text" name="place" class="mui-input-clear"
 						placeholder="输入地址名即可" id="suggestId">
-				<button id="search" type="button" class="mui-btn mui-btn-primary">
-					同城搜索
-				</button>
 			</p>
 			<div id="l-map"></div>
-			<p style="padding: 5px 20%;margin-bottom: 5px;">
+			<p class="add-btn-group">
 				<button id="cancel" type="button" class="mui-btn mui-btn-primary" style="padding: 10px;">
 					取消
 				</button>
 				<button id="save" type="button" class="mui-btn mui-btn-primary" style="padding: 10px;">
 					完成
 				</button>
-				
 			</p>
-			
 		</div>
 	</div>
 	<div id="menu-backdrop" class="menu-backdrop"></div>
 	<div id="searchResultPanel"
 		style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
-	
-	
 
 </body>
 <script src="js/who.js"></script>

@@ -41,4 +41,20 @@ public class EvaluateServiceImpl implements EvaluateService{
 		return false;
 	}
 
+
+	@Override
+	public float getEvaluateScore(Integer userId) {
+		// TODO Auto-generated method stub
+		
+		
+		float total =  5.0f; //评分默认5分
+		if((evaluateMapper.selectExecutorScoreByUserId(userId) != null) && (evaluateMapper.selectPublishScoreByUserId(userId) != null) ){
+			
+			total = (evaluateMapper.selectExecutorScoreByUserId(userId) + evaluateMapper.selectPublishScoreByUserId(userId))/2;
+		}
+		
+		
+		return total;
+	}
+
 }

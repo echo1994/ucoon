@@ -34,4 +34,8 @@ public interface ApplyService {
 	
 	
 	boolean saveOrders(ApplyOrders applyOrders);
+	
+	List<HashMap<String, Object>> selectunselectedpeople(Integer missionId);
+	
+	List<HashMap<String, Object>> selectselectedpeople(Integer missionId);
 }

@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cn.ucoon.dao.BalanceMapper;
-import com.cn.ucoon.dao.BalanceOrderMapper;
 import com.cn.ucoon.pojo.Balance;
-import com.cn.ucoon.pojo.BalanceOrder;
 import com.cn.ucoon.service.BalanceService;
 
 @Service
@@ -20,8 +18,6 @@ public class BalanceServiceImpl implements BalanceService {
 	@Autowired
 	private BalanceMapper balanceMapper;
 	
-	@Autowired
-	private BalanceOrderMapper balanceOrderMapper;
 	
 	
 	@Override
@@ -29,7 +25,7 @@ public class BalanceServiceImpl implements BalanceService {
 		
 		BigDecimal total = new BigDecimal("0.00");
 		
-		List<Balance> lists = balanceMapper.selectByUserId(userId);
+		List<Balance> lists = balanceMapper.selectByUserIdAndState(userId,1);
 		for (int i = 0; i < lists.size(); i++) {
 			String C = lists.get(i).getPlusOrMinus();
 			
@@ -51,7 +47,7 @@ public class BalanceServiceImpl implements BalanceService {
 	public BigDecimal countPlusBalance(Integer userId) {
 		BigDecimal total = new BigDecimal("0.00");
 		
-		List<Balance> lists = balanceMapper.selectByUserId(userId);
+		List<Balance> lists = balanceMapper.selectByUserIdAndState(userId,1);
 		for (int i = 0; i < lists.size(); i++) {
 			String C = lists.get(i).getPlusOrMinus();
 			
@@ -66,8 +62,8 @@ public class BalanceServiceImpl implements BalanceService {
 
 
 	@Override
-	public boolean insertBalanceOrder(BalanceOrder order) {
-		int i = balanceOrderMapper.insert(order);
+	public boolean insertBalanceOrder(Balance order) {
+		int i = balanceMapper.insert(order);
 		if(i > 0){
 			return true;
 		}
@@ -78,8 +74,8 @@ public class BalanceServiceImpl implements BalanceService {
 
 
 	@Override
-	public boolean changeOrderStateByOrderNum(BalanceOrder order) {
-		int i = balanceOrderMapper.updateStatusbyOrdersId(order);
+	public boolean changeOrderStateByOrderNum(Balance order) {
+		int i = balanceMapper.updateStatusbyOrdersId(order);
 		
 		if( i > 0 ){
 			return true;

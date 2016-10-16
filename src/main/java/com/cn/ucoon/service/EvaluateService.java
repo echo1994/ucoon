@@ -10,4 +10,7 @@ public interface EvaluateService {
 	public void insertEvaluate(Evaluate evaluate);
 	
 	public boolean updateExecutorByMissionId(Evaluate evaluate);
+	
+	
+	public float getEvaluateScore(Integer userId);
 }

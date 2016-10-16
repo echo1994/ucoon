@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cn.ucoon.dao.MissionAddressMapper;
 import com.cn.ucoon.dao.MissionMapper;
 import com.cn.ucoon.pojo.Mission;
+import com.cn.ucoon.pojo.MissionAddress;
 import com.cn.ucoon.service.MissionService;
 import com.cn.ucoon.util.MapDistanceUtil;
 
@@ -19,6 +21,9 @@ public class MissionServiceImpl implements MissionService {
 
 	@Autowired
 	private MissionMapper missionMapper;
+	
+	@Autowired
+	private MissionAddressMapper addressMapper;
 
 	@Override
 	public boolean publishMission(Mission mission) {
@@ -122,7 +127,7 @@ public class MissionServiceImpl implements MissionService {
 	}
 
 	@Override
-	public HashMap<String, String> selectForMissionDetails(
+	public HashMap<String, Object> selectForMissionDetails(
 			Integer missionId) {
 		// TODO Auto-generated method stub
 		return missionMapper.selectForMissionDetails(missionId);
@@ -182,5 +187,38 @@ public class MissionServiceImpl implements MissionService {
 	public Integer countUnPaidMission(Integer userId) {
 		// TODO Auto-generated method stub
 		return missionMapper.selectUnPaidMissionByUserId(userId);
+	}
+
+	@Override
+	public Integer countMissionDoneByUserId(Integer userId) {
+		// TODO Auto-generated method stub
+		return missionMapper.countMissionDoneByUserId(userId);
+	}
+
+	@Override
+	public boolean addMissionAddress(MissionAddress address) {
+		if(addressMapper.insert(address) > 0){
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean isAddressExist(String place) {
+		
+		MissionAddress address = addressMapper.selectByPlace(place);
+		
+		if(address != null){
+			return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public List<MissionAddress> selectAllMissionAddressByUserId(Integer userId) {
+		// TODO Auto-generated method stub
+		return addressMapper.selectAllByUserId(userId);
 	}
 }

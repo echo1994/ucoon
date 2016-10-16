@@ -84,12 +84,34 @@
       longitude = #{longitude,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
-    <update id="updateUserLatAndLng" parameterType="com.cn.ucoon.pojo.User" >
+   <update id="updateUserLatAndLng" parameterType="com.cn.ucoon.pojo.User" >
     update user
     set latitude = #{latitude,jdbcType=VARCHAR},
       longitude = #{longitude,jdbcType=VARCHAR}
     where open_id = #{openId,jdbcType=VARCHAR}
   </update>
+   <update id="updateUserSignatrue" parameterType="com.cn.ucoon.pojo.User" >
+    update user
+    set signature = #{signature,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+   <update id="updateUserPhone" parameterType="com.cn.ucoon.pojo.User" >
+    update user
+    set phone = #{phone,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+   <update id="updateUserWxId" parameterType="com.cn.ucoon.pojo.User" >
+    update user
+    set weixin_id = #{weixinId,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateUserName" parameterType="com.cn.ucoon.pojo.User" >
+    update user
+    set nick_name = #{nickName,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select user_id, open_id, nick_name, weixin_id, sex, signature, birthday, phone, name, 
     head_img_url, intro, credit, regist_time, country, province, city, state, latitude, 
@@ -128,8 +150,23 @@
 		where user_id = #{0}
 	</select>
 	
+	<select id="selectPhoneByUserId" resultType="java.lang.String">
+		select phone from user
+		where user_id = #{0}
+	</select>
+	
 	<select id="selectUserId" resultType="java.lang.Integer">
 		select user_id from user
 		where open_id = #{0}
 	</select>
+	
+	
+	<!-- 查询用户信息包含评价信息   -->
+	<select id="selectForUserDetailsEvaluate" resultType="java.util.HashMap">
+		SELECT *
+		FROM user left join evaluate on user.user_id = evaluate.publish_id WHERE executor_id
+		= #{0}
+	</select>
+	
+		
 </mapper>

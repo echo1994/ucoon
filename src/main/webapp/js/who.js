@@ -162,7 +162,7 @@ var map = new BMap.Map("l-map");
 var point = new BMap.Point(118.099805,24.584511);
 var marker = new BMap.Marker(point);// 创建标注
 map.addOverlay(marker);             // 将标注添加到地图中
-map.centerAndZoom(point, 11);
+map.centerAndZoom(point, 15);
 map.enableScrollWheelZoom(true);
 map.enableInertialDragging();
 marker.enableDragging();
@@ -284,38 +284,38 @@ ac.addEventListener("onconfirm", function(e) { // 鼠标点击下拉列表后的
 	
 });
 
-G("search").addEventListener("click", function() { // 搜索按钮点击事件
-	var _value = G("suggestId").value; 
-	if(_value == ""){
-		alert("请输入地址");
-		return;
-	}
-	
-	map.clearOverlays();    //清除地图上所有覆盖物
-	
-	function myFun(){
-		var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
-		
-		map.centerAndZoom(pp, 18);
-		marker.setPosition(pp)
-		map.addOverlay(marker);    //添加标注
-		var geoc = new BMap.Geocoder();
-		geoc.getLocation(pp, function(rs){
-			var addComp = rs.addressComponents;
-			G("suggestId").value = addComp.province + addComp.city + addComp.district+ addComp.street + addComp.streetNumber + "(" + _value +  ")";
-			address_temp = addComp.province + addComp.city + addComp.district+ addComp.street + addComp.streetNumber + "(" + _value +  ")";
-			lng_temp = pp.lng;
-			lat_temp = pp.lat;
-		});
-	}
-	var local = new BMap.LocalSearch(map, { //智能搜索
-	  onSearchComplete: myFun
-	});
-	//local.search(_value);//不限制范围
-
-	local.searchNearby(_value,current_city,20000); //限制范围 ，规范：当前城市 20千米内检索
-	
-});
+// G("search").addEventListener("click", function() { // 搜索按钮点击事件
+// 	var _value = G("suggestId").value;
+// 	if(_value == ""){
+// 		alert("请输入地址");
+// 		return;
+// 	}
+//
+// 	map.clearOverlays();    //清除地图上所有覆盖物
+//
+// 	function myFun(){
+// 		var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+//
+// 		map.centerAndZoom(pp, 18);
+// 		marker.setPosition(pp)
+// 		map.addOverlay(marker);    //添加标注
+// 		var geoc = new BMap.Geocoder();
+// 		geoc.getLocation(pp, function(rs){
+// 			var addComp = rs.addressComponents;
+// 			G("suggestId").value = addComp.province + addComp.city + addComp.district+ addComp.street + addComp.streetNumber + "(" + _value +  ")";
+// 			address_temp = addComp.province + addComp.city + addComp.district+ addComp.street + addComp.streetNumber + "(" + _value +  ")";
+// 			lng_temp = pp.lng;
+// 			lat_temp = pp.lat;
+// 		});
+// 	}
+// 	var local = new BMap.LocalSearch(map, { //智能搜索
+// 	  onSearchComplete: myFun
+// 	});
+// 	//local.search(_value);//不限制范围
+//
+// 	local.searchNearby(_value,current_city,20000); //限制范围 ，规范：当前城市 20千米内检索
+//
+// });
 G("save").addEventListener("click", function() { // 搜索按钮点击事件
 	
 	
@@ -332,6 +332,9 @@ G("save").addEventListener("click", function() { // 搜索按钮点击事件
 
 	
 });
+
+
+
 
 /* data-picker组件 */
 (function($) {
@@ -370,7 +373,110 @@ G("save").addEventListener("click", function() { // 搜索按钮点击事件
 			});
 		}, false);
 	});
+
+	var userPicker = new $.PopPicker();
+	userPicker.setData([{
+		value: '0.5',
+		text: '0.5小时后'
+	}, {
+		value: '1',
+		text: '1小时后'
+	}, {
+		value: '2',
+		text: '2小时后'
+	},{
+		value: '3',
+		text: '3小时后'
+	}, {
+		value: '4',
+		text: '4小时后'
+	}, {
+		value: '5',
+		text: '5小时后'
+	}, {
+		value: '6',
+		text: '6小时后'
+	}, {
+		value: '7',
+		text: '7小时后'
+	}, {
+		value: '8',
+		text: '8小时后'
+	}, {
+		value: '9',
+		text: '9小时后'
+	}, {
+		value: '10',
+		text: '10小时后'
+	}, {
+		value: '11',
+		text: '11小时后'
+	}, {
+		value: '12',
+		text: '12小时后'
+	}, {
+		value: '13',
+		text: '13小时后'
+	}, {
+		value: '14',
+		text: '14小时后'
+	}, {
+		value: '15',
+		text: '15小时后'
+	}, {
+		value: '16',
+		text: '16小时后'
+	}, {
+		value: '17',
+		text: '17小时后'
+	}, {
+		value: '18',
+		text: '18小时后'
+	}, {
+		value: '19',
+		text: '19小时后'
+	}, {
+		value: '20',
+		text: '20小时后'
+	}, {
+		value: '21',
+		text: '21小时后'
+	}, {
+		value: '22',
+		text: '22小时后'
+	}, {
+		value: '23',
+		text: '23小时后'
+	}, {
+		value: '24',
+		text: '24小时后'
+	}]);
+	
+	var showUserPickerButton = document.getElementById('showUserPicker');
+//			var userResult = document.getElementById('userResult');
+	showUserPickerButton.addEventListener('tap', function(event) {
+		userPicker.show(function(items) {
+//					showUserPickerButton.value = JSON.stringify(items[0].text);
+			showUserPickerButton.value = items[0].text;
+			//返回 false 可以阻止选择框的关闭
+			//return false;
+		});
+	}, false);
+
 })(mui);
+
+
+//历史地址下拉选择
+function changeF() {
+	$('#menu-btn').val($("#sel").find("option:selected").val())
+	$('#lng').val($("#sel").find("option:selected").attr("data-m"));
+	$('#lat').val($("#sel").find("option:selected").attr("data-t"));
+}
+
+$(document).ready(
+	$("#l-map").css("height",$(window).height())
+)
+
 
 /*
  * document.getElementById('mysend').addEventListener('tap', function() {
@@ -427,6 +533,7 @@ function toggleMenu() {
 
 /* 自动定位 */
 $(function() {
+	/*alert(2);*/
 	navigator.geolocation.getCurrentPosition(translatePoint); // 定位
 });
 function translatePoint(position) {
@@ -436,6 +543,7 @@ function translatePoint(position) {
 	BMap.Convertor.translate(gpsPoint, 0, initLocation); // 转换坐标
 }
 function initLocation(point) {
+	/*alert(1);*/
 	var gc = new BMap.Geocoder();
 	var s;
 	gc.getLocation(point, function(rs) {
@@ -443,13 +551,15 @@ function initLocation(point) {
 		s = addComp.province + "" + addComp.city + "" + addComp.district + ""
 				+ addComp.street + "" + addComp.streetNumber;
 		current_city = addComp.city;//定位当前城市，改变默认城市
-	
-		setPlace(s);
 		address_temp = s;
-		lng_temp = pp.lng;
-		lat_temp = pp.lat;
+		lng_temp = point.lng;
+		lat_temp = point.lat;
+
+		// alert(s);
 		$("#suggestId").val(s);
 		$("#menu-btn").val(s);
+		setPlace(s);
+		
 	});
 	
 }
@@ -458,20 +568,24 @@ function setPlace(myValue){
 	map.clearOverlays();    //清除地图上所有覆盖物
 
 	function myFun(){
-		var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+		var pp = local.getResults().getPoi(0).point;
+		//获取第一个智能搜索的结果
 		map.centerAndZoom(pp, 18);
 		marker.setPosition(pp)
 		map.addOverlay(marker);    //添加标注
-			
+
 	}
 	var local = new BMap.LocalSearch(map, { //智能搜索
 	  onSearchComplete: myFun
 	});
-	
+
 	local.search(myValue);
-	
+
 }
 /* 自动定位 */
+
+
+
 
 // 添加图片事件绑定
 var addimgCo = document.getElementById('addimgCo');

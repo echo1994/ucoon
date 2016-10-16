@@ -16,6 +16,7 @@ public interface ApplyOrdersMapper {
 
     int updateByPrimaryKey(ApplyOrders record);
     
+    
     int updateNoteByPrimaryKey(ApplyOrders record);
     
     List<HashMap<String, String>> selectApplybyUMID(Integer userId,
@@ -35,4 +36,10 @@ public interface ApplyOrdersMapper {
 	List<HashMap<String, String>> selectorderDetailsByApplyId(Integer applyId);
 	
 	List<HashMap<String, String>> selectorderDetailsByUserIdAndMissionId(Integer userId,Integer missionId);
+
+	
+	List<HashMap<String, Object>> selectunselectedpeople(Integer missionId);
+	
+	List<HashMap<String, Object>> selectselectedpeople(Integer missionId);
+
 }

@@ -15,6 +15,11 @@ public class Balance {
     private BigDecimal quantity;
 
     private Integer userId;
+    
+    private String orderNum;
+    
+    private Integer orderState;
+
 
     public Integer getBalanceId() {
         return balanceId;
@@ -63,4 +68,23 @@ public class Balance {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+	public String getOrderNum() {
+		return orderNum;
+	}
+
+	public void setOrderNum(String orderNum) {
+		this.orderNum = orderNum;
+	}
+
+	public Integer getOrderState() {
+		return orderState;
+	}
+
+	public void setOrderState(Integer orderState) {
+		this.orderState = orderState;
+	}
+    
+    
+    
 }

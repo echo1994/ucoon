@@ -30,7 +30,7 @@ public interface MissionMapper {
 
 	List<HashMap<String, Object>> selectLimitedbyUserIdAndStatus(Map<String, Object> map);
 
-	HashMap<String, String> selectForMissionDetails(Integer missionId);
+	HashMap<String, Object> selectForMissionDetails(Integer missionId);
 
 	Integer selectUserIdByMissionId(Integer missionId);
 	
@@ -44,4 +44,5 @@ public interface MissionMapper {
 	
 	Integer selectUnPaidMissionByUserId(Integer userId);
 	
+	Integer countMissionDoneByUserId(Integer userId);
 }

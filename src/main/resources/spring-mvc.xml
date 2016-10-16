@@ -76,7 +76,6 @@
 	
 	<mvc:view-controller path="/index" view-name="index" />
 	<mvc:view-controller path="/who" view-name="who" />
-	<mvc:view-controller path="/who-new" view-name="who-new" />
 	<mvc:view-controller path="/mysend" view-name="mysend" />
 	<mvc:view-controller path="/myservice" view-name="myservice" />
 	<mvc:view-controller path="/mission-pay" view-name="mission-pay" />

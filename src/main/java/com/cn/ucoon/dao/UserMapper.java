@@ -2,6 +2,7 @@ package com.cn.ucoon.dao;
 
 import com.cn.ucoon.pojo.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface UserMapper {
@@ -29,6 +30,19 @@ public interface UserMapper {
 	
 	int updateUserLatAndLng(User record);
 	
+	int updateUserSignatrue(User record);
+	
+	int updateUserPhone(User record);
+	
+	int updateUserWxId(User record);
+	
+	int updateUserName(User user);
+	
 	Integer selectUserId(String open_id);
+	
+	String selectPhoneByUserId(Integer userId);
+	
+	
+	List<HashMap<String, Object>> selectForUserDetailsEvaluate(Integer userId);
 		
 }

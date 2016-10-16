@@ -11,7 +11,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta charset="UTF-8">
-<title>个人详情</title>
+<title>选人个人详情</title>
 <meta name="viewport"
 	content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,21 +26,19 @@
 	$(function() {
 		$(".cur").bind("tap", function() {
 			var key1 = $(this).attr("data-confirm");
-			var key2 = $(this).attr("data-result");
-			alert(key1 + "," + key2);
+			alert(key1);
 			$.ajax({
-				url : 'apply/confirmAppliment/' + key1 + '/' + key2,
-				data : {
-					startIndex : 0,
-					endIndex : 0
-				},
+				url : 'applyOrders/chosePeople/' + key1,
 				async : false,
-				type : 'post',
+				type : 'get',
 				success : function(data) {
-					if (data == "true") {
-						alert("操作成功");
+					if (data != "success") {
+						alert("选人失败");
+						return; 
 					}
-					history.go(-1);
+					mui.openWindow({
+						url: "mission/selectpeople/" + ${orders.missionId}
+					});
 				}
 			});
 		});
@@ -88,104 +86,71 @@
 	<div class="mui-content">
 		<div class="basic-mes">
 			<!--头像-->
-			<img src="images/pic2.jpg">
-			<div class="ucoon-user">${au.nick_name}<i
-					class="mui-icon iconfont icon-man"></i>
+			<img src="${user.headImgUrl }">
+			<div class="ucoon-user">${user.nickName }
+				<c:choose>
+					 <c:when test="${user.sex == 2}">
+					 <i class="mui-icon iconfont icon-woman"></i>
+					 </c:when>
+					 <c:otherwise>
+						<i class="mui-icon iconfont icon-man"></i>
+					 </c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 		<div class="more-mes clearfix">
 			<div class="mes-col fl">
-				<i class="mui-icon mui-icon-phone"></i><span class="lab">电话</span><span>${au.phone}</span>
+				<i class="mui-icon mui-icon-phone"></i><span class="lab">电话</span><span><a href="tel:${user.phone }">${user.phone }</a></span>
 			</div>
 			<div class="mes-col fl">
-				<i class="mui-icon mui-icon-weixin"></i><span class="lab">微信号</span><span>${au.weixin_id}</span>
+				<i class="mui-icon mui-icon-weixin"></i><span class="lab">微信号</span><span>${user.weixinId}</span>
 
 			</div>
 		</div>
 		<div class="liuyan">
 			<p class="liu-title">留言：</p>
-			<p class="liu-cont">${au.note}</p>
+			<p class="liu-cont">${orders.note}</p>
 
 		</div>
 
 
 		<div class="discus">
 			<p class="pinglun">
-				<span>评论</span><span>(5)</span>
-				<button class="fr pinglunn-btn">评论</button>
+				<span>别人对他的评价</span><span>(${size})</span>
 			</p>
 			<ul class="m-discus">
-				<li class="discus-col">
-					<div class="father">
-						<img class="fl" src="images/muwu.jpg">
-						<div class="f-r fr">
-							<p class="discus-time">08-08 13:30</p>
+				<c:forEach items="${infos}" var="info">
+					<li class="discus-col">
+						<div class="father">
+							<img class="fl" src="${info.head_img_url }">
+							<div class="f-r fr">
+								<p class="discus-time">${info.peevaluate_time }</p>
+							</div>
+							<div class="f-m">
+								<p>
+									${info.nick_name }
+									<c:choose>
+										 <c:when test="${info.sex == 2}">
+										 <i class="mui-icon iconfont icon-woman"></i>
+										 </c:when>
+										 <c:otherwise>
+											<i class="mui-icon iconfont icon-man"></i>
+										 </c:otherwise>
+									</c:choose>
+									
+								</p>
+								<p class="discus-content">${info.publish_evaluate }</p>
+							</div>
 						</div>
-						<div class="f-m">
-							<p>
-								满血复活大魔王<i class="mui-icon iconfont icon-man"></i>
-							</p>
-							<p class="discus-content">有钱啥都干</p>
-						</div>
-					</div>
-					<div class="son clearfix">
-						<div class="s-r fr">
-							<p class="discus-time">08-08 13:36</p>
-						</div>
-						<div class="s-m fl">
-							<p>
-								<span>Toad</span>@<span>满血复活大魔王</span>
-							</p>
-							<p class="discus-content">睡觉干吗？</p>
-						</div>
-					</div>
-					<div class="son clearfix">
-						<div class="s-r fr">
-							<p class="discus-time">08-08 13:52</p>
-						</div>
-						<div class="s-m fl">
-							<p>
-								<span>满血复活大魔王</span>@<span>Toad</span>
-							</p>
-							<p class="discus-content">都说了有钱就干！！！</p>
-						</div>
-					</div>
-				</li>
-				<li class="discus-col">
-					<div class="father">
-						<img class="fl" src="images/pic1.png">
-						<div class="f-r fr">
-							<p class="discus-time">08-08 13:30</p>
-						</div>
-						<div class="f-m">
-							<p>
-								你大爷<i class="mui-icon iconfont icon-women"></i>
-							</p>
-							<p class="discus-content">有钱啥都干</p>
-						</div>
-					</div>
-				</li>
-				<li class="discus-col">
-					<div class="father">
-						<img class="fl" src="images/muwu.jpg">
-						<div class="f-r fr">
-							<p class="discus-time">08-08 13:30</p>
-						</div>
-						<div class="f-m">
-							<p>
-								满血复活大魔王<i class="mui-icon iconfont icon-man"></i>
-							</p>
-							<p class="discus-content">有钱啥都干</p>
-						</div>
-					</div>
-				</li>
+					</li>
+				</c:forEach>
 			</ul>
 		</div>
 		<br /> <br /> <br /> <br />
 
 		<div class="fix-btn">
 			<button class="fl">聊一聊</button>
-			<button class="fl cur" data-confirm="${aId}" data-result="1">选Ta</button>
+			<button class="fl cur" data-confirm="${orders.applyId}" data-result="1">选Ta</button>
 		</div> 
 
 	</div>

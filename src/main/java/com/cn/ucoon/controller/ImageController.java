@@ -3,7 +3,6 @@ package com.cn.ucoon.controller;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -17,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class ImageController {
-
+	//"D:/ucoon/mission_image/";
+	//"/data/wwwroot/wx.ucoon.cn/mission_image/"
 	public static final String MISSION_IMAGE_LOCATION = "D:/ucoon/mission_image/";
 
 	@RequestMapping("/reqmImage/{category}/{num}")

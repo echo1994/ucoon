@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,8 +28,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.pojo.Evaluate;
 import com.cn.ucoon.pojo.Mission;
+import com.cn.ucoon.pojo.MissionAddress;
 import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.service.ApplyService;
 import com.cn.ucoon.service.EvaluateService;
 import com.cn.ucoon.service.MissionOrderService;
 import com.cn.ucoon.service.MissionService;
@@ -52,6 +56,9 @@ public class MissionController {
 	@Autowired
 	private EvaluateService evaluateService;
 	
+	@Autowired
+	private ApplyService applyService;
+	
 	/**
 	 * 发布任务
 	 * 
@@ -71,29 +78,24 @@ public class MissionController {
 			@RequestParam(value = "missionPrice", required = false) Double missionPrice,
 			@RequestParam(value = "peopleCount", required = false) Integer peopleCount,
 			@RequestParam(value = "place", required = false) String place,
-			@RequestParam(value = "startTime", required = false) String startTime,
-			@RequestParam(value = "endTime", required = false) String endTime,
+			@RequestParam(value = "time", required = false) String time,
 			@RequestParam(value = "telephone", required = false) String telephone,
-			@RequestParam(value = "detailPlace", required = false) String detailPlace,
 			@RequestParam(value = "missionLng", required = false) String missionLng,
 			@RequestParam(value = "missionLat", required = false) String missionLat,
 			@RequestParam(value = "imgUpload", required = false) MultipartFile[] file,
 			HttpServletRequest request) throws ParseException {
 
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");//小写的mm表示的是分钟  
-		Date endDate=sdf.parse(endTime);
-		Date StartDate=sdf.parse(startTime);
 		Mission mission = new Mission();
-		mission.setEndTime(endDate);
 		mission.setMissionDescribe(missionDescribe);
 		mission.setMissionPrice(new BigDecimal(missionPrice));
 		mission.setMissionTitle(missionTitle);
 		mission.setPeopleCount(peopleCount);
-		mission.setPlace(place+detailPlace);
-		mission.setStartTime(StartDate);
+		mission.setPlace(place);
 		mission.setTelephone(telephone);
 		mission.setMissionLat(missionLat);
 		mission.setMissionLng(missionLng);
+		
+		
 		
 		
 		String path = ImageController.MISSION_IMAGE_LOCATION;
@@ -120,15 +122,39 @@ public class MissionController {
 				}
 			}
 		}
-
+		
+		String reg = "[\u4e00-\u9fa5]";  
+        Pattern pat = Pattern.compile(reg);    
+        Matcher mat = pat.matcher(time);   
+        String repickStr = mat.replaceAll(""); 
+		Date date = new Date();
+		Calendar ca=Calendar.getInstance();
+		ca.setTime(date);
+		ca.add(Calendar.HOUR_OF_DAY, Integer.valueOf(repickStr));
+		
+		mission.setPublishTime(date);
+		mission.setEndTime(ca.getTime());
 		mission.setPictures(userId + timestamp + uuid);
 		mission.setUserId(userId);
 		mission.setViewCount(0);
 		mission.setMissionStatus(0); //待支付
 		mission.setPicCount(file.length);
-		mission.setPublishTime(new Date());
 		MissionOrders missionOrders = new MissionOrders();
 		if(missionService.publishMission(mission)){
+			
+			
+			//判断地址是否已存在
+			if(!missionService.isAddressExist(place)){
+				
+				MissionAddress address = new MissionAddress();
+				address.setPlace(place);
+				address.setMissionLat(missionLat);
+				address.setMissionLng(missionLng);
+				
+				missionService.addMissionAddress(address);
+			}
+			
+			
 			
 			System.out.println("mission_id:" + mission.getMissionId());
 			
@@ -236,7 +262,7 @@ public class MissionController {
 	public String getmissionDetails(
 			@RequestParam(value = "missionId", required = true) Integer missionId,
 			HttpServletRequest request) {
-		HashMap<String, String> missions = null;
+		HashMap<String, Object> missions = null;
 		missions = missionService.selectForMissionDetails(missionId);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonfromList = "";
@@ -268,7 +294,7 @@ public class MissionController {
 			Mission mission = missionService.selectByPrimaryKey(missionId);
 			mission.setMissionStatus(2);
 			missionService.updateByPrimaryKey(mission);// 审核退款
-			return "客服正在审核退款，如有需要请拨打客服电话";
+			return "管理员GG正在审核退款，24小时内将以红包的形式在有空ucoon平台上发给你，请注意查收。如有需要请拨打GG电话";
 		}
 		return "系统异常，请重试";
 	}
@@ -327,6 +353,26 @@ public class MissionController {
 		return "系统异常，请重试";
 
 	}
+	
+	//开始任务任务
+	@RequestMapping(value = "missionDoing/{missionId}", produces = "text/html;charset=UTF-8;")
+	@ResponseBody
+	public String missionDoing(
+			@PathVariable(value = "missionId") Integer missionId,
+			HttpServletRequest request) {
+		// 1判断是否本人操作
+		// 2改变任务状态
+		Integer userId = missionService.selectUserIdByMissionId(missionId);
+		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		if (cuserId != null && cuserId == userId) {
+			Mission mission = missionService.selectByPrimaryKey(missionId);
+			mission.setMissionStatus(6);
+			missionService.updateByPrimaryKey(mission);
+			return "success";
+		}
+		return "系统异常，请重试";
+
+	}
 
 
 	@RequestMapping(value = "/task-info/{missionId}")
@@ -334,7 +380,7 @@ public class MissionController {
 			ModelAndView mv,HttpServletRequest request) {
 		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
 		
-		HashMap<String, String> mdetails = null;
+		HashMap<String, Object> mdetails = null;
 		mdetails = missionService.selectForMissionDetails(missionId);
 		User user = userService.getUserById(user_id);
 		
@@ -370,7 +416,7 @@ public class MissionController {
 			ModelAndView mv,HttpServletRequest request) {
 		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
 		
-		HashMap<String, String> mdetails = null;
+		HashMap<String, Object> mdetails = null;
 		mdetails = missionService.selectForMissionDetails(missionId);
 		User user = userService.getUserById(user_id);
 		
@@ -390,6 +436,78 @@ public class MissionController {
 		mv.setViewName("more-info");
 		return mv;
 	}
+	
+	@RequestMapping(value = "/selectpeople/{mid}")
+	public ModelAndView selectpeople(@PathVariable(value = "mid") Integer mid,
+			ModelAndView mv) {
+		
+
+		HashMap<String, Object> mdetails = null;
+		mdetails = missionService.selectForMissionDetails(mid);
+		List<HashMap<String, Object>> list = applyService.selectunselectedpeople(mid);
+		
+		List<HashMap<String, Object>> list2 = applyService.selectselectedpeople(mid);
+		System.out.println("~~~~~~~" + list);
+		
+		
+		
+		mv.addObject("mdetails", mdetails);
+		mv.addObject("list", list);
+		mv.addObject("list2", list2);
+		mv.setViewName("selectpeople");
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/selectpeopledetail/{mid}")
+	@ResponseBody
+	public String selectJsonPeople(@PathVariable(value = "mid") Integer mid) {
+		
+
+		List<HashMap<String, Object>> list = applyService.selectunselectedpeople(mid);
+		
+		
+		for(int i = 0 ; i<list.size();i++){
+			
+			Integer userId = (Integer) list.get(i).get("user_id");
+			
+			Integer helpCount = missionService.countMissionDoneByUserId(userId);
+			
+			
+			String score = this.evaluateService.getEvaluateScore(userId) + "";
+			System.out.println(score);
+			String[] str = score.split("\\.");
+			if(str[1].equals("5")){
+				list.get(i).put("half", true);
+				list.get(i).put("all", str[0]);
+				list.get(i).put("blank", 4 - Integer.valueOf(str[0]));
+			}else{
+				list.get(i).put("half", false);
+				list.get(i).put("all", str[0]);
+				list.get(i).put("blank", 5 - Integer.valueOf(str[0]));
+			}
+			
+			
+			
+			list.get(i).put("helpCount", helpCount);
+			
+			
+			
+			
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonfromList = "";
+		try {
+			jsonfromList = mapper.writeValueAsString(list);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			jsonfromList = "{}";
+		}
+		return jsonfromList;
+	}
+	
+	
 	
 	
 	//发布者对执行者评价

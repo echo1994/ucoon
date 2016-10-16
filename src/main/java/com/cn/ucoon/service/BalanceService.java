@@ -3,7 +3,6 @@ package com.cn.ucoon.service;
 import java.math.BigDecimal;
 
 import com.cn.ucoon.pojo.Balance;
-import com.cn.ucoon.pojo.BalanceOrder;
 
 public interface BalanceService {
 
@@ -22,10 +21,10 @@ public interface BalanceService {
 	public BigDecimal countPlusBalance(Integer userId);
 	
 	
-	public boolean insertBalanceOrder(BalanceOrder order);
+	public boolean insertBalanceOrder(Balance order);
 	
 	
-	public boolean changeOrderStateByOrderNum(BalanceOrder order);
+	public boolean changeOrderStateByOrderNum(Balance order);
 	
 	public boolean insertBlance(Balance balance);
 	

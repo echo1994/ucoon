@@ -125,6 +125,21 @@ public class ApplyServiceImpl implements ApplyService {
 		
 		return false;
 	}
+
+
+	@Override
+	public List<HashMap<String, Object>> selectunselectedpeople(
+			Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectunselectedpeople(missionId);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> selectselectedpeople(Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectselectedpeople(missionId);
+	}
 	
 	
 }

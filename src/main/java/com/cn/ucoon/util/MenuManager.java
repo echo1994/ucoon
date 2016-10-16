@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cn.ucoon.pojo.wx.AccessToken;
 import com.cn.ucoon.pojo.wx.Button;
+import com.cn.ucoon.pojo.wx.CommonButton;
 import com.cn.ucoon.pojo.wx.ComplexButton;
 import com.cn.ucoon.pojo.wx.Menu;
 import com.cn.ucoon.pojo.wx.ViewButton;
@@ -63,11 +64,20 @@ public class MenuManager {
 		// btn13.setKey("13");
 		
 		ViewButton btn11 = new ViewButton();
-		btn11.setName("Echo");
+		btn11.setName("我有空");
 		btn11.setType("view");
-		btn11.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx14236620e0b8201e&redirect_uri=http%3A%2F%2Fwx.ucoon.cn%2Fucoon%2F&response_type=code&scope=snsapi_userinfo&state=echo#wechat_redirect");
+		btn11.setUrl("http://" + WeixinUtil.domian + "/");
 
-	
+		ViewButton btn12 = new ViewButton();
+		btn12.setName("谁有空");
+		btn12.setType("view");
+		btn12.setUrl("http://" + WeixinUtil.domian + "/who-new");
+
+		CommonButton btn13 = new CommonButton();
+		btn13.setName("签到");
+		btn13.setType("click");
+		btn13.setKey("13");
+
 		
 		ComplexButton mainBtn1 = new ComplexButton();
 		mainBtn1.setName("");
@@ -86,7 +96,7 @@ public class MenuManager {
 		 * menu.setButton(new Button[] { mainBtn1, mainBtn2, btn33 });
 		 */
 		Menu menu = new Menu();
-		menu.setButton(new Button[] {btn11});
+		menu.setButton(new Button[] {btn11,btn12,btn13});
 
 		return menu;
 	}

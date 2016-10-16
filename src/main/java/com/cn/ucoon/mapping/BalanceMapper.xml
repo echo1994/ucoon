@@ -8,6 +8,8 @@
     <result column="plus_or_minus" property="plusOrMinus" jdbcType="VARCHAR" />
     <result column="quantity" property="quantity" jdbcType="DECIMAL" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+    <result column="order_state" property="orderState" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from balance
@@ -15,10 +17,11 @@
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Balance" >
     insert into balance (balance_id, consuming_records, consuming_time, 
-      plus_or_minus, quantity, user_id
+      plus_or_minus, quantity, user_id, order_state,order_num
       )
     values (#{balanceId,jdbcType=INTEGER}, #{consumingRecords,jdbcType=VARCHAR}, #{consumingTime,jdbcType=TIMESTAMP}, 
-      #{plusOrMinus,jdbcType=VARCHAR}, #{quantity,jdbcType=DECIMAL}, #{userId,jdbcType=INTEGER}
+      #{plusOrMinus,jdbcType=VARCHAR}, #{quantity,jdbcType=DECIMAL}, #{userId,jdbcType=INTEGER}, #{orderState,jdbcType=INTEGER},
+      #{orderNum,jdbcType=VARCHAR}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Balance" >
@@ -27,21 +30,29 @@
       consuming_time = #{consumingTime,jdbcType=TIMESTAMP},
       plus_or_minus = #{plusOrMinus,jdbcType=VARCHAR},
       quantity = #{quantity,jdbcType=DECIMAL},
-      user_id = #{userId,jdbcType=INTEGER}
+      user_id = #{userId,jdbcType=INTEGER},
+      order_num = #{orderNum,jdbcType=VARCHAR},
+      order_state = #{orderState,jdbcType=INTEGER}
     where balance_id = #{balanceId,jdbcType=INTEGER}
   </update>
+  
+  <update id="updateStatusbyOrdersId" parameterType="com.cn.ucoon.pojo.Balance" >
+   update balance set order_state = #{orderState,jdbcType=INTEGER},
+      consuming_time = #{consumingTime,jdbcType=TIMESTAMP} WHERE  order_num= #{orderNum,jdbcType=VARCHAR}
+  </update>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id
+    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id,order_state,order_num
     from balance
     where balance_id = #{balanceId,jdbcType=INTEGER}
   </select>
-  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id
+  <select id="selectByUserIdAndState" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id,order_state,order_num
     from balance
-    where user_id = #{userId,jdbcType=INTEGER}
+    where user_id = #{0} and order_state = #{1}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id
+    select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id,order_state,order_num
     from balance
   </select>
 </mapper>

@@ -34,7 +34,7 @@
 	var appid,nonceStr,signature,timestamp;
 	//ajax同步更新全局变量，异步无法更新
 	$.ajax({
-	    url: "/ucoon/wx/sign?url="+URL,
+	    url: "wx/sign?url="+URL,
 	    success: function(result){
 	    	appid = result.appId;
 	    	timestamp=result.timestamp;
@@ -94,7 +94,7 @@
 			
 			var prepayid = ui.prepayid.value;
 			$.ajax({
-			    url: "/ucoon/pay/getPay/" + prepayid,
+			    url: "pay/getPay/" + prepayid,
 			    success: function(result){
 			    	if(result.result_type == "error"){
 			    		alert(result.msg);

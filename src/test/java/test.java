@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -42,6 +43,19 @@ public class test {
 		
 		
 		System.out.println(strToDateLong("20141030133525"));
+		
+		String score = String.valueOf(4.0);
+		String[] str = score.split("\\.");
+		System.out.println(score);
+		System.out.println(str[0]);
+		
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = new Date();
+		System.out.println(sdf.format(date));
+		Calendar ca=Calendar.getInstance();
+		ca.setTime(date);
+		ca.add(Calendar.HOUR_OF_DAY, 10);
+		System.out.println(sdf.format(ca.getTime()));
 	}
 	@Test
 	public void getCount(){

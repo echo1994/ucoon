@@ -1,6 +1,7 @@
 package com.cn.ucoon.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -53,6 +54,8 @@ public class UserServiceImpl implements UserService {
 				Date regist_time  = new Date();
 				
 				JSONObject userJsonObject = WeixinUtil.getUserInfo(access_token, openid);
+				
+				System.out.println(userJsonObject.toJSONString());
 				user.setOpenId(openid);
 				user.setNickName(userJsonObject.getString("nickname"));
 				user.setSex(userJsonObject.getInteger("sex"));
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
 				user.setCountry(userJsonObject.getString("country"));
 				user.setHeadImgUrl(userJsonObject.getString("headimgurl"));
 				user.setRegistTime(regist_time);//根据当前时间戳更新
-				
+				System.out.println("名字：" + userJsonObject.getString("nickname"));
 				userDao.regist(user);
 				
 				
@@ -113,5 +116,74 @@ public class UserServiceImpl implements UserService {
 		return userDao.selectUserId(openId);
 	}
 
+
+	@Override
+	public boolean updateUserSignature(User user) {
+		int i = userDao.updateUserSignatrue(user);
+		
+		if(i > 0){
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	@Override
+	public boolean updateUserPhone(User user) {
+		int i = userDao.updateUserPhone(user);
+		
+		if(i > 0){
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	@Override
+	public boolean updateUserWxId(User user) {
+		int i = userDao.updateUserWxId(user);
+		
+		if(i > 0){
+			return true;
+		}
+		
+		return false;
+	}
+
+	
+	@Override
+	public boolean updateUserName(User user) {
+		int i = userDao.updateUserName(user);
+		
+		if(i > 0){
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	@Override
+	public boolean isBindPhone(Integer userId) {
+		String phone = null;
+		phone = userDao.selectPhoneByUserId(userId);
+		if(phone == null || phone.equals("")){
+			return false;
+			
+			
+		}
+		
+		return true;
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> selectDetailWithEvabyUserId(
+			Integer userId) {
+		// TODO Auto-generated method stub
+		return userDao.selectForUserDetailsEvaluate(userId);
+	}
 	
 }

@@ -174,7 +174,7 @@
 				"tap",
 				function() {
 					//选人
-					window.location.href = "mission/more-info/"
+					window.location.href = "mission/selectpeople/"
 							+ $(this).attr("data-m");
 				})
 		$(".evaluate").bind("tap",function() {
@@ -191,8 +191,8 @@
 		
 		$(".offshelf").bind("tap", function() {
 			//申请退款
-			var btnArray = ['否', '是'];
-		    mui.confirm('下架即申请退款，需管理员同意后才可退款至你的微信零钱中，确认？', '有空ucoon', btnArray, function(e) 
+			var btnArray = ['我不听', '好'];
+		    mui.confirm('需帅气的管理员同意后将退款金额以红包的形式发给你', '有空ucoon', btnArray, function(e) 
 		    {
 		        if (e.index == 1) 
 		        {
@@ -341,7 +341,7 @@
 													+ "<div class='missionKey' style='display:none;'>"
 													+ data[i].mission_id
 													+ "</div>"
-													+ "	<img class='fl' src='"+data[i].head_img_url+"'>"
+												
 													+ "	<div class='t-r fr'>"
 													+ "		<p class='task-status'>"
 													+ status

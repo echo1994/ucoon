@@ -37,14 +37,24 @@ import com.cn.ucoon.pojo.wx.Template;
 
 /**
  * 内部开发通用接口工具类
+ * 
+ * 测试：www.jmutong.com
+ * wx7687c14ac73b051b
+ * 58761104834ed5a2a617443a5b838568
+ * 
+ * wx.ucoon.cn
+ * wx14236620e0b8201e
+ * a1e573ee1d1e594ca062a9715dff2568
  */
 public class WeixinUtil {
 	
 	// 第三方用户唯一凭证
-	public static String appid = "wx14236620e0b8201e";
+	public static String appid = "wx7687c14ac73b051b";
 	// 第三方用户唯一凭证密钥
-	public static String appsecret = "a1e573ee1d1e594ca062a9715dff2568";
+	public static String appsecret = "58761104834ed5a2a617443a5b838568";
 	
+	//域名
+	public static String domian = "www.jmutong.com";
 	
 	// 菜单创建（POST） 限100（次/天）
 	public static String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
@@ -188,6 +198,7 @@ public class WeixinUtil {
 			if (null != outputStr) {
 				OutputStream outputStream = httpUrlConn.getOutputStream();
 				// 注意编码格式，防止中文乱码
+				
 				outputStream.write(outputStr.getBytes("UTF-8"));
 				outputStream.close();
 			}
@@ -315,6 +326,7 @@ public class WeixinUtil {
 		
 		String requestUrl = get_userinfo_url.replace("ACCESS_TOKEN", access_token).replace(
 				"OPENID", open_id);
+		
 		JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
 		// 如果请求成功
 		if (null == jsonObject) {

@@ -123,6 +123,8 @@
 		= #{0}
 	</select>
 	
+	
+	
 	<select id="selectUserIdByMissionId" resultType="java.lang.Integer">SELECT user_id FROM mission WHERE mission_id = #{0}</select>
 	
 	<select id="selectStatusByMissionId" resultType="java.lang.Integer">SELECT mission_status FROM mission WHERE mission_id = #{0}</select>
@@ -130,5 +132,9 @@
 	<select id="getUserIdByMissionId" resultType="java.lang.Integer">SELECT user_id FROM mission WHERE mission_id = #{0}</select>
 	
 	<select id="selectUnPaidMissionByUserId" resultType="java.lang.Integer">SELECT count(*) FROM mission WHERE user_id = #{0} and mission_status=0</select>
+	
+	<select id="countMissionDoneByUserId" resultType="java.lang.Integer">SELECT count(*) FROM mission WHERE user_id = #{0} and mission_status=5</select>
+	
+	
 	
 </mapper>
