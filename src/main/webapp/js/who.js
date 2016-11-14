@@ -111,8 +111,8 @@ $(document)
 								.change(
 										function(e) {
 											if (filecount
-													+ event.target.files.length > 5) {
-												alert("上传图片不能超过5张");
+													+ event.target.files.length > 3) {
+												mui.alert("上传图片不能超过3张");
 											} else {
 												for (var i = 0; i < e.target.files.length; i++) {
 													var file = e.target.files
@@ -135,7 +135,7 @@ $(document)
 																+ '" width="200px" height="200px"/>';
 														var img = '<li><img src="'
 																+ e.target.result
-																+ '"/></li>';
+																+ '" data-preview-src="" data-preview-group="1"/></li>';
 														$(".addimg")
 																.append(img);
 													}
@@ -145,6 +145,7 @@ $(document)
 										});
 
 					}
+					
 				});
 /* 多图预览 */
 
@@ -486,6 +487,7 @@ $(document).ready(
 
 /* mui.init */
 mui.init();
+//mui.previewImage();
 
 var menuWrapper = document.getElementById("menu-wrapper");
 var menu = document.getElementById("menu");

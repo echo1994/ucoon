@@ -115,15 +115,12 @@
 	
 	<!-- 查询mission详情   -->
 	<select id="selectForMissionDetails" resultType="java.util.HashMap">
-		SELECT mission_id,mission.user_id,nick_name,head_img_url,sex,mission_title,mission_price,
-		view_count, people_count,place,publish_time,start_time,end_time,mission_describe,pictures,
-		pic_count,mission_lng,mission_lat,
-		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople
-		FROM mission left join user on user.user_id = mission.user_id WHERE mission.mission_id
+		SELECT sex,nick_name,head_img_url,mission.mission_id,mission.user_id,mission_title,mission_price,mission_status,
+		view_count, people_count,place,publish_time,end_time,mission_describe,pictures,
+		pic_count,mission_lng,mission_lat,mission_order_num,order_time,finish_time
+		FROM mission LEFT JOIN user ON mission.user_id=user.user_id  left join mission_orders on mission_orders.mission_id = mission.mission_id WHERE mission.mission_id
 		= #{0}
 	</select>
-	
-	
 	
 	<select id="selectUserIdByMissionId" resultType="java.lang.Integer">SELECT user_id FROM mission WHERE mission_id = #{0}</select>
 	

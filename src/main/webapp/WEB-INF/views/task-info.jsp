@@ -27,42 +27,45 @@ String basePath = request.getScheme() + "://"
 <link href="css/mui.imageviewer.css" rel="stylesheet" />
 </head>
 <style>
-.basic-mes {
-	margin: 0;
-	padding: 15px 0;
-	background: #fff;
-}
+.basic-mes{
+        margin: 0;
+        padding: 15px 0;
+        background:#fff;
+    }
+    .basic-mes img{
+        width: 60px;
+        height: 60px;
+    }
+    .mysend{
+        margin: 0;
+    }
+    .mysend .mysend-col {
+        height: 70px;
+        border-bottom: 1px solid #ddd;
+        margin: 0;
+    }
+    .mysend .mysend-col img{
+        width: 45px;
+        height: 45px;
+        margin: 10.5px 5px;
+    }
+    .mysend .mysend-col .m-t .t-m{
+        padding-top: 9px;
+    }
+    .mysend .mysend-col .m-t{
+        border-bottom: 0;
+        height: 70px;
 
-.basic-mes img {
-	width: 60px;
-	height: 60px;
-}
-
-.mysend {
-	margin: 0;
-}
-
-.mysend .mysend-col {
-	height: 70px;
-	border-bottom: 1px solid #ddd;
-	margin: 0;
-}
-
-.mysend .mysend-col img {
-	width: 45px;
-	height: 45px;
-	margin: 10.5px 5px;
-}
-
-.mysend .mysend-col .m-t .t-m {
-	padding-top: 9px;
-}
-
-.mysend .mysend-col .m-t {
-	border-bottom: 0;
-	height: 70px;
-}
-
+    }
+ .showcore{
+        text-align: left;
+    }
+    .discus-content{
+        padding-left: 56px;
+    }
+    .discus-content-son{
+        padding-left: 0;
+    }
      .mui-btn {
          display: block;
          width: 120px;
@@ -163,10 +166,10 @@ String basePath = request.getScheme() + "://"
 	var onePageNums = 10;
 	$(function() {
 		var pt = getMonthDay1('${mdetails.publish_time}'.substring(0,'${mdetails.publish_time}'.indexOf('.')));
-		var st = getMonthDay2('${mdetails.start_time}'.substring(0,'${mdetails.start_time}'.indexOf('.')));
+		/* var st = getMonthDay2('${mdetails.start_time}'.substring(0,'${mdetails.start_time}'.indexOf('.'))); */
 		var et = getMonthDay2('${mdetails.end_time}'.substring(0,'${mdetails.end_time}'.indexOf('.')));
 		$("#pt").html(pt);
-		$("#st").html(st);
+		/* $("#st").html(st); */
 		$("#et").html(et);
 		$.ajax({
 			url : 'applyOrders/getOrdersCountByM',
@@ -208,14 +211,14 @@ String basePath = request.getScheme() + "://"
 		
 		
 		
-		setTimeout(loadcommentdata(0, 10, ${mdetails.mission_id}), 1000);
+		setTimeout(loadcommentdata(0, 10, ${mdetails.user_id}), 1000);
 		
 		
-		commentsItemClick();
+		//commentsItemClick(); 
 	})
 
 
-	function commentsItemClick(){
+	/* function commentsItemClick(){
  		//绑定元素点击后 ajax执行后可执行$(document).on('click',"",function(){})
  		
 		$(document).on('tap',"ul li.discus-col div.father",function(){
@@ -408,7 +411,7 @@ String basePath = request.getScheme() + "://"
 				}
 			})
 		}); 
-	}
+	} */
 
 	function getMonthDay1(timestamp) {
 		timestamp = timestamp.toString().replace(/-/g,"/");
@@ -474,11 +477,15 @@ String basePath = request.getScheme() + "://"
 												},
 												async : true,
 												type : 'post',
-												dataType : 'text',
+												dataType : 'json',
 												success : function(data) {
-													alert(data);
-													//申请成功跳转到我服务的
-													window.location.href = "myservice"
+													if(data.result=="success"){
+														alert(data.msg);
+														//申请成功跳转到我服务的
+														window.location.href = "myservice";
+														return;
+													}
+													alert(data.msg);
 												}
 											});
 							             } else {
@@ -505,11 +512,15 @@ String basePath = request.getScheme() + "://"
 							},
 							async : true,
 							type : 'post',
-							dataType : 'text',
+							dataType : 'json',
 							success : function(data) {
-								alert(data);
-								//申请成功跳转到我服务的
-								window.location.href = "myservice"
+								if(data.result=="success"){
+									alert(data.msg);
+									//申请成功跳转到我服务的
+									window.location.href = "myservice";
+									return;
+								}
+								alert(data.msg);
 							}
 						});
 		             } else {
@@ -579,13 +590,13 @@ String basePath = request.getScheme() + "://"
         }
     }
 	
-	function loadcommentdata(startIndex, endIndex, missionId){
+	function loadcommentdata(startIndex, endIndex, publishId){
 		$.ajax({
-			url : 'comment/getCommentsLimited',
+			url : 'mission/getEvaluateLimited',
 			data : {
 				startIndex : startIndex,
 				endIndex : endIndex,
-				missionId : missionId,
+				publishId : publishId,
 			},
 			async : false,
 			type : 'post',
@@ -601,22 +612,33 @@ String basePath = request.getScheme() + "://"
 					}else{
 					    data[i].sex = "icon-women";
 					}
-					
+					var score = data[i].executor_score;
+					var un_score = 5 - data[i].executor_score;
 					var html = "<li class=\"discus-col\">"
-						+"<div class=\"father\">"
-						+"<img class=\"fl\" src=\""  + data[i].head_img_url + "\">"
-						+"<div class=\"f-r fr\">"
-						+"<p class=\"discus-time\">"  + getDateDiff(data[i].comment_time) + "</p>"
-						+"</div>"
-						+"<div class=\"f-m\">"
-						+"<p>"  + data[i].nick_name + "<i class=\"mui-icon iconfont " + data[i].sex + "\"></i></p>"
-						+"<p class=\"discus-content\">"  + data[i].content + "</p>"
-						+"</div>"
-						+"<input type=\"hidden\" class=\"userId\" value=\""  + data[i].user_id + "\" \>"
-						+"<input type=\"hidden\" class=\"commentsId\" value=\""  + data[i].comment_id + "\" \>"
-						+"</div>";
+			                + "<div class=\"father\">"
+			                    + "<img class=\"fl\" src=\" " + data[i].head_img_url +"\">"
+			                    + "<div class=\"f-r fr\">"
+			                        + "<p class=\"discus-time\">" + getDateDiff(data[i].epevaluate_time) + "</p>"
+			                    + "</div>"
+			                    + "<div class=\"f-m\">"
+			                        + "<p>" + data[i].nick_name +"<i class=\"mui-icon iconfont " + data[i].sex +"\"></i></p>"
+			                        + "<div class=\"user-score showcore\">"
+											+ "<span class=\"fivestar\">";
+						for(var j = 0;j<score;j++){
+							html += "<i class=\"mui-icon iconfont icon-star\"></i>";
+						}
+						for(var j = 0;j<un_score;j++){
+							html += "<i class=\"mui-icon iconfont icon-star-empty\"></i>";
+						}
+						html += "</span>"
+			                        + "</div>"
+			                        + "<p class=\"discus-content\">" + data[i].executor_evaluate
+			                        + "</p>"
+			                    + "</div>"
+			                + "</div>"
+			            + "</li>";
 					
-					for(var j = 0;j<data[i].child.length;j++){
+					/* for(var j = 0;j<data[i].child.length;j++){
 						html +=  "<div class=\"son clearfix\">"
 							+"<div class=\"s-r fr\">"
 							+"<p class=\"discus-time\">"  + getDateDiff(data[i].child[j].comment_time) + "</p>"
@@ -631,8 +653,7 @@ String basePath = request.getScheme() + "://"
 							+"</div>";
 						
 					
-					}
-					html+="</li>";
+					} */
 					
 					$(".m-discus").append(html);
 
@@ -642,7 +663,7 @@ String basePath = request.getScheme() + "://"
 		})
 	}
 	
-	function comment(){
+	/* function comment(){
 		var btnArray = ['取消', '确定'];
 		mui.prompt('请输入评论的内容：', '内容', '${user.nickName}', btnArray, function(e) {
 			if (e.index == 1) {
@@ -692,7 +713,7 @@ String basePath = request.getScheme() + "://"
 			} 
 		})
 	
-	}
+	} */
 	
 	
 	
@@ -842,37 +863,41 @@ String basePath = request.getScheme() + "://"
 		</div>
 		<div class="discus">
 			<p class="pinglun">
-				<span>评论</span><span id="discusCount">(-)</span>
-				<button class="fr pinglunn-btn" onclick="comment()">评论</button>
+				<span>对Ta的评价</span><span id="discusCount">(-)</span>
 			</p>
 			<ul class="m-discus">
 				<!-- <li class="discus-col">
-					<div class="father">
-						<img class="fl" src="images/muwu.jpg">
-						<div class="f-r fr">
-							<p class="discus-time">08-08 13:30</p>
-						</div>
-						<div class="f-m">
-							<p>满血复活大魔王<i class="mui-icon iconfont icon-man"></i></p>
-							<p class="discus-content">有钱啥都干</p>
-						</div>
-					</div>
-					<div class="son clearfix">
-						<div class="s-r fr">
-							<p class="discus-time">08-08 13:36</p>
-						</div>
-						<div class="s-m fl">
-							<p><span>Toad</span>@<span>满血复活大魔王</span></p>
-							<p class="discus-content">睡觉干吗？</p>
-						</div>
-					</div>
-				</li>-->
+	                <div class="father">
+	                    <img class="fl" src="images/muwu.jpg">
+	                    <div class="f-r fr">
+	                        <p class="discus-time">08-08 13:30</p>
+	                    </div>
+	                    <div class="f-m">
+	                        <p>满血复活大魔王<i class="mui-icon iconfont icon-man"></i></p>
+	                        五星评分
+	                        <div class="user-score showcore">
+									<span class="fivestar">
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star-half"></i>
+										<i class="mui-icon iconfont icon-star-empty"></i>
+									</span>
+	                        </div>
+	                        <p class="discus-content">
+	                            有钱啥都干有钱啥都干有钱啥都干有钱啥都干有钱啥都干有钱啥都干
+	                            有钱啥都干有钱啥都干有钱啥都干有钱啥都干有钱啥都干有钱啥都干
+	                        </p>
+	                    </div>
+	                </div>
+	            </li> -->
+           
 			</ul>
 		</div>
 		<br /> <br /> <br /> <br />
 
 		<div class="fix-btn">
-			<button class="fl">联系Ta</button>
+			<button class="fl" onclick="chat(${user.userId},${mdetails.user_id})">联系Ta</button>
 			<button class="fl cur" onclick="syncApply()">立刻接单</button>
 		</div>
 
@@ -880,6 +905,8 @@ String basePath = request.getScheme() + "://"
 
 </body>
 <script>
-	
+	function chat(fromuserid,touserid){
+		window.location.href="chat/api-1/" + fromuserid + "/" + touserid;
+	}
 </script>
 </html>

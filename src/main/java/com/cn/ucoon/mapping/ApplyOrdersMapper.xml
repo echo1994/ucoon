@@ -10,20 +10,27 @@
     <result column="note" property="note" jdbcType="VARCHAR" />
     <result column="finish_time" property="finishTime" jdbcType="TIMESTAMP" />
     <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+    <result column="pic_count" jdbcType="INTEGER" property="picCount" />
+    <result column="pictures" jdbcType="VARCHAR" property="pictures" />
+    <result column="fee" jdbcType="DECIMAL" property="fee" />
+    <result column="apply_detail" property="applyDetail" jdbcType="VARCHAR" />
+    
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from apply_orders
     where apply_id = #{applyId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.cn.ucoon.pojo.ApplyOrders" >
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.ApplyOrders">
     insert into apply_orders (apply_id, user_id, mission_id, 
       take_time, take_state, note, 
-      finish_time, order_num)
+      finish_time, order_num, pic_count, 
+      pictures, fee,apply_detail)
     values (#{applyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{missionId,jdbcType=INTEGER}, 
       #{takeTime,jdbcType=TIMESTAMP}, #{takeState,jdbcType=INTEGER}, #{note,jdbcType=VARCHAR}, 
-      #{finishTime,jdbcType=TIMESTAMP}, #{orderNum,jdbcType=VARCHAR})
+      #{finishTime,jdbcType=TIMESTAMP}, #{orderNum,jdbcType=VARCHAR}, #{picCount,jdbcType=INTEGER}, 
+      #{pictures,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL},#{applyDetail,jdbcType=VARCHAR})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.ApplyOrders" >
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.ApplyOrders">
     update apply_orders
     set user_id = #{userId,jdbcType=INTEGER},
       mission_id = #{missionId,jdbcType=INTEGER},
@@ -31,7 +38,23 @@
       take_state = #{takeState,jdbcType=INTEGER},
       note = #{note,jdbcType=VARCHAR},
       finish_time = #{finishTime,jdbcType=TIMESTAMP},
-      order_num = #{orderNum,jdbcType=VARCHAR}
+      order_num = #{orderNum,jdbcType=VARCHAR},
+      pic_count = #{picCount,jdbcType=INTEGER},
+      pictures = #{pictures,jdbcType=VARCHAR},
+      fee = #{fee,jdbcType=DECIMAL},
+      apply_detail = #{applyDetail,jdbcType=VARCHAR}
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+  
+  
+  <!-- 任务完成上传图片任务详情 -->
+   <update id="updateDoneByPrimaryKey" parameterType="com.cn.ucoon.pojo.ApplyOrders">
+    update apply_orders
+    set take_state = #{takeState,jdbcType=INTEGER},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP},
+      pic_count = #{picCount,jdbcType=INTEGER},
+      pictures = #{pictures,jdbcType=VARCHAR},
+      apply_detail = #{applyDetail,jdbcType=VARCHAR}
     where apply_id = #{applyId,jdbcType=INTEGER}
   </update>
   
@@ -42,13 +65,15 @@
   </update>
   
   
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num
+   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num, 
+    pic_count, pictures, fee,apply_detail
     from apply_orders
     where apply_id = #{applyId,jdbcType=INTEGER}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num
+  <select id="selectAll" resultMap="BaseResultMap">
+    select apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num, 
+    pic_count, pictures, fee,apply_detail
     from apply_orders
   </select>
   
@@ -59,7 +84,12 @@
 	FROM apply_orders left join user on apply_orders.user_id = user.user_id where apply_orders.mission_id
 	= #{0} and apply_orders.take_state = 0
 </select>
-
+<select id="selectDetailByMissionId" resultType="java.util.HashMap">
+	select apply_id,user.user_id,nick_name,head_img_url,phone,weixin_id,apply_orders.mission_id,take_time,take_state,note,finish_time,order_num,
+	pic_count,pictures,fee,apply_detail
+	FROM apply_orders left join user on apply_orders.user_id = user.user_id where apply_orders.mission_id
+	= #{0} 
+</select>
 
 
 <!-- 链接用户表 -->
@@ -108,6 +138,14 @@
 		phone, latitude,longitude,take_time,note,order_num
 		FROM apply_orders left join user on user.user_id = apply_orders.user_id WHERE mission_id
 		= #{0} and take_state=1
+	</select>
+	
+	<!-- 查询APPLY_ORDERS已选人数   -->
+	<select id="selectselectpeople" resultType="java.util.HashMap">
+		SELECT apply_id,mission_id,user.user_id,nick_name,head_img_url,sex,weixin_id,signature,
+		phone, latitude,longitude,take_time,note,order_num
+		FROM apply_orders left join user on user.user_id = apply_orders.user_id WHERE mission_id
+		= #{0} and take_state!=1
 	</select>
 	
 </mapper>

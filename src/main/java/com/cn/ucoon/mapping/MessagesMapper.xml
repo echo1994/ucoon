@@ -1,48 +1,74 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.cn.ucoon.dao.MessagesMapper" >
-  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Messages" >
-    <id column="message_id" property="messageId" jdbcType="INTEGER" />
-    <result column="message_detail" property="messageDetail" jdbcType="VARCHAR" />
-    <result column="message_status" property="messageStatus" jdbcType="INTEGER" />
-    <result column="psot_time" property="psotTime" jdbcType="TIMESTAMP" />
-    <result column="message_type" property="messageType" jdbcType="INTEGER" />
-    <result column="from_user_id" property="fromUserId" jdbcType="INTEGER" />
-    <result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
-    <result column="message_nature_type" property="messageNatureType" jdbcType="INTEGER" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from messages
-    where message_id = #{messageId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.cn.ucoon.pojo.Messages" >
-    insert into messages (message_id, message_detail, message_status, 
-      psot_time, message_type, from_user_id, 
-      to_user_id, message_nature_type)
-    values (#{messageId,jdbcType=INTEGER}, #{messageDetail,jdbcType=VARCHAR}, #{messageStatus,jdbcType=INTEGER}, 
-      #{psotTime,jdbcType=TIMESTAMP}, #{messageType,jdbcType=INTEGER}, #{fromUserId,jdbcType=INTEGER}, 
-      #{toUserId,jdbcType=INTEGER}, #{messageNatureType,jdbcType=INTEGER})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Messages" >
-    update messages
-    set message_detail = #{messageDetail,jdbcType=VARCHAR},
-      message_status = #{messageStatus,jdbcType=INTEGER},
-      psot_time = #{psotTime,jdbcType=TIMESTAMP},
-      message_type = #{messageType,jdbcType=INTEGER},
-      from_user_id = #{fromUserId,jdbcType=INTEGER},
-      to_user_id = #{toUserId,jdbcType=INTEGER},
-      message_nature_type = #{messageNatureType,jdbcType=INTEGER}
-    where message_id = #{messageId,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select message_id, message_detail, message_status, psot_time, message_type, from_user_id, 
-    to_user_id, message_nature_type
-    from messages
-    where message_id = #{messageId,jdbcType=INTEGER}
-  </select>
-  <select id="selectAll" resultMap="BaseResultMap" >
-    select message_id, message_detail, message_status, psot_time, message_type, from_user_id, 
-    to_user_id, message_nature_type
-    from messages
-  </select>
+<mapper namespace="com.cn.ucoon.dao.MessagesMapper">
+	<resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Messages">
+		<id column="message_id" property="messageId" jdbcType="INTEGER" />
+		<result column="message_detail" property="messageDetail"
+			jdbcType="VARCHAR" />
+		<result column="message_status" property="messageStatus"
+			jdbcType="INTEGER" />
+		<result column="psot_time" property="psotTime" jdbcType="TIMESTAMP" />
+		<result column="message_type" property="messageType" jdbcType="VARCHAR" />
+		<result column="from_user_id" property="fromUserId" jdbcType="INTEGER" />
+		<result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
+		<result column="message_nature_type" property="messageNatureType"
+			jdbcType="INTEGER" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from messages
+		where message_id = #{messageId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.cn.ucoon.pojo.Messages">
+		insert into messages (message_id, message_detail, message_status,
+		psot_time, message_type, from_user_id,
+		to_user_id, message_nature_type)
+		values (#{messageId,jdbcType=INTEGER}, #{messageDetail,jdbcType=VARCHAR},
+		#{messageStatus,jdbcType=INTEGER},
+		#{psotTime,jdbcType=TIMESTAMP}, #{messageType,jdbcType=VARCHAR}, #{fromUserId,jdbcType=INTEGER},
+		#{toUserId,jdbcType=INTEGER}, #{messageNatureType,jdbcType=INTEGER})
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Messages">
+		update messages
+		set message_detail = #{messageDetail,jdbcType=VARCHAR},
+		message_status = #{messageStatus,jdbcType=INTEGER},
+		psot_time = #{psotTime,jdbcType=TIMESTAMP},
+		message_type = #{messageType,jdbcType=VARCHAR},
+		from_user_id = #{fromUserId,jdbcType=INTEGER},
+		to_user_id = #{toUserId,jdbcType=INTEGER},
+		message_nature_type = #{messageNatureType,jdbcType=INTEGER}
+		where message_id = #{messageId,jdbcType=INTEGER}
+	</update>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select message_id, message_detail, message_status, psot_time, message_type,
+		from_user_id,
+		to_user_id, message_nature_type
+		from messages
+		where message_id = #{messageId,jdbcType=INTEGER}
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap">
+		select message_id, message_detail, message_status, psot_time, message_type,
+		from_user_id,
+		to_user_id, message_nature_type
+		from messages
+	</select>
+
+
+	<!-- 聊天列表 -->
+	<select id="selectMsgListbyUserId" resultType="java.util.HashMap">
+		select * from messages inner join
+		(select max(psot_time) as psot_time from messages group by
+		from_user_id+to_user_id) as c
+		on messages.psot_time=c.psot_time
+		where from_user_id=#{0} or to_user_id=#{0}
+	</select>
+
+	<!-- 历史消息 -->
+	<select id="selectMsgHistory" resultType="java.util.HashMap">
+
+		select * from messages where (from_user_id=#{0} and to_user_id=#{1}) or
+		(from_user_id=#{1} and to_user_id=#{0}) ORDER BY psot_time DESC LIMIT
+		#{2},#{3}
+	</select>
+
 </mapper>

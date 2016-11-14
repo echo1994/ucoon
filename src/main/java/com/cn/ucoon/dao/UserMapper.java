@@ -23,7 +23,7 @@ public interface UserMapper {
     int regist(User record);
 
     //获取用户头像
-	String selectUserHeadUrl(String userId);
+	String selectUserHeadUrl(Integer userId);
 	
 	//根据user_id获取open_id
 	String selectOpenId(Integer userId);

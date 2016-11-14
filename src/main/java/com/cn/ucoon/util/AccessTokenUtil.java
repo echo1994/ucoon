@@ -30,16 +30,16 @@ public class AccessTokenUtil {
                 ServletContext sc = ServletContextUtil.get();  
                 sc.removeAttribute("access_token");  
                 sc.setAttribute("access_token", accessToken);  
-                  
+              //这里可以向数据库中写access_token
                 /** 
                  * cache jsapi_ticket 
                  */  
                 JsApiTicket jsApiTicket = WeixinUtil.getJsApiTicket(accessToken.getToken());  
-                if(null != jsApiTicket) {  
-                    sc.removeAttribute("jsapi_ticket");  
-                    sc.setAttribute("jsapi_ticket", jsApiTicket);  
-                }  
-                //这里可以向数据库中写access_token  
+                if(null != jsApiTicket) {
+                    sc.removeAttribute("jsapi_ticket");
+                    sc.setAttribute("jsapi_ticket", jsApiTicket);
+                }
+                
             }  
         } else {  
             log.info("execute initAndSetAccessToken appid,appsecret 为空.{}");  

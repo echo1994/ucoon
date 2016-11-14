@@ -1,7 +1,10 @@
 package com.cn.ucoon.dao;
 
 import com.cn.ucoon.pojo.Evaluate;
+
+import java.util.HashMap;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface EvaluateMapper {
@@ -22,4 +25,7 @@ public interface EvaluateMapper {
     Integer selectExecutorScoreByUserId(Integer userId);
     
     Integer selectPublishScoreByUserId(Integer userId);
+    
+    List<HashMap<String, Object>> selectLimitedbyPublishId(Integer publishId,
+			Integer startIndex, Integer endIndex);
 }

@@ -110,6 +110,7 @@
 
 </body>
 <script src="js/mui.min.js"></script>
+
 <script type="text/javascript">
 	var activeIndex = "#onselling-span";
 	var currentPage = 0;
@@ -120,7 +121,7 @@
 
 		var onselling = document.getElementById('onselling');
 		onselling.addEventListener('tap', function() {
-			//已支付、申请退款,1-2
+			//已支付、申请退款、正在进行,1-2-6
 			$(activeIndex).attr("class", "");
 			$("#onselling-span").attr("class", "title-active");
 			activeIndex = "#onselling-span";
@@ -166,7 +167,7 @@
 			//查看任务详情
 				"tap",
 				function() {
-					window.location.href = "mission/mysend-task-info/"
+					window.location.href = "mission/order-info/"
 							+ $(this).attr("data-m");
 				})
 				
@@ -332,6 +333,10 @@
 									status = '待评价,还有' + (data[i].people_count - data[i].evlpeople) + '人未评价';
 									handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button><button class='fr evaluate' data-m='"+data[i].mission_id+"'>评价</button>";
 								}
+								break;
+							case 6:
+								status = "正在进行中," + data[i].donepeople + "人已完成";
+								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
 								break;
 							} 
 							$(".mysend")

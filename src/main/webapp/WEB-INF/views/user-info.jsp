@@ -22,64 +22,56 @@
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
 </head>
-<script type="text/javascript">
-	$(function() {
-		$(".cur").bind("tap", function() {
-			var key1 = $(this).attr("data-confirm");
-			alert(key1);
-			$.ajax({
-				url : 'applyOrders/chosePeople/' + key1,
-				async : false,
-				type : 'get',
-				success : function(data) {
-					if (data != "success") {
-						alert("选人失败");
-						return; 
-					}
-					mui.openWindow({
-						url: "mission/selectpeople/" + ${orders.missionId}
-					});
-				}
-			});
-		});
-	})
-</script>
+
 <style>
-.basic-mes {
-	margin: 0;
-	padding: 15px 0;
-	background: #fff;
-}
+  .basic-mes{
+        margin: 0;
+        padding: 15px 0;
+        background:#fff;
+    }
+    .basic-mes img{
+        width: 60px;
+        height: 60px;
+    }
+    .mysend{
+        margin: 0;
+    }
+    .mysend .mysend-col {
+        height: 70px;
+        border-bottom: 1px solid #ddd;
+        margin: 0;
+    }
+    .mysend .mysend-col img{
+        width: 45px;
+        height: 45px;
+        margin: 10.5px 5px;
+    }
+    .mysend .mysend-col .m-t .t-m{
+        padding-top: 9px;
+    }
+    .mysend .mysend-col .m-t{
+        border-bottom: 0;
+        height: 70px;
 
-.basic-mes img {
-	width: 60px;
-	height: 60px;
-}
-
-.mysend {
-	margin: 0;
-}
-
-.mysend .mysend-col {
-	height: 70px;
-	border-bottom: 1px solid #ddd;
-	margin: 0;
-}
-
-.mysend .mysend-col img {
-	width: 45px;
-	height: 45px;
-	margin: 10.5px 5px;
-}
-
-.mysend .mysend-col .m-t .t-m {
-	padding-top: 9px;
-}
-
-.mysend .mysend-col .m-t {
-	border-bottom: 0;
-	height: 70px;
-}
+    }
+    .showcore{
+        text-align: left;
+    }
+    .discus-content{
+        padding-left: 56px;
+    }
+    .discus-content-son{
+        padding-left: 0;
+    }
+    .more-mes .mes-col{
+        width: 50%;
+    }
+    .fix-btn button{
+        width: 100%;
+    }
+    .user-talk{
+        padding: 0 20px;
+    }
 </style>
 
 <body>
@@ -97,6 +89,20 @@
 					 </c:otherwise>
 				</c:choose>
 			</div>
+			<!--五星评分-->
+	        <div class="user-score">
+									<span class="fivestar">
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star-half"></i>
+										<i class="mui-icon iconfont icon-star-empty"></i>
+									</span>
+	        </div>
+	        <!--个性签名-->
+	        <p class="user-talk">
+	                                    陪吃配喝陪睡觉，有钱样样都行
+	        </p>
 		</div>
 		<div class="more-mes clearfix">
 			<div class="mes-col fl">
@@ -107,16 +113,12 @@
 
 			</div>
 		</div>
-		<div class="liuyan">
-			<p class="liu-title">留言：</p>
-			<p class="liu-cont">${orders.note}</p>
-
-		</div>
+		
 
 
 		<div class="discus">
 			<p class="pinglun">
-				<span>别人对他的评价</span><span>(${size})</span>
+				<span>评价</span><span>(${size})</span>
 			</p>
 			<ul class="m-discus">
 				<c:forEach items="${infos}" var="info">
@@ -139,19 +141,47 @@
 									</c:choose>
 									
 								</p>
+								<!--五星评分-->
+		                        <div class="user-score showcore">
+										<span class="fivestar">
+											<i class="mui-icon iconfont icon-star"></i>
+											<i class="mui-icon iconfont icon-star"></i>
+											<i class="mui-icon iconfont icon-star"></i>
+											<i class="mui-icon iconfont icon-star-half"></i>
+											<i class="mui-icon iconfont icon-star-empty"></i>
+										</span>
+		                        </div>
 								<p class="discus-content">${info.publish_evaluate }</p>
 							</div>
 						</div>
+						<div class="son clearfix">
+		                    <div class="s-r fr">
+		                        <p class="discus-time">08-08 13:36</p>
+		                    </div>
+		                    <div class="s-m fl">
+		                        <p><span>Toad</span>@<span>满血复活大魔王</span></p>
+		
+		                        <p class="discus-content discus-content-son">睡觉干吗？</p>
+		                    </div>
+		                </div>
+		                <div class="son clearfix">
+		                    <div class="s-r fr">
+		                        <p class="discus-time">08-08 13:52</p>
+		                    </div>
+		                    <div class="s-m fl">
+		                        <p><span>满血复活大魔王</span>@<span>Toad</span></p>
+		                        <p class="discus-content discus-content-son">都说了有钱就干！！！</p>
+		                    </div>
+		                </div>
 					</li>
 				</c:forEach>
 			</ul>
 		</div>
 		<br /> <br /> <br /> <br />
 
-		<div class="fix-btn">
-			<button class="fl">聊一聊</button>
-			<button class="fl cur" data-confirm="${orders.applyId}" data-result="1">选Ta</button>
-		</div> 
+		 <div class="fix-btn">
+	        <button class="cur">私聊</button>
+	    </div>
 
 	</div>
 

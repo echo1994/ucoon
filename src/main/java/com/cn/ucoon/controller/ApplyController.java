@@ -1,8 +1,12 @@
 package com.cn.ucoon.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -45,26 +50,32 @@ public class ApplyController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value = "/addAppliment", method = RequestMethod.POST, produces = "text/html;charset=UTF-8;")
+	@RequestMapping(value = "/addAppliment", method = RequestMethod.POST)
 	@ResponseBody
-	public String addAppliment(
+	public JSONObject addAppliment(
 			@RequestParam(value = "missionId") Integer missionId,
 			@RequestParam(value = "msg") String msg,
 			HttpServletRequest request, HttpServletResponse response) {
 		Integer userId =  (Integer) request.getSession().getAttribute("user_id");
-		List<HashMap<String, String>> applys = null;
+		List<HashMap<String, Object>> applys = null;
 		applys = applyService.selectApplybyUMID(userId, missionId);
 		Mission mission = missionService.selectByPrimaryKey(missionId);
+		JSONObject json = new JSONObject();
 		if(mission.getUserId() == userId){
-			
-			return "不能领取自己的任务";
+			json.put("result", "error");
+			json.put("msg", "不能领取自己的任务");
+			return json;
 		}
 		
-		//这里要判断是否是可执行的任务
-	/*	if(mission){
-		}*/
+		//这里要判断是否是可执行的任务  现在的时间 + ? 《 截止时间
+		if(mission.getEndTime().getTime() < new Date().getTime()){
+			
+			json.put("result", "error");
+			json.put("msg", "该任务已截止");
+			return json;
+		}
 		
-		if (applys == null || applys.size() == 0) {
+		if (applys == null || applys.size() == 0 ) {
 			ApplyOrders applyOrders = new ApplyOrders();
 			applyOrders.setMissionId(missionId);
 			applyOrders.setOrderNum(PayUtil.getOrdersNum(userId, mission.getMissionId()));
@@ -75,14 +86,50 @@ public class ApplyController {
 			
 			if (applyService.saveOrders(applyOrders)) {
 					
-				return "已成功申请";
+				json.put("result", "success");
+				json.put("msg", "申请成功，等待雇主审核，预计时间5分钟内");
+				return json;
 				
 				
 			} else {
-				return "申请失败，请重试";
+				json.put("result", "error");
+				json.put("msg", "申请失败，请重试");
+				return json;
 			}
 		} else {
-			return "您已申请过此任务";
+			//0待确认  1已确认 2.已完成 3. 已取消    4. 未被选上
+			boolean flag = false;
+			for (int i = 0; i < applys.size(); i++) {
+				if((int)applys.get(i).get("take_state") != 3){
+					flag = true;
+				}
+			}
+			
+			if(flag){
+				json.put("result", "error");
+				json.put("msg", "您已申请过此任务");
+				return json;
+			}
+			ApplyOrders applyOrders = new ApplyOrders();
+			applyOrders.setMissionId(missionId);
+			applyOrders.setOrderNum(PayUtil.getOrdersNum(userId, mission.getMissionId()));
+			applyOrders.setTakeState(0);
+			applyOrders.setTakeTime(new Date());
+			applyOrders.setUserId(userId);
+			applyOrders.setNote(msg);
+			
+			if (applyService.saveOrders(applyOrders)) {
+					
+				json.put("result", "success");
+				json.put("msg", "申请成功，等待雇主审核，预计时间5分钟内");
+				return json;
+				
+				
+			} else {
+				json.put("result", "error");
+				json.put("msg", "申请失败，请重试");
+				return json;
+			}
 		}
 	}
 
@@ -96,26 +143,26 @@ public class ApplyController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/getApplybyUMID", method = RequestMethod.POST)
-	@ResponseBody
-	public String selectOrderbyUMID(
-			@RequestParam(value = "forjudge", required = true) boolean judge,
-			@RequestParam(value = "missionId", required = true) Integer missionId,
-			HttpServletRequest request) {
-		Integer userId = (Integer) request.getSession().getAttribute("user_id");
-		List<HashMap<String, String>> applys = null;
-		if (judge == true) {// 只用于判断不返回数据
-			applys = applyService.selectApplybyUMID(userId, missionId);
-			if (applys == null || applys.size() == 0) {
-				return "0";// 返回0，表明用户(userId)没接该任务
-			} else {
-				return "1";// 返回1，表明用户(userId)已经接了该任务
-			}
-		} else {
-			// 返回订单数据
-		}
-		return "";
-	}
+//	@RequestMapping(value = "/getApplybyUMID", method = RequestMethod.POST)
+//	@ResponseBody
+//	public String selectOrderbyUMID(
+//			@RequestParam(value = "forjudge", required = true) boolean judge,
+//			@RequestParam(value = "missionId", required = true) Integer missionId,
+//			HttpServletRequest request) {
+//		Integer userId = (Integer) request.getSession().getAttribute("user_id");
+//		List<HashMap<String, String>> applys = null;
+//		if (judge == true) {// 只用于判断不返回数据
+//			applys = applyService.selectApplybyUMID(userId, missionId);
+//			if (applys == null || applys.size() == 0) {
+//				return "0";// 返回0，表明用户(userId)没接该任务
+//			} else {
+//				return "1";// 返回1，表明用户(userId)已经接了该任务
+//			}
+//		} else {
+//			// 返回订单数据
+//		}
+//		return "";
+//	}
 
 	/**
 	 * 发布者 通过 missionId 查看 所有申请信息
@@ -286,13 +333,58 @@ public class ApplyController {
 		return "操作违规";
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/finishOrder/{applyId}", produces = "text/html;charset=UTF-8;")
-	public String finishOrder(@PathVariable(value = "applyId") Integer applyId,
-			HttpServletRequest request) {
-		ApplyOrders selectByPrimaryKey = applyService.selectByPrimaryKey(applyId);
+	@RequestMapping(value = "/finishOrder")
+	public String finishOrder(
+			@RequestParam(value = "missionDoneDetail", required = false) String missionDoneDetail,
+			@RequestParam(value = "imgUpload", required = false) MultipartFile[] file,
+			@RequestParam(value = "applyId", required = false) Integer applyId,
+			HttpServletRequest request)throws ParseException {
 		
-		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
+		
+		String path = ImageController.APPLYORDERS_IMAGE_LOCATION;
+		Integer userId = (Integer) request.getSession().getAttribute("user_id");
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String uuid = String.valueOf(UUID.randomUUID());
+		uuid = uuid.replace("-", "");
+		String realpath = path + "/" + userId + timestamp + uuid;// 文件夹位置
+		File dir = new File(realpath);
+		dir.mkdirs();
+		System.out.println("wenjian:" + file.length);
+		for (int i = 0; i < file.length; i++) {
+			if (!file[i].isEmpty()) {
+				String fileName = file[i].getOriginalFilename();// 文件原名称
+				String type = fileName.indexOf(".") != -1 ? fileName.substring(
+						fileName.lastIndexOf(".") + 1, fileName.length())
+						: null;
+				try {
+					file[i].transferTo(new File(realpath + "/" + i + "." + type));
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+		ApplyOrders applyOrders = new ApplyOrders();
+		
+		applyOrders.setApplyId(applyId);
+		applyOrders.setFinishTime(new Date());
+		applyOrders.setPicCount(file.length);
+		applyOrders.setPictures(userId + timestamp + uuid);
+		applyOrders.setTakeState(2);
+		applyOrders.setApplyDetail(missionDoneDetail);
+		
+		
+		if(applyService.updateDoneByPrimaryKey(applyOrders)){
+			
+			
+			ApplyOrders applyOrders2 = applyService.selectByPrimaryKey(applyId);
+			return "redirect:evaluate/" + applyOrders2.getMissionId();
+			
+		}
+		/*Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
 		if (cuserId != null && cuserId == selectByPrimaryKey.getUserId()) {
 			selectByPrimaryKey.setTakeState(2);
 			if(applyService.updateStateByApplyId(selectByPrimaryKey)){
@@ -300,10 +392,9 @@ public class ApplyController {
 				return "已通知发布者，等待通过";
 			}
 			return "系统出错";
-		}
-		return "操作违规";
+		}*/
+		return "myservice";
 	}
-	
 	
 	
 	

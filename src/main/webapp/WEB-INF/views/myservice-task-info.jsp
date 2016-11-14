@@ -61,7 +61,14 @@
 .mysend .mysend-col .m-t {
 	border-bottom: 0;
 	height: 70px;
+
 }
+	.assessment{
+		padding: 0 20px;
+		font-size: 12px;
+		color: #999;
+	}
+
 </style>
 <script type="text/javascript">
 	var URL = window.location.href.split('#')[0]; //获取当前页面的url
@@ -765,20 +772,12 @@
 					class="innertxt" id="st">08-09 17:00</span>
 			</p>
 			<p>
-				<i class="mui-icon iconfont icon-time"></i><span>截止</span><span
-					class="innertxt" id="et">08-09 19:00</span>
-			</p>
-			<p>
-				<i class="mui-icon iconfont icon-time"></i><span>接单</span><span
-					class="innertxt" id="jd">08-09 19:00</span>
-			</p>
-			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>完成</span><span
 					class="innertxt" id="wc">08-09 19:00</span>
 			</p>
 			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>状态</span><span
-					class="innertxt" id="zt">08-09 19:00</span>
+					class="innertxt" id="zt">待支付</span>
 			</p>
 		</div>
 		<div class="task-info-description">
@@ -793,43 +792,29 @@
 
 		</div>
 		<div class="task-info-description">
-			<p>我的评价:</p>
-			<p id="evaluate"></p>
-
-		</div>
-		<div class="discus">
-			<p class="pinglun">
-				<span>评论</span><span id="discusCount">(0)</span>
-				<button class="fr pinglunn-btn" onclick="comment()">评论</button>
+			<p>我对发布者的评价:</p>
+			<!--五星评分-->
+			<div class="user-score">
+			<span>评分：</span>								<span class="fivestar">
+									<i class="mui-icon iconfont icon-star"></i>
+									<i class="mui-icon iconfont icon-star"></i>
+									<i class="mui-icon iconfont icon-star"></i>
+									<i class="mui-icon iconfont icon-star-half"></i>
+									<i class="mui-icon iconfont icon-star-empty"></i>
+								</span>
+			</div>
+			<p class="assessment">
+				和客户端看教案上课就哈萨克就等哈看说句话打卡机山东矿机
+				和客户端看教案上课就哈萨克就等哈看说句话打卡机山东矿机
+				和客户端看教案上课就哈萨克就等哈看说句话打卡机山东矿机
 			</p>
-			<ul class="m-discus">
-				<!-- <li class="discus-col">
-					<div class="father">
-						<img class="fl" src="images/muwu.jpg">
-						<div class="f-r fr">
-							<p class="discus-time">08-08 13:30</p>
-						</div>
-						<div class="f-m">
-							<p>满血复活大魔王<i class="mui-icon iconfont icon-man"></i></p>
-							<p class="discus-content">有钱啥都干</p>
-						</div>
-					</div>
-					<div class="son clearfix">
-						<div class="s-r fr">
-							<p class="discus-time">08-08 13:36</p>
-						</div>
-						<div class="s-m fl">
-							<p><span>Toad</span>@<span>满血复活大魔王</span></p>
-							<p class="discus-content">睡觉干吗？</p>
-						</div>
-					</div>
-				</li>-->
-			</ul>
+
 		</div>
 		<br /> <br /> <br /> <br />
 
 		<div class="fix-btn">
-			
+			<button class="fl">私聊</button>
+			<button class="fl cur">打电话</button>
 		</div>
 
 	</div>

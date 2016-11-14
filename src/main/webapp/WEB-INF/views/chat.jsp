@@ -1,46 +1,26 @@
-<!DOCTYPE html>
-<html>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
 
-	<head>
+<!DOCTYPE HTML>
+<html>
+<head>
+<base href="<%=basePath%>">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title></title>
-		<link href="../css/mui.min.css" rel="stylesheet" />
-		<link href="../css/mui.imageviewer.css" rel="stylesheet" />
-		<link href="../css/chat.css" rel="stylesheet" />
+		<title>${user.nickName }</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/mui.imageviewer.css" rel="stylesheet" />
+		<link href="css/chat.css" rel="stylesheet" />
 	</head>
 
 	<body contextmenu="return false;">
-		<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">用户名称</h1>
-		</header>
-		<pre id='h'></pre>
-		<script id='msg-template' type="text/template">
-			<% for(var i in record){ var item=record[i]; %>
-			<div class="msg-item <%= (item.sender=='self'?' msg-item-self':'') %>" msg-type='<%=(item.type)%>' msg-content='<%=(item.content)%>'>
-				<% if(item.sender=='self' ) { %>
-				<i class="msg-user mui-icon mui-icon-person"></i>
-				<% } else { %>
-				<img class="msg-user-img" src="../images/logo.png" alt="" />
-				<% } %>
-				<div class="msg-content">
-					<div class="msg-content-inner">
-						<% if(item.type=='text' ) { %>
-						<%=( item.content|| '&nbsp;&nbsp;') %>
-						<% } else if(item.type=='image' ) { %>
-						<img class="msg-content-image" src="<%=(item.content)%>" style="max-width: 100px;" />
-						<% } else if(item.type=='sound' ) { %>
-						<span class="mui-icon mui-icon-mic" style="font-size: 18px;font-weight: bold;"></span>
-						<span class="play-state">点击播放</span>
-						<% } %>
-					</div>
-					<div class="msg-content-arrow"></div>
-				</div>
-				<div class="mui-item-clear"></div>
-			</div>
-			<% } %>
-		</script>
+		<pre id="h"></pre>
 		<div class="mui-content">
 			<div id='msg-list'>
 			</div>
@@ -62,20 +42,24 @@
 			<div class="r-sigh">!</div>
 			<div id="audio_tips" class="rsalert">手指上滑，取消发送</div>
 		</div>
-		<script src="../js/mui.min.js"></script>
-		<script src="../js/mui.imageViewer.js"></script>
-		<script src="../js/arttmpl.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.imageViewer.js"></script>
 		<script src="http://cdn.bootcss.com/sockjs-client/1.1.1/sockjs.min.js"></script>
 		<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-		<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+		<script src="js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
+			//存放聊天消息
+			var fromuserid = ${fromuserid};
+			var touserid = ${touserid};		
+			var currentPage = 0;
+			var onePageNums = 10;
 			var URL = window.location.href.split('#')[0]; //获取当前页面的url
 			URL = encodeURIComponent(URL);
 			
 			var appid,nonceStr,signature,timestamp;
 			//ajax同步更新全局变量，异步无法更新
 			$.ajax({
-			    url: "/ucoon/wx/sign?url="+URL,
+			    url: "/wx/sign?url="+URL,
 			    success: function(result){
 			    	appid = result.appId;
 			    	timestamp=result.timestamp;
@@ -108,6 +92,7 @@
 			      'previewImage',
 			      'uploadImage',
 			      'downloadImage',
+			      
 			    ]
 			});
 			
@@ -116,17 +101,21 @@
 			(function($, doc) {
 				wx.ready(function () {
 					//页面加载时调用
-					wx.checkJsApi({
+					/*  wx.checkJsApi({
 					    jsApiList: [
 					      'chooseImage',
 					      'previewImage',
 					      'uploadImage',
-					      'startRecord'
+					      'startRecord',
+					      'translateVoice',
+					      'downloadVoice'
 					    ],
 					    success: function (res) {
 					      alert(JSON.stringify(res));
 					    }
-					 });
+					 });   */
+					 loaddata(currentPage, onePageNums);
+					 bindMsgList();
 				});		
 			
 				$.init({
@@ -139,18 +128,15 @@
 						hold: true, //默认为false，不监听
 						release: true //默认为false，不监听
 					}
+					
 				});
+				
+				
+			
 				//关闭默认转义,模板引擎默认数据包含的 HTML 字符进行转义以避免 XSS 漏洞
-				template.config('escape', false);
+				//template.config('escape', false);
 				
 				
-				
-				
-				//存放聊天消息
-				var record = [];
-
-
-
 				var ui = {
 					body: doc.querySelector('body'),
 					footer: doc.querySelector('footer'),
@@ -167,86 +153,151 @@
 				};
 				
 				
-				var url = window.location.href; //获取当前页面的url
-				var fromuserid;
-				var touserid;		
+				var imageViewer = new $.ImageViewer('.msg-content-image', {
+					dbl: false
+				});
 				
+				var headImgUrl = "";
+				var GetHeadUrl = function(userId){
+					$.ajax({
+					    url: "user/getHeadUrl?userId=" + userId,
+					    success: function(result){
+					    	var json = eval("(" + result + ")");
+							headImgUrl = json.url;
+					    },
+					  	dataType: "text",
+					  	async:false
+					});
+				} 
 				
-				
-				//地址栏目取参数
-				var GetArgsFromHref = function(url){
-					var args    = url.split("?");
-					var retval = "";
-					/*参数为空*/
-					if(args[0] == url) {
-						return false; /*无需做任何处理*/
-					}  
-					var str = args[1];
-					args0 = str.split("&");
-					var str1 = args0[0];
-					var str2 = args0[1];
-					var arg1 = str1.split("=");
-					fromuserid = arg1[1];
-					var arg2 = str2.split("=");
-					touserid = arg2[1];
-					return true;
-				}
-				/* var GetHeadUrl = function(userId,headImgUrl){
-					$.get("/user/getHeadUrl?userId" + userId,function(data){
-						alert(data);
-					})
-				} */
-						
-				GetArgsFromHref(url,fromuserid,touserid);
+				GetHeadUrl(fromuserid);
 				var websocket;
 				var domain = window.location.host;
-				
 				var initWebSocket = function() {
 					if ('WebSocket' in window) {  
-						mui.alert('连接方式：WebSocket', '系统消息', function() {});
-						websocket = new WebSocket("ws://" + domain + "/ucoon/echo?fromuserid=" + fromuserid);
+						//mui.alert('连接方式：WebSocket', '系统消息', function() {});
+						websocket = new WebSocket("ws://" + domain + "/echo?fromuserid=" + fromuserid + "&touserid=" + touserid);
 					} else if ('MozWebSocket' in window) {
-						mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
-						websocket = new MozWebSocket("ws://ucoon/echo");
+						//mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
+						websocket = new MozWebSocket("ws://echo?fromuserid=" + fromuserid + "&touserid=" + touserid);
 					} else {
-						mui.alert('连接方式：SockJS', '系统消息', function() {});
-						websocket = new SockJS("http://" + domain + "/ucoon/sockjs/echo");
+						//mui.alert('连接方式：SockJS', '系统消息', function() {});
+						websocket = new SockJS("http://" + domain + "/sockjs/echo?fromuserid=" + fromuserid + "&touserid=" + touserid);
 					}
 				}
+				
 				initWebSocket();
 				websocket.onopen = function(evnt) {
-					mui.alert('连接服务器成功!', '系统消息', function() {});
+					/* ui.areaMsgList.innerHTML = template('msg-template', {
+						"record": record
+					}); */
+					//mui.alert('连接服务器成功!' + evnt.data, '系统消息', function() {});
 				};
+				
+				var bindMsgList = function() {
+					//绑定数据:
+					/* ui.areaMsgList.innerHTML = template('msg-template', {
+						"record": record
+					}); */
+					var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
+					[].forEach.call(msgItems, function(item, index) {
+					
+						var msgType = item.getAttribute('msg-type');
+						var msgContent = item.getAttribute('msg-content');
+						
+						if(msgType == 'image' ) {
+							//var content = item.querySelectorAll('.msg-content-image')[0].src;
+							//var URL = window.location.href.split('#')[0]; //获取当前页面的url
+							wx.downloadImage({
+							    serverId: msgContent, // 需要下载的图片的服务器端ID，由uploadImage接口获得
+							    isShowProgressTips: 0, // 默认为1，显示进度提示
+							    success: function (res) {
+							   	 	var localId = res.localId;
+							    	item.querySelectorAll('.msg-content-image')[0].src=localId;
+							   		
+							   		ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+							   		
+							    }
+							});
+							
+							
+						}
+					
+						item.addEventListener('tap', function(event) {
+							
+							msgItemTap(item, event);
+						}, false);
+					});
+					imageViewer.findAllImage();
+					ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+				};
+				
+				
+				var bindSendMsgList = function() {
+					var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
+					[].forEach.call(msgItems, function(item, index) {
+					
+						item.addEventListener('tap', function(event) {
+							
+							msgItemTap(item, event);
+						}, false);
+					});
+					imageViewer.findAllImage();
+					ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
+				};
+				
 				websocket.onmessage = function(evnt) {
 					
-					mui.alert('收到消息：' + evnt.data, '提示', function() {});
+					//mui.alert('收到消息：' + evnt.data, '提示', function() {});
 					var str = evnt.data;
 					
 					var obj = eval('(' + str + ')');
-					alert(obj.message_detail);
+					//alert(obj.message_detail);
 					//接收消息
 					/* 
+					[{
+						"sender":"echo","nick_name":"Mr Ren","to_user_id":3,"from_user_id":47,"message_nature_type":0,"message_status":1,"message_detail":"哈你妹","psot_time":1476851319000,"head_img_url":"http://wx.qlogo.cn/mmopen/Q3auHgzwzM6IWnDSHLFAcvTHI8gTFyxQ9tGzZHzUicewrjWQpXooHpQ8XOjEL8eJcYdAfEtk4IqkQfnE1pMDrMw/0","message_id":2,"message_type":1
+					},
 					{
-						"from_user_id": "发送方",
-					    "to_user_id": "接收方",
-					    "message_type": "消息类型",
-					    "post_time": "发送时间（时间戳）",
-					    "message_detail": "消息内容"
-					} 
+						"sender":"self","nick_name":"Echo","to_user_id":47,"from_user_id":3,"message_nature_type":0,"message_status":1,"message_detail":"哈哈哈","psot_time":1476851166000,"head_img_url":"http://wx.qlogo.cn/mmopen/nBcYE97sU44fEficHaianAEHRf7G1psw2NkT2PNEibqGt6IfkHQPv63KVjUH9nBRUYCxliaL4oFV0mutYoNsVusu6ttLfZictk9oY/0","message_id":1,"message_type":1
+					},
+					{
+						"sender":"self","nick_name":"Echo","to_user_id":47,"from_user_id":3,"message_nature_type":0,"message_status":1,"message_detail":"你好","psot_time":1476765027000,"head_img_url":"http://wx.qlogo.cn/mmopen/nBcYE97sU44fEficHaianAEHRf7G1psw2NkT2PNEibqGt6IfkHQPv63KVjUH9nBRUYCxliaL4oFV0mutYoNsVusu6ttLfZictk9oY/0","message_id":3,"message_type":1
+					}]
 					 */ 
-					record.push({
-							sender: 'echo',
-							type: 'text',
-							content: obj.message_detail
-					});
-					bindMsgList();
+					 
+				
+					 
+					try{
+						for(var i = 0;i<obj.length;i++){
+							
+							var json = {
+								sender: obj[i].sender,
+								type: obj[i].message_type,
+								headImgUrl: obj[i].head_img_url,
+								content: obj[i].message_detail
+							};
+							record.push(json);
+							
+							
+						}
+					}catch(e){
+					}
+					bindMsgList();	
+					
 				};
+				
+				
 				websocket.onerror = function(evnt) {
 					mui.alert('服务器出错了-》' + evnt.data, '系统消息', function() {});
 				};
 				websocket.onclose = function(evnt) {
 					mui.alert('与服务器断开了链接!', '系统消息', function() {});
 				}
+				
+				
+				
+				
 				ui.h.style.width = ui.boxMsgText.offsetWidth + 'px';
 				//alert(ui.boxMsgText.offsetWidth );
 			
@@ -259,13 +310,21 @@
 				var footerPadding = ui.footer.offsetHeight - ui.boxMsgText.offsetHeight;
 				var msgItemTap = function(msgItem, event) {
 					var msgType = msgItem.getAttribute('msg-type');
-					var msgContent = msgItem.getAttribute('msg-content')
+					var msgContent = msgItem.getAttribute('msg-content');
 					if(msgType == 'sound') {
 						var playState = msgItem.querySelector('.play-state');
 						playState.innerText = '正在播放...';
-						wx.playVoice({
-					      localId: msgContent
-					    });
+						wx.downloadImage({
+						    serverId: msgContent, // 需要下载的图片的服务器端ID，由uploadImage接口获得
+						    isShowProgressTips: 0, // 默认为1，显示进度提示
+						    success: function (res) {
+						   	 	wx.playVoice({
+							      localId: res.localId
+							    });
+						    	
+						    }
+						});
+						
 					    
 					    //  停止播放音频
 					   /*  wx.stopVoice({
@@ -280,36 +339,16 @@
 						});
 					}
 				};
-				var imageViewer = new $.ImageViewer('.msg-content-image', {
-					dbl: false
-				});
-				var bindMsgList = function() {
-					//绑定数据:
-					ui.areaMsgList.innerHTML = template('msg-template', {
-						"record": record
-					});
-					var msgItems = ui.areaMsgList.querySelectorAll('.msg-item');
-					[].forEach.call(msgItems, function(item, index) {
-						item.addEventListener('tap', function(event) {
-							msgItemTap(item, event);
-						}, false);
-					});
-					imageViewer.findAllImage();
-					ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
-				};
-				bindMsgList();
-				window.addEventListener('resize', function() {
-					ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
-				}, false);
+				
 				var send = function(msg) {
 					//发送消息
 					/* 
 					{
-						"from_user_id": "发送方",
-					    "to_user_id": "接收方",
-					    "message_type": "消息类型",
-					    "post_time": "发送时间（时间戳）",
-					    "message_detail": "消息内容"
+						sender: 'self',
+						type: 'image',
+						headImgUrl: headImgUrl,
+						content: localId,
+						serverId :res.serverId
 					} 
 					 */ 
 					if (websocket.readyState != 1) {
@@ -318,23 +357,53 @@
 						initWebSocket();
 					} 
 					/* else {
-					
-						
 						mui.alert('未与服务器链接!', '系统消息', function() {});
 					} */
+					var html = "";
+					if(msg.sender == "self"){
+						html += "<div class='msg-item  msg-item-self' msg-type='" + msg.type + "' msg-content='" + msg.content + "'>"
+						 + "<i class='msg-user mui-icon'><img class='msg-user-img' src='" + msg.headImgUrl + "' alt='' /></i>";
+					}else{
+						html += "<div class='msg-item' msg-type='" + msg.type + "' msg-content='" + msg.content + "'>"
+						 + "<img class='msg-user-img' src='" + msg.headImgUrl + "' alt='' />";
+					}
+					html += "<div class='msg-content'><div class='msg-content-inner'>";
+					if(msg.type == 'text'){
+						html += ( msg.content || '&nbsp;&nbsp;');
+					}else if(msg.type == 'image'){
+						html += "<img class='msg-content-image' src='" + msg.content + "' style='max-width: 100px;' />";
+					}else if(msg.type == 'sound'){
+						html += "<span class='mui-icon mui-icon-mic' style='font-size: 18px;font-weight: bold;'></span>"
+							+ "<span class='play-state'>点击播放</span>";
+					}
 					
+					html += "</div><div class='msg-content-arrow'></div></div><div class='mui-item-clear'></div></div>";
+					var newNode = document.createElement("div"); 
+					newNode.innerHTML = html; 
+					document.getElementById("msg-list").appendChild(newNode);
+					bindSendMsgList();
 					
-					record.push(msg);
-					bindMsgList();
-					var timestamp = new Date().getTime();
-					var message_content = '{"from_user_id":"' + fromuserid
+					var message_content = "";		
+					if(msg.type == "sound"){
+						message_content = '{"from_user_id":"' + fromuserid
+							+ '","to_user_id":"' + touserid + '","message_type":"sound"'
+							+ ',"message_detail":"'
+							+ msg.serverId + '"}';
+					}else if(msg.type == "image"){
+						message_content = '{"from_user_id":"' + fromuserid
+							+ '","to_user_id":"' + touserid + '","message_type":"image"'
+							+ ',"message_detail":"'
+							+ msg.serverId + '"}';
+					}else{
+						message_content = '{"from_user_id":"' + fromuserid
 							+ '","to_user_id":"' + touserid + '","message_type":"text"'
-							+ ',"post_time":"' + timestamp + '","message_detail":"'
+							+ ',"message_detail":"'
 							+ msg.content + '"}';
+					}
 							
 					setTimeout(function() {
 						websocket.send(message_content);
-			        }, 500);
+			        }, 200);
 					
 				};
 				
@@ -359,18 +428,18 @@
 						event.preventDefault();
 					}
 				});
-				//					ui.footerRight.addEventListener('touchcancel', function(event) {
-				//						if (ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
-				//							msgTextFocus();
-				//							event.preventDefault();
-				//						}
-				//					});
-				//					ui.footerRight.addEventListener('touchend', function(event) {
-				//						if (ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
-				//							msgTextFocus();
-				//							event.preventDefault();
-				//						}
-				//					});
+				ui.footerRight.addEventListener('touchcancel', function(event) {
+					if (ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+						msgTextFocus();
+						event.preventDefault();
+					}
+				});
+				ui.footerRight.addEventListener('touchend', function(event) {
+					if (ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
+						msgTextFocus();
+						event.preventDefault();
+					}
+				});
 				ui.footerRight.addEventListener('release', function(event) {
 					if(ui.btnMsgType.classList.contains('mui-icon-paperplane')) {
 						//showKeyboard();
@@ -379,9 +448,14 @@
 							ui.boxMsgText.focus();
 						}, 150);
 						//							event.detail.gesture.preventDefault();
+						if(headImgUrl == ""){
+								headImgUrl = GetHeadUrl(fromuserid);	
+						}
+						
 						send({
 							sender: 'self',
 							type: 'text',
+							headImgUrl: headImgUrl,
 							content: ui.boxMsgText.value.replace(new RegExp('\n', 'gm'), '<br/>')
 						});
 						ui.boxMsgText.value = '';
@@ -417,22 +491,25 @@
 					        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
 					        
 					        localId=localIds[0];//默认取一张
-					        
+					        if(headImgUrl == ""){
+								headImgUrl = GetHeadUrl(fromuserid);	
+							}
 					        //上传到微信服务器
-					        /* wx.uploadImage({
+					        wx.uploadImage({
 							    localId: localId, // 需要上传的图片的本地ID，由chooseImage接口获得
-							    isShowProgressTips: 1, // 默认为1，显示进度提示
+							    isShowProgressTips: 0, // 默认为1，显示进度提示
 							    success: function (res) {
-							        var serverId = res.serverId; // 返回图片的服务器端ID
-							        alert(serverId);
+							        
+							        send({
+										sender: 'self',
+										type: 'image',
+										headImgUrl: headImgUrl,
+										content: localId,
+										serverId :res.serverId
+									})
 							    }
-							}); */
+							}); 
 					        
-					        send({
-									sender: 'self',
-									type: 'image',
-									content: localId
-							});
 					    }
 					});
 					
@@ -514,11 +591,25 @@
 				      success: function (res) {
 				        voice.localId = res.localId;
 				        if(!recordCancel){
-				        	send({
-								sender: 'self',
-								type: 'sound',
-								content: voice.localId
+				        	if(headImgUrl == ""){
+								headImgUrl = GetHeadUrl(fromuserid);	
+							}
+							
+							wx.uploadVoice({
+							    localId: res.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+							    isShowProgressTips: 0, // 默认为1，显示进度提示
+							        success: function (res) {
+							        voice.serverId = res.serverId; // 返回音频的服务器端ID
+								    send({
+										sender: 'self',
+										type: 'sound',
+										headImgUrl: headImgUrl,
+										content: voice.localId,
+										serverId :res.serverId
+									})
+							    }
 							});
+				        	
 				        }
 				        
 				      },
@@ -537,11 +628,23 @@
 					  stopTimer = setTimeout(function() {
 							setSoundAlertVisable(false);
 					  }, 800);
-					  send({
-							sender: 'self',
-							type: 'sound',
-							content: voice.localId
-					  });
+					  if(headImgUrl == ""){
+						   headImgUrl = GetHeadUrl(fromuserid);	
+					  }
+					  wx.uploadVoice({
+					    localId: res.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+					    isShowProgressTips: 0, // 默认为1，显示进度提示
+					        success: function (res) {
+					        voice.serverId = res.serverId; // 返回音频的服务器端ID
+						        send({
+									sender: 'self',
+									type: 'sound',
+									headImgUrl: headImgUrl,
+									content: voice.localId,
+									serverId :res.serverId
+								})
+						    }
+						});
 				    }
 				});
 				
@@ -569,13 +672,67 @@
 					event.detail.gesture.preventDefault();
 				}, false);
 				//点击消息列表，关闭键盘
-				ui.areaMsgList.addEventListener('click', function(event) {
+				ui.areaMsgList.addEventListener('tap', function(event) {
 					if(!focus) {
 						ui.boxMsgText.blur();
 					}
 				})
 
+				function loaddata(startIndex, endIndex) {
+				
+					$.ajax({
+						url : 'chat/getChatHistoryMsg',
+						data : {
+							startIndex : startIndex,
+							endIndex : endIndex,
+							fromUserID : fromuserid,
+							toUserID :touserid
+						},
+						async : false,
+						type : 'post',
+						dataType : 'json',
+						success : function(data) {
+							
+							for (var i = 0; i < data.length; i++) {
+							
+								var html = "";
+								if(data[i].sender == "self"){
+									html += "<div class='msg-item  msg-item-self' msg-type='" + data[i].message_type + "' msg-content='" + data[i].message_detail + "'>"
+									 + "<i class='msg-user mui-icon'><img class='msg-user-img' src='" + data[i].head_img_url + "' alt='' /></i>";
+								}else{
+									html += "<div class='msg-item' msg-type='" + data[i].message_type + "' msg-content='" + data[i].message_detail + "'>"
+									 + "<img class='msg-user-img' src='" + data[i].head_img_url + "' alt='' />";
+								}
+								html += "<div class='msg-content'><div class='msg-content-inner'>";
+								if(data[i].message_type == 'text'){
+									html += ( data[i].message_detail || '&nbsp;&nbsp;');
+								}else if(data[i].message_type == 'image'){
+									html += "<img class='msg-content-image' src='' style='max-width: 100px;' />";
+								}else if(data[i].message_type == 'sound'){
+									html += "<span class='mui-icon mui-icon-mic' style='font-size: 18px;font-weight: bold;'></span>"
+										+ "<span class='play-state'>点击播放</span>";
+								}
+								
+								html += "</div><div class='msg-content-arrow'></div></div><div class='mui-item-clear'></div></div>";
+								var newNode = document.createElement("div"); 
+								newNode.innerHTML = html; 
+								var reforeNode = document.getElementById("msg-list").firstChild; 
+								document.getElementById("msg-list"). insertBefore(newNode,reforeNode );
+								
+								
+							}
+							/* $('.task-col').on('tap', function() {
+								window.location.href = "mission/task-info/"
+												+ $(this).attr("data-m");
+							}) */
+						}
+					})
+				}
 			}(mui, document));
+			
+			
+			
+			
 		</script>
 	</body>
 

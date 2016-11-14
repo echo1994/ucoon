@@ -150,7 +150,7 @@ public class MissionController {
 				address.setPlace(place);
 				address.setMissionLat(missionLat);
 				address.setMissionLng(missionLng);
-				
+				address.setUserId(userId);
 				missionService.addMissionAddress(address);
 			}
 			
@@ -215,6 +215,7 @@ public class MissionController {
 			} else if(missionStatus == 1){
 				list.add(1);
 				list.add(2);
+				list.add(6);
 				
 				missions = missionService.selectLimitedbyUserIdAndStatus(
 						userId,  list, startIndex, endIndex);
@@ -411,23 +412,30 @@ public class MissionController {
 		return mv;
 	}
 	
-	@RequestMapping(value = "/mysend-task-info/{missionId}")
+	@RequestMapping(value = "/order-info/{missionId}")
 	public ModelAndView mysendTaskInfo(@PathVariable("missionId") Integer missionId,
 			ModelAndView mv,HttpServletRequest request) {
 		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
 		
-		HashMap<String, Object> mdetails = null;
-		mdetails = missionService.selectForMissionDetails(missionId);
-		User user = userService.getUserById(user_id);
+		HashMap<String, Object> mdetails = missionService.selectForMissionDetails(missionId);
+		if(user_id == mdetails.get("user_id")){
+			
+			List<HashMap<String, Object>> list = applyService.selectDetailByMissionId(missionId);
+			System.out.println(list);
+			mv.addObject("mdetails", mdetails);
+			mv.addObject("list", list);
+			mv.setViewName("order-info");
+		}else{
+			
+			mv.setViewName("404");
+		}
 		
-		System.out.println(mdetails);
-		mv.addObject("mdetails", mdetails);
-		mv.addObject("user", user);
-		mv.setViewName("mysend-task-info");
+		
 		
 		
 		return mv;
 	}
+
 	
 	@RequestMapping(value = "/more-info/{mid}")
 	public ModelAndView moreMinfo(@PathVariable(value = "mid") Integer mid,
@@ -515,27 +523,18 @@ public class MissionController {
 	public ModelAndView evaluate(@PathVariable("missionId") Integer missionId,
 			ModelAndView mv,HttpServletRequest request) {
 		Integer user_id = (Integer) request.getSession().getAttribute("user_id");//发布者id
-		Evaluate evaluate = null;
-		evaluate = evaluateService.selectByMissionId(missionId);
-		if(evaluate == null){
-			//生成对象
-			evaluate = new Evaluate();
-			evaluate.setPublishId(user_id);
-			
-			evaluate.setMissionId(missionId);
-			Integer publishId = missionService.getUserIdByMissionId(missionId);
-			//evaluate.setExecutorId();
-			
-			evaluateService.insertEvaluate(evaluate);
-		}
 		
 		
-		User user = userService.getUserById(evaluate.getPublishId());
+		//取出被成功选择的人
+		List<HashMap<String, Object>> list = this.applyService.selectselectpeople(missionId);
 		
-		mv.addObject("evaluate", evaluate);
-		mv.addObject("user", user);
+		System.out.println(list);
+		//User user = userService.getUserById(evaluate.getPublishId());
 		
-		mv.setViewName("evaluate");
+		//mv.addObject("evaluate", evaluate);
+		mv.addObject("list", list);
+		mv.addObject("missionId", missionId);
+		mv.setViewName("evaluate_publish");
 		
 		
 		return mv;
@@ -543,49 +542,52 @@ public class MissionController {
 	
 	
 	@RequestMapping(value = "/addEvaluate", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject addEvaluate(
-			@RequestParam(value = "content", required = true) String content,
+	public String addEvaluate(
+			@RequestParam(value = "content", required = true) String[] content,
+			@RequestParam(value = "userId", required = true) Integer[] userId,
+			@RequestParam(value = "score", required = true) Float[] score,
 			@RequestParam(value = "missionId", required = true) Integer missionId,
-			@RequestParam(value = "score", required = true) Float score,
 			HttpServletRequest request) {
-		JSONObject json = new JSONObject();
-		Integer user_id = (Integer) request.getSession()
+		
+		Integer publish_id = (Integer) request.getSession()
 				.getAttribute("user_id");
-		
-		if(user_id == null || user_id == 0){
-			json.put("result", "error");
-			json.put("msg", "系统出错了");
-			return json;
+		for (int i = 0; i < content.length; i++) {
 			
-		}
-		
-		if(score == null || score == 0){
-			json.put("result", "error");
-			json.put("msg", "分数不能为0");
-			return json;
+			Evaluate evaluate = new Evaluate();
 			
+			evaluate.setPeevaluateTime(new Date());
+			evaluate.setPublishEvaluate(content[i]);
+			evaluate.setPublishScore(score[i]);
+			evaluate.setMissionId(missionId);
+			evaluate.setPublishId(publish_id);
+			evaluate.setExecutorId(userId[i]);
+			//更新评价表
+			evaluateService.insertEvaluate(evaluate);
+//			if (evaluateService.updateExecutorByMissionId(evaluate)) {
+//				json.put("result", "success");
+//				json.put("msg", "评价成功");
+//				
+//				return json;
+//			}
 		}
-		
-		Evaluate evaluate = new Evaluate();
-		
-		evaluate.setEpevaluateTime(new Date());
-		evaluate.setExecutorEvaluate(content);
-		evaluate.setExecutorScore(score);
-		evaluate.setMissionId(missionId);
-		
-		//更新评价表
+		JSONObject json = new JSONObject();
 		
 		
+//		if(publish_id == null || publish_id == 0){
+//			json.put("result", "error");
+//			json.put("msg", "系统出错了");
+//			return json;
+//			
+//		}
+//		
+//		if(score == null || score == 0){
+//			json.put("result", "error");
+//			json.put("msg", "分数不能为0");
+//			return json;
+//			
+//		}
 		
 	
-
-		if (evaluateService.updateExecutorByMissionId(evaluate)) {
-			json.put("result", "success");
-			json.put("msg", "评价成功");
-			
-			return json;
-		}
 
 
 		
@@ -593,6 +595,43 @@ public class MissionController {
 		json.put("result", "error");
 		json.put("msg", "评价失败");
 
-		return json;
+		return "evaluate_publish";
+	}
+	
+	
+	/**
+	 * 分页查询
+	 * 
+	 * @param missionId
+	 *            通过missionId加载
+	 * @param startIndex
+	 *            开始位置
+	 * @param endIndex
+	 *            结束位置
+	 * @return json
+	 */
+	@RequestMapping(value = "/getEvaluateLimited", method = RequestMethod.POST)
+	@ResponseBody
+	public String getMissionsLimited(
+			@RequestParam(value = "publishId", required = true) Integer publishId,
+			@RequestParam(value = "startIndex", required = true) Integer startIndex,
+			@RequestParam(value = "endIndex", required = true) Integer endIndex,
+			HttpServletRequest request) {
+		List<HashMap<String, Object>> evaluates = null;
+
+		evaluates = evaluateService.selectLimitedbyPublishId(publishId,
+				startIndex, endIndex);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonfromList = "";
+		try {
+			jsonfromList = mapper.writeValueAsString(evaluates);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			jsonfromList = "{}";
+		}
+		System.out.println(jsonfromList);
+		return jsonfromList;
 	}
 }

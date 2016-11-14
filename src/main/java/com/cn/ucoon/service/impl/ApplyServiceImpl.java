@@ -20,7 +20,7 @@ public class ApplyServiceImpl implements ApplyService {
 
 
 	@Override
-	public List<HashMap<String, String>> selectApplybyUMID(Integer userId,
+	public List<HashMap<String, Object>> selectApplybyUMID(Integer userId,
 			Integer missionId) {
 		// TODO Auto-generated method stub
 		return applyOrdersMapper.selectApplybyUMID(userId, missionId);
@@ -139,6 +139,33 @@ public class ApplyServiceImpl implements ApplyService {
 	public List<HashMap<String, Object>> selectselectedpeople(Integer missionId) {
 		// TODO Auto-generated method stub
 		return applyOrdersMapper.selectselectedpeople(missionId);
+	}
+
+
+	@Override
+	public boolean updateDoneByPrimaryKey(ApplyOrders applyOrders) {
+		int i = applyOrdersMapper.updateDoneByPrimaryKey(applyOrders);
+		
+		if(i > 0){
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> selectDetailByMissionId(
+			Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectDetailByMissionId(missionId);
+	}
+
+
+	@Override
+	public List<HashMap<String, Object>> selectselectpeople(Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectselectpeople(missionId);
 	}
 	
 	

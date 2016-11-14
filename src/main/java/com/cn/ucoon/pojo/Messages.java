@@ -11,7 +11,7 @@ public class Messages {
 
     private Date psotTime;
 
-    private Integer messageType;
+    private String messageType;
 
     private Integer fromUserId;
 
@@ -51,11 +51,11 @@ public class Messages {
         this.psotTime = psotTime;
     }
 
-    public Integer getMessageType() {
+    public String getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(Integer messageType) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 

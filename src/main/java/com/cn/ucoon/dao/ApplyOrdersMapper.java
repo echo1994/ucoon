@@ -19,7 +19,9 @@ public interface ApplyOrdersMapper {
     
     int updateNoteByPrimaryKey(ApplyOrders record);
     
-    List<HashMap<String, String>> selectApplybyUMID(Integer userId,
+    int updateDoneByPrimaryKey(ApplyOrders record);
+    
+    List<HashMap<String, Object>> selectApplybyUMID(Integer userId,
 			Integer missionId);
 	
 	List<HashMap<String, String>> selectApplyUser(Integer applyId);
@@ -27,6 +29,7 @@ public interface ApplyOrdersMapper {
 	
 	List<HashMap<String, String>> selectByMissionId(Integer missionId);
 
+	List<HashMap<String, Object>> selectDetailByMissionId(Integer missionId);
 	
 	List<HashMap<String, String>> selectOrdersLimited(Integer userId,
 			Integer startIndex, Integer endIndex);
@@ -41,5 +44,7 @@ public interface ApplyOrdersMapper {
 	List<HashMap<String, Object>> selectunselectedpeople(Integer missionId);
 	
 	List<HashMap<String, Object>> selectselectedpeople(Integer missionId);
+	
+	List<HashMap<String, Object>> selectselectpeople(Integer missionId);
 
 }

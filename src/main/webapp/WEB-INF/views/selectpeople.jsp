@@ -21,194 +21,183 @@
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
 <style>
-html, body {
-	background: #fff;
-}
+html,
+		body{
+			background: #fff;
+		}
+			.mui-content{
+				background: #fff;
+			}
 
-.mui-content {
-	background: #fff;
-}
+		.title-who{
+			border:none;
+			padding-bottom: 5px;
+		}
+		h3{
+			text-align: center;
+			font-size: 14px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #eee;
+			color: #999;
+		}
+		h3 span{
+			color: #C3D94F;
+		}
+		.selet-num span{
+			color: #C3D94F;
+		}
+		.select-people{
+			margin: 10px;
+		}
+		.select-people .sp-tit{
+			color: #555;
+			font-size: 14px;
+			line-height: 61px;
+			margin-right: 5px;
+		}
+		.select-people ul{
+			width: 240px;
+			margin: 0;
+		}
+		.select-people li{
 
-.title-who {
-	border: none;
-	padding-bottom: 5px;
-}
+			float: left;
+			width: 60px;
+			margin-bottom: 10px;
+		}
+		.select-people li img{
+			display: block;
+			width: 40px;
+			height: 40px;
+			margin: 0 auto;
+			border-radius: 50%;
+		}
 
-h3 {
-	text-align: center;
-	font-size: 14px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #eee;
-	color: #999;
-}
+		.select-people li p{
+			color: #999;
+			font-size: 12px;
+			text-align: center;
+			overflow : hidden;
+			text-overflow: ellipsis;
 
-h3 span {
-	color: #C3D94F;
-}
+		}
+		.joinin{
+			border-bottom: 1px dashed #eee;
+			margin-bottom: 10px;
+		}
 
-.selet-num span {
-	color: #C3D94F;
-}
 
-.select-people {
-	margin: 10px;
-}
+		.payment_time_mask{
+			display: none;
+		}
 
-.select-people .sp-tit {
-	color: #555;
-	font-size: 14px;
-	line-height: 61px;
-	margin-right: 5px;
-}
+		.payment_time_mask{
+			z-index: 999;
+			width: 90%;
+			height: 272px;
+			position: absolute;
+			left: 5%;
+			top: 115px;
+			border-radius: 10px;
+			overflow: hidden;
+			text-align: center;
+		}
+		#slider{
+			z-index: 999;
+			width: 100%;
+			/*margin: 0 10px;*/
+			/*height: 272px;*/
+			position: absolute;
+			/*left: 5%;*/
+			top: 100px;
+		}
 
-.select-people ul {
-	width: 240px;
-	margin: 0;
-}
+		#bg{
+			background-color:#000;
+			position:fixed;
+			z-index:99;
+			left:0;
+			top:0;
+			display:none;
+			width:100%;
+			height:100%;
+			opacity:0.3;
+			filter: alpha(opacity=30);
+			-moz-opacity: 0.3;
+		}
+		.mui-slider .mui-slider-group .mui-slider-item {
+				width:240px;
+				background: #fff;
+				height: 300px;
+			border-radius: 20px;
+			margin: 0 10px;
+			}
+		.mui-slider .mui-slider-group .mui-slider-item img{
+			width: 60px;
+			height: 60px;
+		}
+		.basic-mes{
+			margin-top:20px;;
+		}
+			.total-task{
+				color: #999;
+				text-align: center;
+				font-size: 12px;
+			}
+		.total-task span{
+			color: #c3d94f;
+		}
+			.link-way{
+				text-align: center;
+				color: #c3d94f
+			}
 
-.select-people li {
-	float: left;
-	width: 60px;
-	margin-bottom: 10px;
-}
+			.link-way i{
+				font-size: 16px;
+				margin: 0 5px;
+			}
+			.ly{
+				margin: 0 20px;
+			}
+			.ly .tit{
+				font-size: 12px;
+				color: #555;
 
-.select-people li img {
-	display: block;
-	width: 40px;
-	height: 40px;
-	margin: 0 auto;
-	border-radius: 50%;
-}
+			}
+			.ly .cot{
+				border: 1px solid #ccc;
+				padding: 5px;
+				font-size: 12px;
+				color: #999;
+				line-height: 15px;
+			}
+			.choose-btn{
+				display: block;
+				text-align: center;
+				background: #c3d94f;
+				width: 100px;
+				height: 30px;
+				color: #fff;
+				margin: 10px auto 0 auto;
+			}
+			.close-bg{
+				display: none;
+				position: fixed;
+				z-index: 999;
+				bottom:40px;
+				left:50%;
+				margin-left: -20px;
 
-.select-people li p {
-	color: #999;
-	font-size: 12px;
-	text-align: center;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
 
-.joinin {
-	border-bottom: 1px dashed #eee;
-	margin-bottom: 10px;
-}
+			}
+			.close-bg .mui-icon{
+				font-size: 40px;
+				color: #fff;
+			}
 
-.payment_time_mask {
-	display: none;
-}
-
-.payment_time_mask {
-	z-index: 999;
-	width: 90%;
-	height: 272px;
-	position: absolute;
-	left: 5%;
-	top: 115px;
-	border-radius: 10px;
-	overflow: hidden;
-	text-align: center;
-}
-
-#slider {
-	z-index: 999;
-	width: 100%;
-	/*margin: 0 10px;*/
-	/*height: 272px;*/
-	position: absolute;
-	/*left: 5%;*/
-	top: 100px;
-}
-
-#bg {
-	background-color: #000;
-	position: fixed;
-	z-index: 99;
-	left: 0;
-	top: 0;
-	display: none;
-	width: 100%;
-	height: 100%;
-	opacity: 0.3;
-	filter: alpha(opacity = 30);
-	-moz-opacity: 0.3;
-}
-
-.mui-slider .mui-slider-group .mui-slider-item {
-	width: 240px;
-	background: #fff;
-	height: 300px;
-	border-radius: 20px;
-	margin: 0 10px;
-}
-
-.mui-slider .mui-slider-group .mui-slider-item img {
-	width: 60px;
-	height: 60px;
-}
-
-.basic-mes {
-	margin-top: 20px;;
-}
-
-.total-task {
-	color: #999;
-	text-align: center;
-	font-size: 12px;
-}
-
-.total-task span {
-	color: #c3d94f;
-}
-
-.link-way {
-	text-align: center;
-}
-
-.link-way i {
-	font-size: 16px;
-	margin: 0 5px;
-}
-
-.ly {
-	margin: 0 20px;
-}
-
-.ly .tit {
-	font-size: 12px;
-	color: #555;
-}
-
-.ly .cot {
-	border: 1px solid #ccc;
-	padding: 5px;
-	font-size: 12px;
-	color: #999;
-	line-height: 15px;
-}
-
-.choose-btn {
-	display: block;
-	text-align: center;
-	background: #c3d94f;
-	width: 100px;
-	height: 30px;
-	color: #fff;
-	margin: 10px auto 0 auto;
-}
-
-.close-bg {
-	display: none;
-	position: fixed;
-	z-index: 999;
-	bottom: 40px;
-	left: 50%;
-	margin-left: -20px;
-}
-
-.close-bg .mui-icon {
-	font-size: 40px;
-	color: #fff;
-}
+			#slider{
+				padding: 0 20%;
+			}
 </style>
 </head>
 <script src="js/jquery-2.1.4.min.js"></script>
@@ -252,8 +241,7 @@ h3 span {
 							+"已帮助他人 <span>" + result[i].helpCount + "</span>次"
 						+"</p>"
 						+"<div class=\"link-way\">"
-							+"<a href=\"tel:" + result[i].phone + "\"><i class=\"mui-icon mui-icon-phone\"></i></a> <a href=\"\">"
-								+"<i class=\"mui-icon mui-icon-chatbubble\"></i></a>"
+							+"<a href=\"user/detailWithEvaluate/" + result[i].apply_id + "\">查看详情</a>"
 						+"</div>"
 						+"<div class=\"ly\">"
 							+"<p class=\"tit\">他的留言:</p>"

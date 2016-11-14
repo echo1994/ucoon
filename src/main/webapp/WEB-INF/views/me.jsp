@@ -6,11 +6,11 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
-<!DOCTYPE html>
+
+<!DOCTYPE HTML>
 <html>
 <head>
 <base href="<%=basePath%>">
-
 		<meta charset="UTF-8">
 		<title>个人中心</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -161,15 +161,5 @@
 			})
 		});
 		
-		/* document.getElementById("edit-add").addEventListener('tap', function(e) {
-			var btnArray = ['取消', '保存'];
-			mui.prompt('输入常用的地址', '常用地址', '有空ucoon', btnArray, function(e) {
-				if (e.index == 1) {
-				
-				} else {
-				
-				}
-			})
-		}); */
 	</script>
 </html>

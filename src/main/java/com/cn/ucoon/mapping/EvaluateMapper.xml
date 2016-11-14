@@ -78,4 +78,11 @@
   <select id="selectExecutorScoreByUserId" resultType="java.lang.Integer">
     select AVG(executor_score) from evaluate where publish_id = #{0} and executor_score IS NOT NULL
   </select>
+  
+  <select id="selectLimitedbyPublishId" resultType="java.util.HashMap" >
+	SELECT mission_id,executor_id,publish_id,executor_evaluate,executor_score,epevaluate_time,
+	nick_name,sex,head_img_url FROM evaluate LEFT JOIN user ON
+	 user.user_id = evaluate.executor_id WHERE publish_id = #{0} and executor_evaluate is not null
+	  ORDER BY epevaluate_time DESC LIMIT #{1},#{2}
+  </select>
 </mapper>

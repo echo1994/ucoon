@@ -24,10 +24,8 @@
 <link href="css/iconfont.css" rel="stylesheet" />
 <link href="css/create-aty.css" rel="stylesheet" />
 
-<script src="js/mui.min.js"></script>
-<script src="js/jquery-2.1.4.min.js"></script>
-<script src="js/mui.picker.min.js"></script>
 
+<script src="js/jquery-2.1.4.min.js"></script>
 
 <script type="text/javascript"
 	src="http://api.map.baidu.com/api?v=2.0&ak=5tvfGzOQjpNsnVNXhUZ0xkxDCK6sDpRF"></script>
@@ -55,30 +53,38 @@
 	.mui-input-row .select{
 		position: absolute;
 		z-index: 9;
-		top: 13px;
+		top: 10px;
 		right:1px;
-		width: 20px;
-		height: 20px;
+		width: 26px;
+		height: 26px;
 		font-size: 0;
 		margin: 3px 8px 3px 5px;
 		background: url("images/pulldown.png") no-repeat;
-		background-size: 20px 20px;
 	
 	}
 	.mui-input-row .tel{
-		padding-right: 30px;
+		padding-right: 40px;
 	}
 	.tip{
 		position: absolute;
-		font-size: 15px;
+		font-size: 8px;
 		color: #999;
 		/*text-align: right;*/
 		/*padding:10px 50px 10px 0;*/
-
 		bottom:12px;
 		right: 10px;
 
 
+	}
+	.deleted{
+		position: absolute;
+		right: 2px;
+		top:-10px;
+		z-index: 99;
+		color:rgb(250,75,75);
+	}
+	.publish-des .addimg li{
+		position: relative;
 	}
 
 </style>
@@ -93,12 +99,10 @@
 				<i class="mui-icon iconfont icon-plane"></i>发布任务
 			</h2>
 			<div class="mui-input-row who-form">
-				<label>标题</label> <input type="text" name="missionTitle"
-					placeholder="如领快递，买盒饭等">
+				<label>标题</label> <input type="text" name="missionTitle" placeholder="如领快递，买盒饭等">
 			</div>
 			<div class="publish-des">
-				<textarea name="missionDescribe"
-					placeholder="选填，添加详细描述，有助于快速被接单哦！"></textarea>
+				<textarea name="missionDescribe" placeholder="选填，添加详细描述，有助于快速被接单哦！"></textarea>
 				<ul class="addimg">
 					<li style="position: relative;"><img id="addimgCo"
 						src="images/addimg.png" /> <input type="file" id="imgUpload"
@@ -221,5 +225,18 @@
 		style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
 
 </body>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script>
+	
+	$(document).on("tap",'#deleteimg',function () {
+		 $(this).parent().remove()
+	})
+</script>
+<script src="js/mui.picker.min.js"></script>
 <script src="js/who.js"></script>
+
+	
+
 </html>

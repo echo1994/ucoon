@@ -6,10 +6,12 @@ import java.util.List;
 import com.cn.ucoon.pojo.ApplyOrders;
 
 public interface ApplyService {
-	List<HashMap<String, String>> selectApplybyUMID(Integer userId,
+	List<HashMap<String, Object>> selectApplybyUMID(Integer userId,
 			Integer missionId);
 
 	List<HashMap<String, String>> selectByMissionId(Integer missionId);
+	
+	List<HashMap<String, Object>> selectDetailByMissionId(Integer missionId);
 	
 	List<HashMap<String, String>> selectApplyUser(Integer applyId);
 
@@ -32,10 +34,14 @@ public interface ApplyService {
 	
 	boolean updateNoteByPrimaryKey(ApplyOrders applyOrders);
 	
+	boolean updateDoneByPrimaryKey(ApplyOrders applyOrders);
 	
 	boolean saveOrders(ApplyOrders applyOrders);
 	
 	List<HashMap<String, Object>> selectunselectedpeople(Integer missionId);
 	
 	List<HashMap<String, Object>> selectselectedpeople(Integer missionId);
+	
+	
+	List<HashMap<String, Object>> selectselectpeople(Integer missionId);
 }

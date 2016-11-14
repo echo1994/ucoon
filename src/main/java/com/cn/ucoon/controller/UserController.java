@@ -77,7 +77,7 @@ public class UserController {
 	
 	@RequestMapping(value="/getHeadUrl",method=RequestMethod.GET)
 	@ResponseBody
-	public String getHeadUrl(@RequestParam("userId")String userId){
+	public String getHeadUrl(@RequestParam("userId")Integer userId){
 		
 		JSONObject json = new JSONObject();
 		

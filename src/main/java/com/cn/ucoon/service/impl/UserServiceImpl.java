@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public String getHeadUrl(String userId) {
+	public String getHeadUrl(Integer userId) {
 		return userDao.selectUserHeadUrl(userId);
 	}
 

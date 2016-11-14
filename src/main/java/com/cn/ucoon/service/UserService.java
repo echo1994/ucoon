@@ -23,7 +23,7 @@ public interface UserService {
 	 * @param userId
 	 * @return
 	 */
-	public String getHeadUrl(String userId);
+	public String getHeadUrl(Integer userId);
 	
 	/**
 	 * 根据user_id获取open_id
