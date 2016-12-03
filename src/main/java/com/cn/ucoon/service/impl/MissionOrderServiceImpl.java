@@ -40,4 +40,18 @@ public class MissionOrderServiceImpl implements MissionOrderService {
 		missionOrdersMapper.updateMissionStatusbyOrdersId(record);
 	}
 
+
+	@Override
+	public MissionOrders getOrderByOrderNum(String orderNum) {
+		// TODO Auto-generated method stub
+		return missionOrdersMapper.selectByOrderNum(orderNum);
+	}
+
+
+	@Override
+	public void update(MissionOrders record) {
+		// TODO Auto-generated method stub
+		missionOrdersMapper.updateByPrimaryKey(record);
+	}
+
 }

@@ -119,7 +119,7 @@ public class WealthController {
 				.intValue();
 		System.out.println(fee);
 		String notify_url = "http://wx.ucoon.cn/wealth/payresult";
-		;
+		
 		String trade_type = "JSAPI";
 
 		String openid = userService.getOpenIdbyUserId(userId);

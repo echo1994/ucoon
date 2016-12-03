@@ -31,7 +31,7 @@ public class ChatController {
 	@Resource
 	private MessageService messageService;
 
-	// 进入聊天列表
+	// 进入聊天列表 
 	@RequestMapping(value = "/chat-list", method = RequestMethod.GET)
 	public String testRequestParam( Model model,
 			HttpSession session) {

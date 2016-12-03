@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.SignMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Sign" >
+    <id column="sign_id" property="signId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="sign_series_count" property="signSeriesCount" jdbcType="INTEGER" />
+    <result column="sign_count" property="signCount" jdbcType="INTEGER" />
+    <result column="lastModifyTime" property="lastmodifytime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sign
+    where sign_id = #{signId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Sign" >
+  	<selectKey resultType="java.lang.Integer" keyProperty="signId" order="AFTER">  
+                SELECT LAST_INSERT_ID()  
+    </selectKey>  
+    insert into sign (sign_id, user_id, sign_series_count, 
+      sign_count, lastModifyTime)
+    values (#{signId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{signSeriesCount,jdbcType=INTEGER}, 
+      #{signCount,jdbcType=INTEGER}, #{lastmodifytime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Sign" >
+    update sign
+    set user_id = #{userId,jdbcType=INTEGER},
+      sign_series_count = #{signSeriesCount,jdbcType=INTEGER},
+      sign_count = #{signCount,jdbcType=INTEGER},
+      lastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP}
+    where sign_id = #{signId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select sign_id, user_id, sign_series_count, sign_count, lastModifyTime
+    from sign
+    where sign_id = #{signId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select sign_id, user_id, sign_series_count, sign_count, lastModifyTime
+    from sign
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select sign_id, user_id, sign_series_count, sign_count, lastModifyTime
+    from sign
+  </select>
+</mapper>

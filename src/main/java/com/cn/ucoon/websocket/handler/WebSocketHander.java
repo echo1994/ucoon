@@ -3,8 +3,6 @@ package com.cn.ucoon.websocket.handler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -19,12 +17,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.pojo.Messages;
-import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.service.MessageService;
 import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.util.ServiceUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Spring WebSocket API的核心接口

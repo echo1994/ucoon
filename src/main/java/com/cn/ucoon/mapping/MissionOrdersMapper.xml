@@ -26,11 +26,23 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.MissionOrders" >
     update mission_orders
-    set mission_order_num = #{missionOrderNum,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER},
-      mission_id = #{missionId,jdbcType=INTEGER},
-      order_time = #{orderTime,jdbcType=TIMESTAMP},
-      finish_time = #{finishTime,jdbcType=TIMESTAMP} 
+    <set>  
+        <if test="missionOrderNum !=null and missionOrderNum != ''">  
+        	mission_order_num = #{missionOrderNum,jdbcType=VARCHAR},
+        </if>
+        <if test="userId !=null and userId != ''">  
+        	user_id = #{userId,jdbcType=INTEGER},
+        </if>
+        <if test="missionId !=null and missionId != ''">  
+        	mission_id = #{missionId,jdbcType=INTEGER},
+        </if>
+        <if test="orderTime !=null and orderTime != ''">  
+        	order_time = #{orderTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="finishTime !=null and finishTime != ''">  
+        	finish_time = #{finishTime,jdbcType=TIMESTAMP} 
+        </if>
+    </set>
     where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
   </update>
   
@@ -44,6 +56,11 @@
     select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time
     from mission_orders
     where mission_order_id = #{missionOrderId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByOrderNum" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select *
+    from mission_orders
+    where mission_order_num = #{missionOrderNum,jdbcType=INTEGER}
   </select>
   <select id="selectByMissionId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select mission_order_id, mission_order_num, user_id, mission_id, order_time, finish_time

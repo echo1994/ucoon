@@ -41,6 +41,7 @@
       and executor_id = #{executorId,jdbcType=INTEGER}
   </update>
   
+  <!-- 执行者评价更新 -->
    <update id="updateExecutorByMissionId" parameterType="com.cn.ucoon.pojo.Evaluate" >
     update evaluate
     set 
@@ -48,6 +49,18 @@
       executor_score = #{executorScore,jdbcType=REAL},
       epevaluate_time = #{epevaluateTime,jdbcType=TIMESTAMP}
     where mission_id = #{missionId,jdbcType=INTEGER}
+  </update>
+
+<!-- 发布者评价更新 -->
+  <update id="updatePublishByMidAndPidAndEid" parameterType="com.cn.ucoon.pojo.Evaluate" >
+   update evaluate
+    set 
+      publish_evaluate = #{publishEvaluate,jdbcType=VARCHAR},
+      publish_score = #{publishScore,jdbcType=REAL},
+      peevaluate_time = #{peevaluateTime,jdbcType=TIMESTAMP}
+    where mission_id = #{missionId,jdbcType=INTEGER}
+      and publish_id = #{publishId,jdbcType=INTEGER}
+      and executor_id = #{executorId,jdbcType=INTEGER}
   </update>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="map" >
@@ -70,6 +83,10 @@
     from evaluate
     where mission_id = #{0}
   </select>
+  <select id="selectByMidAndPidAndEid" resultMap="BaseResultMap">
+    select * from evaluate where mission_id = #{0} and publish_id=#{1} and executor_id=#{2}
+  </select>
+  
   
   <select id="selectPublishScoreByUserId" resultType="java.lang.Integer">
     select AVG(publish_score) from evaluate where executor_id = #{0} and publish_score IS NOT NULL

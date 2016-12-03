@@ -14,11 +14,8 @@
 	    <location>/html/404.html</location>
 	</error-page>
 	
-	<!-- Spring和mybatis的配置文件 -->
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:spring-mybatis.xml</param-value>
-	</context-param>
+	
+	
 	<!-- 编码过滤器 -->
 	<filter>
 		<filter-name>encodingFilter</filter-name>
@@ -47,6 +44,12 @@
 	</listener> 
 	
 
+	<!-- Spring和mybatis的配置文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring-mybatis*.xml</param-value>
+	</context-param>
+
 
 	<!-- Spring MVC servlet -->
 	<servlet>
@@ -56,14 +59,10 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:spring-mvc.xml</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>0</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
-	<servlet>
-		<servlet-name>InitServlet</servlet-name>
-		<servlet-class>com.cn.ucoon.controller.InitServlet</servlet-class>
-	</servlet>
-
+	
 	<servlet-mapping>
 		<servlet-name>SpringMVC</servlet-name>
 		<!-- 此处可以可以配置成*.do，对应struts的后缀习惯 -->

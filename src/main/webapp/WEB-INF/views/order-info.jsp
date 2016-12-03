@@ -10,6 +10,7 @@
 			+ path + "/";
 %>
 <!DOCTYPE html>
+
 <html>
 <head>
 <base href="<%=basePath%>">
@@ -188,7 +189,7 @@
 					
 			$('.fb').text('${mdetails.publish_time}'.substring(0,'${mdetails.publish_time}'.indexOf(".")));
 			$('.jz').text('${mdetails.end_time}'.substring(0,'${mdetails.end_time}'.indexOf(".")));
-			$('.wc').text('${mdetails.finish_time}' == ""?'未完成 ':'${mdetails.finish_time}'.substring(0,'${mdetails.finish_time}'.indexOf(".")));
+			//$('.wc').text('${mdetails.finish_time}' == ""?'未完成 ':'${mdetails.finish_time}'.substring(0,'${mdetails.finish_time}'.indexOf(".")));
 			/* switch (state) {
 				case 0:
 					$('.status').text("正在审核");
@@ -231,28 +232,13 @@
 			$('.u').bind('click', function() {
 				window.location.href = 'user/orderUser/' + $(this).attr("data-u");
 			});
-			$('.order-check').bind('click', function() {
-				$.ajax({
-					url : 'orders/finishOrder/' + $(this).attr("data-o"),
-					data : {},
-					async : false,
-					type : 'post',
-					dataType : 'text',
-					success : function(data) {
-						if (data == "true") {
-							alert("操作成功");
-						} else {
-							alert("提交失败，请重试");
-						}
-						window.history.go(0);
-					}
-				});
-			});
+			
 		})
 		
 		
 	</script>
 	<body>
+	<script src="js/mui.min.js"></script>
 	<div class="mui-content">
 		<div class="order-model">
 			<div class="model-col clearfix">
@@ -263,25 +249,29 @@
 					        	未支付	
 					    </c:when>
 						<c:when test="${mdetails.mission_status == 1}">
-					        	已支付，待选人 / 待确认	
+					        	已支付，待选人（已申请${mdetails.totalpeople}人）
 					    </c:when>
 					    <c:when test="${mdetails.mission_status == 2}">
 					        	申请退款	
 					    </c:when>
 					    <c:when test="${mdetails.mission_status == 3}">
-					        	已取消	
+					        	已退款	
 					    </c:when>
 					    <c:when test="${mdetails.mission_status == 4}">
-					        	已退款	
+					        	已取消
 					    </c:when>
 					    <c:when test="${mdetails.mission_status == 5}">
 					        	待评价	
 					    </c:when>
 					    <c:when test="${mdetails.mission_status == 6}">
-					        	正在服务	
-					    </c:when>
-					    <c:when test="${mdetails.mission_status == 7}">
-					        	任务完成	
+					    	<c:choose>
+							    <c:when test="${(mdetails.selectpeople + mdetails.donepeople + mdetails.applyDonepeople) == mdetails.donepeople}">
+							        	任务完成	
+							    </c:when>
+							    <c:otherwise>
+				        				正在服务${mdetails.selectpeople + mdetails.donepeople + mdetails.applyDonepeople}人，完成${mdetails.donepeople}人，待确认${mdetails.applyDonepeople}人	
+					    		</c:otherwise>	
+							</c:choose>
 					    </c:when>
 						<c:otherwise>
 				        
@@ -300,9 +290,9 @@
 			<div class="model-col clearfix">
 				<span class="fl">截止时间</span><span class="fr jz"></span>
 			</div>
-			<div class="model-col clearfix">
+			<!-- <div class="model-col clearfix">
 				<span class="fl">完成时间</span><span class="fr wc"></span>
-			</div>
+			</div> -->
 
 		</div>
 		<div class="order-model padded">
@@ -312,13 +302,55 @@
 			
 			<c:choose>
 			    <c:when test="${mdetails.mission_status == 0}">
-			        	无	
+			        	待支付	
+			        	<div class="order-check">去支付</div>
+			        	<script>
+			        		$(".order-check").click(function(){
+			        			window.location.href = "mission-pay?id="+ ${mdetails.mission_id};
+			        		});
+			        	</script>
 			    </c:when>
 			    <c:when test="${mdetails.mission_status == 1}">
-			        	这里显示可选人数	
+			        	<ul class="clearfix">
+						<c:forEach items="${list }" var="info" varStatus="status">
+							<c:if test="${status.first==true}">
+								<li class="user-list-col cur">
+									<img src="${info.head_img_url }" alt="">
+									<span>${info.nick_name }</span>
+								</li>
+							</c:if>
+							<c:if test="${status.first!=true}">
+								<li class="user-list-col">
+									<img src="${info.head_img_url }" alt="">
+									<span>${info.nick_name }</span>
+								</li>
+							</c:if>
+						</c:forEach>
+					</ul>
+					<div class="user-feedback">
+						
+						<c:forEach items="${list }" var="info" varStatus="status">
+							<div class="feedback-col" >
+								<div class="col">
+									<span class="label">TA的电话：</span><span>${info.phone }</span>
+								</div>
+								<div class="col">
+									<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
+								</div>
+								<div class="col">
+									<span  class="label">申请时间：</span><span>${info.take_time }</span>
+								</div>
+							</div>
+						</c:forEach>
+					</div>
+			        	<div class="order-check">选人</div>
+			        	<script>
+			        		$(".order-check").click(function(){
+			        			window.location.href="mission/selectpeople/" + ${mdetails.mission_id};
+			        		});
+			        	</script>
 			    </c:when>
-			    
-			    <c:when test="${mdetails.mission_status == 5 ||mdetails.mission_status == 6}">
+			    <c:when test="${mdetails.mission_status == 5}">
 			        <ul class="clearfix">
 						<c:forEach items="${list }" var="info" varStatus="status">
 							<c:if test="${status.first==true}">
@@ -347,6 +379,9 @@
 										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
 									</div>
 									<div class="col">
+										<span  class="label">完成时间：</span><span>${info.finish_time }</span>
+									</div>
+									<div class="col">
 										<div  class="label">任务完成情况：</div>
 										<div class="feed-cot">
 											${info.apply_detail }
@@ -372,6 +407,9 @@
 										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
 									</div>
 									<div class="col">
+										<span  class="label">完成时间：</span><span>${info.finish_time }</span>
+									</div>
+									<div class="col">
 										<div  class="label">任务完成情况：</div>
 										<div class="feed-cot">
 											${info.apply_detail }
@@ -389,21 +427,220 @@
 									</div>
 								</div>
 							</c:if>
-							
+						</c:forEach>
+						<div class="order-check">评价</div>
+			        	<script>
+			        		$(".order-check").click(function(){
+			        			window.location.href="mission/evaluate_publish/" + ${mdetails.mission_id};
+			        		});
+			        	</script>
+					</div>
+					
+						
+			    </c:when>
+			    <c:when test="${mdetails.mission_status == 6}">
+			        <ul class="clearfix">
+						<c:forEach items="${list }" var="info" varStatus="status">
+							<c:if test="${status.first==true}">
+								<li class="user-list-col cur">
+									<img src="${info.head_img_url }" alt="">
+									<span>${info.nick_name }</span>
+								</li>
+							</c:if>
+							<c:if test="${status.first!=true}">
+								<li class="user-list-col">
+									<img src="${info.head_img_url }" alt="">
+									<span>${info.nick_name }</span>
+								</li>
+							</c:if>
+						</c:forEach>
+					</ul>
+					<div class="user-feedback">
+						
+						<c:forEach items="${list }" var="info" varStatus="status">
+							<c:if test="${status.first==true}">
+								<div class="feedback-col" >
+									<div class="col">
+										<span class="label">TA的电话：</span><span>${info.phone }</span>
+									</div>
+									<div class="col">
+										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
+									</div>
+									<div class="col">
+										<span  class="label">完成时间：</span><span>${info.finish_time }</span>
+									</div>
+									<div class="col">
+										<div  class="label">任务完成情况：</div>
+										<div class="feed-cot">
+											${info.apply_detail }
+										</div>
+				
+										<div class="img-list clearfix">
+											<c:if test="${info.pic_count >0}">
+												<c:forEach begin="0" end="${info.pic_count -1}" var="i" >
+													
+													<img src="applyImage/${info.pictures }/${i}" data-preview-src="" data-preview-group="1"  alt="">
+												</c:forEach>
+											</c:if>
+										</div>
+									</div>
+									<c:choose>
+										<c:when test="${info.take_state == 4 }">
+											<div class="order-check" style="position: relative;">确认</div>
+								        	<script>
+								        		$('.order-check').bind('click', function() {
+													var btnArray = ['否', '是'];
+									                mui.confirm('请确认完成？', '有空ucoon', btnArray, function(e) {
+									                    if (e.index == 1) {
+									                        $.ajax({
+																url : 'applyOrders/confirmorder/' + ${mdetails.mission_id},
+																data : {
+																	userId:${info.user_id }
+																},
+																async : false,
+																type : 'post',
+																dataType : 'json',
+																success : function(data) {
+																	if (data.result == "success") {
+																		alert(data.msg);
+																		window.history.go(0);
+																	} else {
+																		alert(data.msg);
+																	}
+																	
+																}
+															});
+									                    } else {
+									                    }
+									                })
+													
+												});
+								        	</script>
+							        	</c:when>
+							        	<c:when test="${info.take_state == 2}">
+							        		<c:if test="${info.isEvaluate == 0 }">
+							        			<div class="order-check"  style="position: relative;">评价</div>
+									        	<script>
+									        		$(".order-check").click(function(){
+									        			window.location.href="mission/evaluate_publish/" + ${mdetails.mission_id};
+									        		});
+									        	</script>
+							        		</c:if>
+											<c:if test="${info.isEvaluate != 0 }">
+												<div class="col">
+													<span  class="label">我的评分：</span><span>${info.publish_score }</span>
+												</div>
+												<div class="col">
+													<span  class="label">评价内容：</span><span>${info.publish_evaluate }</span>
+												</div>
+							        			<div class="order-check" style="position: relative;background:#DFDDE1">已完成</div>
+							       			</c:if>
+							        	</c:when>
+							        	<c:otherwise>
+							        		<div class="order-check" style="position: relative;background:#DFDDE1">未完成</div>
+							        	</c:otherwise>
+							        </c:choose>
+								</div>
+							</c:if>
+							<c:if test="${status.first!=true}">
+								<div class="feedback-col" style="display: none;">
+									<div class="col">
+										<span class="label">TA的电话：</span><span>${info.phone }</span>
+									</div>
+									<div class="col">
+										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
+									</div>
+									<div class="col">
+										<span  class="label">完成时间：</span><span>${info.finish_time }</span>
+									</div>
+									<div class="col">
+										<div  class="label">任务完成情况：</div>
+										<div class="feed-cot">
+											${info.apply_detail }
+										</div>
+										<div class="img-list clearfix">
+											<c:if test="${info.pic_count >0}">
+												
+												<c:forEach begin="0" end="${info.pic_count -1}" var="i" >
+													
+													<img src="applyImage/${info.pictures }/${i}" data-preview-src="" data-preview-group="1"  alt="">
+												</c:forEach>
+											</c:if>
+										</div>
+									</div>
+									<c:choose>
+										<c:when test="${info.take_state == 4 }">
+											<div class="order-check" style="position: relative;">确认</div>
+								        	<script>
+								        		$('.order-check').bind('click', function() {
+													var btnArray = ['否', '是'];
+									                mui.confirm('请确认完成？', '有空ucoon', btnArray, function(e) {
+									                    if (e.index == 1) {
+									                        $.ajax({
+																url : 'applyOrders/confirmorder/' + ${mdetails.mission_id},
+																data : {
+																	userId:${info.user_id }
+																},
+																async : false,
+																type : 'post',
+																dataType : 'json',
+																success : function(data) {
+																	if (data.result == "success") {
+																		alert(data.msg);
+																		window.history.go(0);
+																	} else {
+																		alert(data.msg);
+																	}
+																	
+																}
+															});
+									                    } else {
+									                    }
+									                })
+													
+												});
+								        	</script>
+							        	</c:when>
+							        	<c:when test="${info.take_state == 2}">
+							        		<c:if test="${info.isEvaluate == 0 }">
+							        			<div class="order-check"  style="position: relative;">评价</div>
+									        	<script>
+									        		$(".order-check").click(function(){
+									        			window.location.href="mission/evaluate_publish/" + ${mdetails.mission_id};
+									        		});
+									        	</script>
+							        		</c:if>
+											<c:if test="${info.isEvaluate != 0 }">
+												<div class="col">
+													<span  class="label">我的评分：</span><span>${info.publish_score }</span>
+												</div>
+												<div class="col">
+													<span  class="label">评价内容：</span><span>${info.publish_evaluate }</span>
+												</div>
+							        			<div class="order-check" style="position: relative;background:#DFDDE1">已完成</div>
+							       			</c:if>
+							        	</c:when>
+							        	<c:otherwise>
+							        		<div class="order-check" style="position: relative;background:#DFDDE1">未完成</div>
+							        	</c:otherwise>
+							        </c:choose>
+								</div>
+							</c:if>
 						</c:forEach>
 						
-						
 					</div>
+					
+						
 			    </c:when>
 			    <c:otherwise>
 			        
 			    </c:otherwise>
 			</c:choose>
-		<div class="order-check">完成&评价</div>
+		</div>
 	</div>
 
 	</body>
-	<script src="js/mui.min.js"></script>
+	
 	<script src="js/mui.zoom.js"></script>
 	<script src="js/mui.previewimage.js"></script>
 	<script>

@@ -31,12 +31,15 @@ import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionAddress;
 import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.pojo.wx.Template;
+import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.service.ApplyService;
 import com.cn.ucoon.service.EvaluateService;
 import com.cn.ucoon.service.MissionOrderService;
 import com.cn.ucoon.service.MissionService;
 import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.util.PayUtil;
+import com.cn.ucoon.util.WeixinUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -104,9 +107,21 @@ public class MissionController {
 		String uuid = String.valueOf(UUID.randomUUID());
 		uuid = uuid.replace("-", "");
 		String realpath = path + "/" + userId + timestamp + uuid;// 文件夹位置
-		File dir = new File(realpath);
-		dir.mkdirs();
-		System.out.println("wenjian:" + file.length);
+		
+		
+		Integer fileLength = 0;
+		for (int i = 0; i < file.length; i++) {
+			if (!file[i].isEmpty()) {
+				fileLength++;
+			}
+		}
+		if(fileLength > 0){
+			File dir = new File(realpath);
+			dir.mkdirs();
+		}
+		
+		
+		System.out.println("wenjian:" + fileLength);
 		for (int i = 0; i < file.length; i++) {
 			if (!file[i].isEmpty()) {
 				String fileName = file[i].getOriginalFilename();// 文件原名称
@@ -138,7 +153,7 @@ public class MissionController {
 		mission.setUserId(userId);
 		mission.setViewCount(0);
 		mission.setMissionStatus(0); //待支付
-		mission.setPicCount(file.length);
+		mission.setPicCount(fileLength);
 		MissionOrders missionOrders = new MissionOrders();
 		if(missionService.publishMission(mission)){
 			
@@ -328,7 +343,12 @@ public class MissionController {
 		if (cuserId != null && cuserId == userId) {
 			Mission mission = missionService.selectByPrimaryKey(missionId);
 			mission.setMissionStatus(4);
-			missionService.updateByPrimaryKey(mission);// 审核退款
+			missionService.updateByPrimaryKey(mission);
+			
+			MissionOrders orders = missionOrderService.getOrdersbyMissionId(missionId);
+			orders.setFinishTime(new Date());
+			missionOrderService.update(orders);
+			
 			return "已取消任务";
 		}
 		return "系统异常，请重试";
@@ -368,7 +388,33 @@ public class MissionController {
 		if (cuserId != null && cuserId == userId) {
 			Mission mission = missionService.selectByPrimaryKey(missionId);
 			mission.setMissionStatus(6);
-			missionService.updateByPrimaryKey(mission);
+			if(missionService.updateByPrimaryKey(mission) > 0){
+				//这里发模板消息
+				List<HashMap<String, Object>> selectselectedpeople = applyService.selectselectedpeople(missionId);
+				for (int i = 0; i < selectselectedpeople.size(); i++) {
+					Integer toUserId = (Integer) selectselectedpeople.get(i).get("user_id");
+					String openId = userService.getOpenIdbyUserId(toUserId);
+					Template tem = new Template();
+					tem.setTemplateId("j0aLsa1V_oRpRP3qmkpy56JVrYyfRBvgS324LZK4CDA");
+					tem.setTopColor("#00DD00");
+					tem.setToUser(openId);
+					tem.setUrl("http://wx.ucoon.cn/myservice"); //我服务的
+
+					List<TemplateParam> paras = new ArrayList<TemplateParam>();
+					paras.add(new TemplateParam("first", "你好，雇主已通过你对'" + mission.getMissionTitle() + "'任务的申请",
+							"#FF3333"));
+					paras.add(new TemplateParam("keyword1",
+							mission.getMissionTitle(), "#0044BB"));
+					paras.add(new TemplateParam("keyword2", "请在11月13日1点前完成任务", "#0044BB"));
+					paras.add(new TemplateParam("remark", "点击查看详情", "#0044BB"));
+					tem.setTemplateParamList(paras);
+
+					boolean result = WeixinUtil.sendTemplateMsg(tem);
+					System.out.println("选完人模板消息结果：" + result);
+					
+				}
+			}
+			
 			return "success";
 		}
 		return "系统异常，请重试";
@@ -420,7 +466,19 @@ public class MissionController {
 		HashMap<String, Object> mdetails = missionService.selectForMissionDetails(missionId);
 		if(user_id == mdetails.get("user_id")){
 			
-			List<HashMap<String, Object>> list = applyService.selectDetailByMissionId(missionId);
+			List<HashMap<String, Object>> list = null;
+			switch ((int)mdetails.get("mission_status")) {
+			case 1:
+				//表示已支付 待选人 任务状态1
+				list = applyService.selectDetailByMissionId2(missionId);
+				break;
+
+			default:
+				//任务状态 5（已完成，待评价） 和6（正在进行）  
+				list = applyService.selectDetailByMissionId(missionId);
+				break;
+			}
+			
 			System.out.println(list);
 			mv.addObject("mdetails", mdetails);
 			mv.addObject("list", list);
@@ -452,6 +510,16 @@ public class MissionController {
 
 		HashMap<String, Object> mdetails = null;
 		mdetails = missionService.selectForMissionDetails(mid);
+		
+		Integer status = (Integer) mdetails.get("mission_status");
+		
+		if(status != 1){
+			
+			mv.setViewName("redirect:/mysend");
+			return mv;
+			
+		}
+		
 		List<HashMap<String, Object>> list = applyService.selectunselectedpeople(mid);
 		
 		List<HashMap<String, Object>> list2 = applyService.selectselectedpeople(mid);
@@ -554,7 +622,7 @@ public class MissionController {
 		for (int i = 0; i < content.length; i++) {
 			
 			Evaluate evaluate = new Evaluate();
-			
+			System.out.println(content[i]);
 			evaluate.setPeevaluateTime(new Date());
 			evaluate.setPublishEvaluate(content[i]);
 			evaluate.setPublishScore(score[i]);
@@ -562,8 +630,16 @@ public class MissionController {
 			evaluate.setPublishId(publish_id);
 			evaluate.setExecutorId(userId[i]);
 			//更新评价表
-			evaluateService.insertEvaluate(evaluate);
-//			if (evaluateService.updateExecutorByMissionId(evaluate)) {
+			Evaluate cEvaluate = evaluateService.selectByMidAndPidAndEid(missionId, publish_id, userId[i]);
+			if(cEvaluate == null){
+				
+				evaluateService.insertEvaluate(evaluate);
+			}else{
+				
+				evaluateService.updatePublishByMidAndPidAndEid(evaluate);
+			}
+			
+//			if () {
 //				json.put("result", "success");
 //				json.put("msg", "评价成功");
 //				
@@ -595,7 +671,7 @@ public class MissionController {
 		json.put("result", "error");
 		json.put("msg", "评价失败");
 
-		return "evaluate_publish";
+		return "redirect:/mission/order-info/" + missionId;
 	}
 	
 	

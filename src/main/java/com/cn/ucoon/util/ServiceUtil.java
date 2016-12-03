@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.cn.ucoon.service.MessageService;
+import com.cn.ucoon.service.MissionService;
 import com.cn.ucoon.service.UserService;
 
 /**
@@ -19,6 +20,8 @@ public final class ServiceUtil {
     private static MessageService messageService;
     
     private static UserService userService;
+    
+    private static MissionService missionService;
 
     @Resource
     public void setMessageService(MessageService messageService) {
@@ -36,5 +39,14 @@ public final class ServiceUtil {
 
     public static UserService getUserService() {
         return userService;
+    }
+    
+    @Resource
+    public void setMissionService(MissionService missionService) {
+        ServiceUtil.missionService = missionService;
+    }
+
+    public static MissionService getMissionService() {
+        return missionService;
     }
 }

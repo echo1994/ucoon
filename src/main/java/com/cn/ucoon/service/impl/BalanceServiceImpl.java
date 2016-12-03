@@ -45,7 +45,7 @@ public class BalanceServiceImpl implements BalanceService {
 
 	@Override
 	public BigDecimal countPlusBalance(Integer userId) {
-		BigDecimal total = new BigDecimal("0.00");
+		BigDecimal total = new BigDecimal("0.00"); //四舍五入
 		
 		List<Balance> lists = balanceMapper.selectByUserIdAndState(userId,1);
 		for (int i = 0; i < lists.size(); i++) {

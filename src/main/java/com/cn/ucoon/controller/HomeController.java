@@ -1,11 +1,16 @@
 package com.cn.ucoon.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,21 +18,29 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cn.ucoon.pojo.ApplyOrders;
+import com.cn.ucoon.pojo.Feedback;
+import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionAddress;
 import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.pojo.wx.Template;
+import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.service.BalanceService;
 import com.cn.ucoon.service.CreditsService;
 import com.cn.ucoon.service.EvaluateService;
 import com.cn.ucoon.service.MissionService;
+import com.cn.ucoon.service.ReportService;
 import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.util.SendUtil;
+import com.cn.ucoon.util.TimeUtil;
 import com.cn.ucoon.util.WeixinUtil;
 
 @Controller
@@ -47,6 +60,9 @@ public class HomeController {
 
 	@Resource
 	private EvaluateService evaluateService;
+	
+	@Resource
+	private ReportService reportService;
 
 	@RequestMapping(value = "/we", method = RequestMethod.GET)
 	public String we(HttpSession session, Model model) {
@@ -134,6 +150,66 @@ public class HomeController {
 
 		return "feedback";
 	}
+	
+	@RequestMapping(value = "/saveFeedback")
+	public ModelAndView saveFeedback(
+			@RequestParam(value = "question", required = true) String question,
+			@RequestParam(value = "imgUpload", required = false) MultipartFile[] file,
+			@RequestParam(value = "contact", required = false) String contact,
+			HttpServletRequest request, ModelAndView mv) throws ParseException {
+
+		String path = ImageController.FEEDBACK_IMAGE_LOCATION;
+		Integer userId = (Integer) request.getSession().getAttribute("user_id");
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String uuid = String.valueOf(UUID.randomUUID());
+		uuid = uuid.replace("-", "");
+		String realpath = path + "/" + userId + timestamp + uuid;// 文件夹位置
+		
+		Integer fileLength = 0;
+		
+		
+		for (int i = 0; i < file.length; i++) {
+			if (!file[i].isEmpty()) {
+				fileLength++;
+			}
+		}
+		if(fileLength > 0){
+			File dir = new File(realpath);
+			dir.mkdirs();
+		}
+		System.out.println("wenjian:" + fileLength);
+		for (int i = 0; i < file.length; i++) {
+			if (!file[i].isEmpty()) {
+				String fileName = file[i].getOriginalFilename();// 文件原名称
+				String type = fileName.indexOf(".") != -1 ? fileName.substring(
+						fileName.lastIndexOf(".") + 1, fileName.length())
+						: null;
+				try {
+					file[i].transferTo(new File(realpath + "/" + i + "." + type));
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+
+		if (userId != null) {
+			Feedback feedback = new Feedback();
+
+			feedback.setFeedbackCantact(contact);
+			feedback.setFeedbackQuestion(question);
+			feedback.setFeedbackTime(new Date());
+			feedback.setPicCount(fileLength);
+			feedback.setPictures(userId + timestamp + uuid);
+			feedback.setUserId(userId);
+			reportService.saveFeedBack(feedback);
+		}
+		mv.setViewName("redirect:/index");
+		return mv;
+	}
+	
 
 	// 发短信 4位随机数
 	@RequestMapping(value = "/sendMsg")
@@ -156,8 +232,8 @@ public class HomeController {
 		}
 
 		try {
-			if (SendUtil.send(phone, "【有空总部】聪明的你终于发现了神秘时间大陆，" + k
-					+ "是你的专属时间密匙，拿好它来开启未来大门吧！（密匙5分钟后失效，没时间解释了快上船！）")) {
+			if (SendUtil.send(phone, "【有空ucoon】验证码" + k
+					+ "（5分钟后失效）")) {
 				request.getSession().setAttribute("msgduanxin", k);
 				request.getSession(true).setMaxInactiveInterval(5 * 60); // 5分钟
 
@@ -206,50 +282,6 @@ public class HomeController {
 		return json;
 	}
 
-	// 测试
-	@RequestMapping(value = "/testUpload", method = RequestMethod.GET)
-	@ResponseBody
-	public String test(HttpSession session, Model model) throws IOException {
-		String filePath = "C:\\Users\\mlk\\Desktop\\龙腾烟行\\5443472423712b1faf2467e70ee96006.png";
-		JSONObject uploadJsonObj = WeixinUtil
-				.uploadMediaToWX(filePath, "image");
-		if (uploadJsonObj == null) {
-			System.out.println("上传图片失败");
-		}
-
-		int errcode = 0;
-		if (uploadJsonObj.containsKey("errcode")) {
-			errcode = uploadJsonObj.getIntValue("errcode");
-		}
-		String mediaId = "";
-		if (errcode == 0) {
-			System.out.println("图片上传成功");
-
-			mediaId = uploadJsonObj.getString("media_id");
-			long createAt = uploadJsonObj.getLong("created_at");
-			System.out.println("--Details:");
-			System.out.println("media_id:" + mediaId);
-			System.out.println("created_at:" + createAt);
-		} else {
-			System.out.println("图片上传失败！");
-
-			String errmsg = uploadJsonObj.getString("errmsg");
-			System.out.println("--Details:");
-			System.out.println("errcode:" + errcode);
-			System.out.println("errmsg:" + errmsg);
-		}
-
-		return mediaId;
-	}
-
-	// 下载
-	@RequestMapping(value = "/testGet/{mediaId}", method = RequestMethod.GET)
-	@ResponseBody
-	public String get(HttpSession session, Model model,@PathVariable(value="mediaId") String mediaId) throws IOException {
-		String filepath = WeixinUtil.downloadMediaFromWx(mediaId,
-				"d:/ucoon");
-		System.out.println(filepath);
-		return filepath;
-	}
+	
 
 }

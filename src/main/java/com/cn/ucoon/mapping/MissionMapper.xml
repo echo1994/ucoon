@@ -52,7 +52,12 @@
 		update mission set view_count = view_count+1 WHERE  mission_id = #{missionId,jdbcType=INTEGER}
 	</update>
 	
-	
+	<update id="unPaidMissionScan" parameterType="Date">  
+        UPDATE mission,mission_orders 
+        SET  
+            mission_status = 4, finish_time= NOW() 
+        WHERE <![CDATA[ mission.mission_id = mission_orders.mission_id AND mission.mission_status = 0 AND mission_orders.order_time <= #{date} ]]> 
+    </update>  
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		select * from mission where mission_id = #{missionId,jdbcType=INTEGER}
@@ -66,7 +71,7 @@
 	
 		SELECT mission_id, head_img_url, mission_title, mission_describe, place, publish_time,
 		mission_price,view_count,mission_lng,mission_lat,mission_status,people_count FROM mission LEFT JOIN user ON user.user_id = mission.user_id
-		Where <![CDATA[ mission_status = 1 and (select COUNT(*) from apply_orders where apply_orders.mission_id = mission.mission_id and take_state = 1) < mission.people_count ]]> 
+		Where <![CDATA[ mission_status = 1 and (select COUNT(*) from apply_orders where apply_orders.mission_id = mission.mission_id and take_state = 1) < mission.people_count and end_time > CURDATE() ]]> 
 		ORDER BY publish_time DESC LIMIT #{0},#{1}
 	</select>
 	
@@ -77,7 +82,7 @@
 		ROUND(lat_lng_distance(#{0}, #{1}, mission_lat, mission_lng), 2) AS distance 
 	    FROM mission LEFT JOIN user ON user.user_id = mission.user_id
 	    WHERE 
-	    <![CDATA[ mission_status = 1 and (select COUNT(*) from apply_orders where apply_orders.mission_id = mission.mission_id and take_state = 1) < mission.people_count and mission_lat > #{2} AND mission_lat < #{3} AND mission_lng > #{4} AND mission_lng < #{5} ]]>
+	    <![CDATA[ mission_status = 1 and end_time > CURDATE()  and (select COUNT(*) from apply_orders where apply_orders.mission_id = mission.mission_id and take_state = 1) < mission.people_count and mission_lat > #{2} AND mission_lat < #{3} AND mission_lng > #{4} AND mission_lng < #{5} ]]>
 	    ORDER BY distance ASC 
 	    LIMIT #{6},#{7}
 	</select>
@@ -86,7 +91,7 @@
 	<select id="selectLimitedbyKeyWord" resultType="java.util.HashMap" >
 		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
 		mission_price ,view_count,mission_lng,mission_lat FROM mission LEFT JOIN user ON user.user_id = mission.user_id
-		WHERE mission_title like #{0} or mission_describe like #{0} ORDER BY publish_time DESC
+		WHERE end_time > CURDATE() and mission_title like #{0} or mission_describe like #{0} ORDER BY publish_time DESC
 		LIMIT #{1},#{2}
 	</select>
 	
@@ -100,7 +105,7 @@
 	<!-- 返回一定限定数量的mission记录 Userid/missionStatus 按时间顺序 mysend.jsp -已上架=0,已下架=1;未支付=2;已完成=3-->
 	<select id="selectLimitedbyUserIdAndStatus" parameterType="java.util.Map" resultType="java.util.HashMap" >
 		SELECT mission_id,head_img_url, mission_title, mission_describe, place, publish_time,
-		mission_price ,view_count,mission_status,mission_lng,mission_lat,people_count,(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id) as totalpeople,
+		mission_price ,view_count,mission_status,mission_lng,mission_lat,people_count,(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=0) as totalpeople,
 		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople,
 		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=2) as donepeople ,
 		(Select  count(*) FROM evaluate WHERE publish_evaluate IS NOT NULL and LENGTH(trim(publish_evaluate))>0 and evaluate.mission_id=mission.mission_id) as evlpeople
@@ -117,7 +122,11 @@
 	<select id="selectForMissionDetails" resultType="java.util.HashMap">
 		SELECT sex,nick_name,head_img_url,mission.mission_id,mission.user_id,mission_title,mission_price,mission_status,
 		view_count, people_count,place,publish_time,end_time,mission_describe,pictures,
-		pic_count,mission_lng,mission_lat,mission_order_num,order_time,finish_time
+		pic_count,mission_lng,mission_lat,mission_order_num,order_time,finish_time,
+		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=0) as totalpeople,
+		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople,
+		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=2) as donepeople,
+		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=4) as applyDonepeople
 		FROM mission LEFT JOIN user ON mission.user_id=user.user_id  left join mission_orders on mission_orders.mission_id = mission.mission_id WHERE mission.mission_id
 		= #{0}
 	</select>

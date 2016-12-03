@@ -18,7 +18,12 @@ public interface EvaluateMapper {
 
     int updateByPrimaryKey(Evaluate record);
     
+    int updatePublishByMidAndPidAndEid(Evaluate record);
+    
     Evaluate selectByMissionId(Integer missionId);
+    
+    Evaluate selectByMidAndPidAndEid(Integer missionId,Integer publishId,Integer executorId);
+    
     
     int updateExecutorByMissionId(Evaluate evaluate);
     

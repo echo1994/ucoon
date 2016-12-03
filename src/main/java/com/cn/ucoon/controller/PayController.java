@@ -231,7 +231,7 @@ public class PayController {
 				.intValue();
 		System.out.println(fee);
 		String notify_url = "http://wx.ucoon.cn/pay/payresult";
-		;
+		
 		String trade_type = "JSAPI";
 
 		// 这里如果没有登录，跳转到登录界面
@@ -281,15 +281,22 @@ public class PayController {
 
 				MissionOrders record = new MissionOrders();
 
-				// 改订单状态
+				// 改订单状态,更新支付完成时间
 				record.setMissionOrderNum(orderId);
 				missionOrdersService.updateMissionStatusbyOrdersId(record);
-
+				
+				MissionOrders orderByOrderNum = missionOrdersService.getOrderByOrderNum(orderId);
+				orderByOrderNum.setFinishTime(new Date());
+				missionOrdersService.update(orderByOrderNum);
+				
 				System.out.println("收到支付结果订单：" + orderId);
 				String time = map.get("time_end");
 				String total_fee = map.get("total_fee");
 				String openid = map.get("openid");
 				if (map.get("is_subscribe").equalsIgnoreCase("Y")) {
+					
+					Mission mission = missionService.selectByPrimaryKey(orderByOrderNum.getMissionId());
+					
 					Template tem = new Template();
 					tem.setTemplateId("azcHIxhzpMgkzMvYM2kdmRxrf4ciwII2FTp9dRitoms");
 					tem.setTopColor("#00DD00");
@@ -301,9 +308,9 @@ public class PayController {
 							"#FF3333"));
 					paras.add(new TemplateParam("keyword1",
 							strToDateLong(time), "#0044BB"));
-					paras.add(new TemplateParam("keyword2", "任务名称", "#0044BB"));
+					paras.add(new TemplateParam("keyword2", mission.getMissionTitle(), "#0044BB"));
 					paras.add(new TemplateParam("keyword3", (Double
-							.valueOf(total_fee) / 100) + "", "#0044BB"));
+							.valueOf(total_fee) / 100) + "元", "#0044BB"));
 					paras.add(new TemplateParam("keyword4", "支付成功", "#0044BB"));
 					paras.add(new TemplateParam("remark", "感谢您的使用", "#0044BB"));
 					tem.setTemplateParamList(paras);

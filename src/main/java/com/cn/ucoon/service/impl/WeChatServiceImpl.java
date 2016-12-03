@@ -1,6 +1,8 @@
 package com.cn.ucoon.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -10,11 +12,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cn.ucoon.dao.CreditsMapper;
+import com.cn.ucoon.dao.SignHistoryMapper;
+import com.cn.ucoon.dao.SignMapper;
 import com.cn.ucoon.dao.UserMapper;
+import com.cn.ucoon.pojo.Balance;
+import com.cn.ucoon.pojo.Credits;
+import com.cn.ucoon.pojo.Sign;
+import com.cn.ucoon.pojo.SignHistory;
 import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.pojo.wx.Template;
+import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.pojo.wx.resp.TextMessage;
 import com.cn.ucoon.service.WeChatService;
 import com.cn.ucoon.util.MessageUtil;
+import com.cn.ucoon.util.PayUtil;
+import com.cn.ucoon.util.TimeUtil;
 import com.cn.ucoon.util.WeixinUtil;
 
 /*
@@ -28,6 +41,16 @@ public class WeChatServiceImpl implements WeChatService  {
 
 	@Resource
 	private UserMapper userDao;
+	
+	@Resource
+	private SignMapper signMapper;
+	
+	@Resource
+	private SignHistoryMapper signHistoryMapper;
+	
+	@Resource
+	private CreditsMapper creditsMapper;
+	
 	
 	/**
 	 * 处理微信发来的请求
@@ -174,9 +197,181 @@ public class WeChatServiceImpl implements WeChatService  {
 				}
 				// 自定义菜单点击事件
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
-//					String eventkey = requestMap.get("EventKey");
-//					respMessage = new ClickEventService().getClickEventXml(
-//							eventkey, openID, toUserName, request, textMessage);
+					String eventkey = requestMap.get("EventKey");
+				
+					if(eventkey.equals("13")){
+						
+						Integer userId = userDao.selectUserId(openID);
+						
+						//签到
+						Sign sign = signMapper.selectByUserId(userId);
+						
+						if(sign == null){
+							//第一次签到，以前没签到过
+							sign = new Sign();
+							sign.setLastmodifytime(new Date());
+							sign.setSignCount(1);
+							sign.setSignSeriesCount(1);
+							sign.setUserId(userId);
+							signMapper.insert(sign);
+							SignHistory history = new SignHistory();
+							history.setSignHistoryTime(new Date());
+							history.setUserId(userId);
+							signHistoryMapper.insert(history);
+							
+							Credits credits = new Credits();
+							credits.setQuantity(10);
+							credits.setAcquisitionTime(new Date());
+							credits.setAcquisitionType("签到");
+							credits.setPlusOrMinus("plus");
+							credits.setUserId(userId);
+							creditsMapper.insert(credits);
+							
+							
+							Template tem = new Template();
+							tem.setTemplateId("ZZiQzLZi2p1EE_eicC_bpSBeftLv7912W0EWgwOlXuA");
+							tem.setTopColor("#00DD00");
+							tem.setToUser(openID);
+							tem.setUrl("http://wx.ucoon.cn/wealth/"); // 发布列表
+
+							List<TemplateParam> paras = new ArrayList<TemplateParam>();
+							paras.add(new TemplateParam("first", "今日签到成功！", "#FF3333"));
+							paras.add(new TemplateParam("keyword1", "10空点",
+									"#0044BB"));
+							paras.add(new TemplateParam("keyword2", "1天", "#0044BB"));
+							paras.add(new TemplateParam("keyword3", "10空点", "#0044BB"));
+							paras.add(new TemplateParam("remark", "空点可兑换空点商城中相应的礼品，还有机会抽大奖哦！", "#0044BB"));
+							tem.setTemplateParamList(paras);
+
+							boolean result = WeixinUtil.sendTemplateMsg(tem);
+							System.out.println("签到模板消息结果：" + result);
+							return "success";
+						}else{
+							Integer total = 0;
+							List<Credits> lists = creditsMapper.selectByUserId(userId);
+							for (int i = 0; i < lists.size(); i++) {
+								String C = lists.get(i).getPlusOrMinus();
+								
+								if(C.equals("plus")){
+									total = total + lists.get(i).getQuantity();
+									
+								}else{
+									
+									total = total - lists.get(i).getQuantity();
+								}
+							}
+							//今天是否已签到
+							if(TimeUtil.isToday(sign.getLastmodifytime())){
+								//今天已签
+								textMessage.setContent("抱歉，你今天已签到！\n\n\n连续签到次数：" + sign.getSignSeriesCount() + "\n总签到次数：" + sign.getSignCount() + "\n当前空点数量：" + total + "\n\n<a href='http://wx.ucoon.cn/wealth/'>点击进入财富中心</a>");
+								respMessage = MessageUtil.textMessageToXml(textMessage);
+							}else{
+								
+								Date date = sign.getLastmodifytime();
+								int d = TimeUtil.isYeaterday(date, null);
+								if(d == 0){
+									//连续签到
+									int signCount = sign.getSignCount() + 1;
+									int signSeriesCount = sign.getSignSeriesCount() + 1;
+									
+									sign.setLastmodifytime(new Date());
+									sign.setSignCount(signCount);
+									sign.setSignSeriesCount(signSeriesCount);
+									signMapper.updateByPrimaryKey(sign);
+									
+									
+									SignHistory history = new SignHistory();
+									history.setSignHistoryTime(new Date());
+									history.setUserId(userId);
+									signHistoryMapper.insert(history);
+									
+									Credits credits = new Credits();
+									credits.setQuantity(10);
+									credits.setAcquisitionTime(new Date());
+									credits.setAcquisitionType("签到");
+									credits.setPlusOrMinus("plus");
+									credits.setUserId(userId);
+									creditsMapper.insert(credits);
+									
+									
+									Template tem = new Template();
+									tem.setTemplateId("ZZiQzLZi2p1EE_eicC_bpSBeftLv7912W0EWgwOlXuA");
+									tem.setTopColor("#00DD00");
+									tem.setToUser(openID);
+									tem.setUrl("http://wx.ucoon.cn/wealth/"); // 发布列表
+
+									List<TemplateParam> paras = new ArrayList<TemplateParam>();
+									paras.add(new TemplateParam("first", "连续签到成功！", "#FF3333"));
+									paras.add(new TemplateParam("keyword1", "10空点",
+											"#0044BB"));
+									paras.add(new TemplateParam("keyword2", signSeriesCount + "天", "#0044BB"));
+									paras.add(new TemplateParam("keyword3", (total + 10) + "空点", "#0044BB"));
+									paras.add(new TemplateParam("remark", "空点可兑换空点商城中相应的礼品，还有机会抽大奖哦！", "#0044BB"));
+									tem.setTemplateParamList(paras);
+
+									boolean result = WeixinUtil.sendTemplateMsg(tem);
+									System.out.println("签到模板消息结果：" + result);
+									return "success";
+									
+								}else{
+									//非连续签到
+									int signCount = sign.getSignCount() + 1;
+									int signSeriesCount = 1;
+									
+									sign.setLastmodifytime(new Date());
+									sign.setSignCount(signCount);
+									sign.setSignSeriesCount(signSeriesCount);
+									signMapper.updateByPrimaryKey(sign);
+									
+									
+									SignHistory history = new SignHistory();
+									history.setSignHistoryTime(new Date());
+									history.setUserId(userId);
+									signHistoryMapper.insert(history);
+									
+									Credits credits = new Credits();
+									credits.setQuantity(10);
+									credits.setAcquisitionTime(new Date());
+									credits.setAcquisitionType("签到");
+									credits.setPlusOrMinus("plus");
+									credits.setUserId(userId);
+									creditsMapper.insert(credits);
+									
+									
+									Template tem = new Template();
+									tem.setTemplateId("ZZiQzLZi2p1EE_eicC_bpSBeftLv7912W0EWgwOlXuA");
+									tem.setTopColor("#00DD00");
+									tem.setToUser(openID);
+									tem.setUrl("http://wx.ucoon.cn/wealth/"); // 发布列表
+
+									List<TemplateParam> paras = new ArrayList<TemplateParam>();
+									paras.add(new TemplateParam("first", "今日签到成功！", "#FF3333"));
+									paras.add(new TemplateParam("keyword1", "10空点",
+											"#0044BB"));
+									paras.add(new TemplateParam("keyword2", signSeriesCount + "天", "#0044BB"));
+									paras.add(new TemplateParam("keyword3", (total + 10) + "空点", "#0044BB"));
+									paras.add(new TemplateParam("remark", "空点可兑换空点商城中相应的礼品，还有机会抽大奖哦！", "#0044BB"));
+									tem.setTemplateParamList(paras);
+
+									boolean result = WeixinUtil.sendTemplateMsg(tem);
+									System.out.println("签到模板消息结果：" + result);
+									return "success";
+								}
+								
+								
+								
+							}
+							
+							
+							
+						}
+						
+						
+						
+						
+						
+						
+					}
 				}
 				// 用户上报地址位置，更新用户地理位置信息
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_LOCATION)) {
@@ -188,8 +383,7 @@ public class WeChatServiceImpl implements WeChatService  {
 					user.setLatitude(latitude);
 					user.setLongitude(longitude);
 					userDao.updateUserLatAndLng(user);
-					textMessage.setContent("");
-					respMessage = MessageUtil.textMessageToXml(textMessage);
+					return "success";
 				}
 			}
 
@@ -201,5 +395,7 @@ public class WeChatServiceImpl implements WeChatService  {
 		//
 		return respMessage;
 	}
+
+	
 
 }

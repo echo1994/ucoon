@@ -1,6 +1,8 @@
 package com.cn.ucoon.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
@@ -8,6 +10,53 @@ import org.junit.Test;
 public class TimeUtil {
 
 
+	
+	/** 
+     * @param oldTime 较小的时间 
+     * @param newTime 较大的时间 (如果为空   默认当前时间 ,表示和当前时间相比) 
+     * @return -1 ：同一天.    0：昨天 .   1 ：至少是前天. 
+     * @throws ParseException 转换异常 
+     */  
+	public static int isYeaterday(Date oldTime,Date newTime) throws ParseException{  
+        if(newTime==null){  
+            newTime=new Date();  
+        }  
+               //将下面的 理解成  yyyy-MM-dd 00：00：00 更好理解点  
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");  
+        String todayStr = format.format(newTime);  
+        Date today = format.parse(todayStr);  
+        //昨天 86400000=24*60*60*1000 一天  
+        if((today.getTime()-oldTime.getTime())>0 && (today.getTime()-oldTime.getTime())<=86400000) {  
+            return 0;  
+        }  
+        else if((today.getTime()-oldTime.getTime())<=0){ //至少是今天  
+            return -1;  
+        }  
+        else{ //至少是前天  
+            return 1;  
+        }  
+          
+    }  
+	
+	
+	public static boolean isToday(Date date) { 
+	    Calendar c1 = Calendar.getInstance();              
+	    c1.setTime(date);                                 
+	    int year1 = c1.get(Calendar.YEAR);
+	        int month1 = c1.get(Calendar.MONTH)+1;
+	        int day1 = c1.get(Calendar.DAY_OF_MONTH);     
+	        Calendar c2 = Calendar.getInstance();    
+	        c2.setTime(new Date());      
+	        int year2 = c2.get(Calendar.YEAR);
+	        int month2 = c2.get(Calendar.MONTH)+1;
+	        int day2 = c2.get(Calendar.DAY_OF_MONTH);   
+	        if(year1 == year2 && month1 == month2 && day1 == day2){
+	        return true;
+	        }
+	    return false;                               
+	}
+	
+	
 	/** 
     * 时间戳转换成日期格式字符串 
     * @param seconds 精确到秒的字符串 

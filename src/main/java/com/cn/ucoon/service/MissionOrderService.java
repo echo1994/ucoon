@@ -9,4 +9,8 @@ public interface MissionOrderService {
 	public MissionOrders getOrdersbyMissionId(Integer missionId);
 	
 	public void updateMissionStatusbyOrdersId(MissionOrders record);
+	
+	public void update(MissionOrders record);
+	
+	public MissionOrders getOrderByOrderNum(String orderNum);
 }

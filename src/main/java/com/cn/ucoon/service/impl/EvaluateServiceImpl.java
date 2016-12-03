@@ -68,4 +68,23 @@ public class EvaluateServiceImpl implements EvaluateService{
 		return evaluateMapper.selectLimitedbyPublishId(publishId, startIndex, endIndex);
 	}
 
+
+	@Override
+	public Evaluate selectByMidAndPidAndEid(Integer missionId,
+			Integer publishId, Integer executorId) {
+		// TODO Auto-generated method stub
+		return evaluateMapper.selectByMidAndPidAndEid(missionId, publishId, executorId);
+	}
+
+
+	@Override
+	public boolean updatePublishByMidAndPidAndEid(Evaluate evaluate) {
+		int i = evaluateMapper.updatePublishByMidAndPidAndEid(evaluate);
+		if(i>0){
+			return true;
+		}
+		
+		return false;
+	}
+
 }

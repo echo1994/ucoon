@@ -53,9 +53,9 @@
 		<div class="send-select-col mui-pull-left" id="tobepaid">
 			<span id="tobepaid-span">待支付</span>
 		</div>
-		<div class="send-select-col mui-pull-left" id="allstt">
+		<!-- <div class="send-select-col mui-pull-left" id="allstt">
 			<span id="allstt-span">已完成</span>
-		</div>
+		</div> -->
 	</div>
 
 
@@ -148,7 +148,7 @@
 			action();
 		});
 		
-		var allstt = document.getElementById('allstt');
+		/* var allstt = document.getElementById('allstt');
 		allstt.addEventListener('tap', function() {
 			//已完成：待评价、已完成,5
 			$(activeIndex).attr("class", "");
@@ -156,7 +156,7 @@
 			activeIndex = "#allstt-span";
 			loaddata(4, currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, true);
 			action();
-		});
+		}); */
 
 		
 	})
@@ -300,7 +300,6 @@
 										status = "正在进行中," + data[i].donepeople + "人已完成";
 										handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
 									}
-									
 								}else{
 									status = "需要" + data[i].people_count + "人,报名" + data[i].totalpeople + "人,选择" + data[i].selectpeople + "人";
 									handle = "<button class='fr pick' data-m='"+data[i].mission_id+"'>选人</button><button class='fr offshelf' data-m='"+data[i].mission_id+"'>下架</button><button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
@@ -335,8 +334,14 @@
 								}
 								break;
 							case 6:
-								status = "正在进行中," + data[i].donepeople + "人已完成";
-								handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+							
+								if(data[i].people_count == data[i].donepeople){
+									status = '任务完成';
+									handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+								}else{
+									status = "正在进行中," + data[i].donepeople + "人已完成";
+									handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+								}
 								break;
 							} 
 							$(".mysend")

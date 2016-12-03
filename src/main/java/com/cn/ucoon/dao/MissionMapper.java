@@ -2,9 +2,12 @@ package com.cn.ucoon.dao;
 
 import com.cn.ucoon.pojo.Mission;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface MissionMapper {
 	int deleteByPrimaryKey(Integer missionId);
@@ -18,6 +21,8 @@ public interface MissionMapper {
 	int updateByPrimaryKey(Mission record);
 
 	int updateViewByPrimaryKey(Integer missionId);
+	
+	int unPaidMissionScan(@Param("date")Date date);
 	
 	List<HashMap<String, Object>> selectLimited(Integer startIndex,
 			Integer endIndex);

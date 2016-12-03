@@ -1,10 +1,4 @@
-/*!
- * ======================================================
- * FeedBack Template For MUI (http://dev.dcloud.net.cn/mui)
- * =======================================================
- * @version:1.0.0
- * @author:cuihongbao@dcloud.io
- */
+
 (function() {
 	var index = 1;
 	var size = null;
@@ -62,82 +56,7 @@
 		feedback.files.push({name:"images"+index,path:path});
 		index++;
 	};
-	/**
-	 * 初始化图片域占位
-	 */
-	feedback.newPlaceholder = function() {
-		var fileInputArray = feedback.getFileInputArray();
-		if (fileInputArray &&
-			fileInputArray.length > 0 &&
-			fileInputArray[fileInputArray.length - 1].parentNode.classList.contains('space')) {
-			return;
-		};
-		imageIndexIdNum++;
-		var placeholder = document.createElement('div');
-		placeholder.setAttribute('class', 'image-item space');
-		var up = document.createElement("div");
-		up.setAttribute('class','image-up')
-		//删除图片
-		var closeButton = document.createElement('div');
-		closeButton.setAttribute('class', 'image-close');
-		closeButton.innerHTML = 'X';
-		//小X的点击事件
-		closeButton.addEventListener('tap', function(event) {
-			setTimeout(function() {
-				feedback.imageList.removeChild(placeholder);
-			}, 0);
-			return false;
-		}, false);
-		
-		//
-		var fileInput = document.createElement('div');
-		fileInput.setAttribute('class', 'file');
-		fileInput.setAttribute('id', 'image-' + imageIndexIdNum);
-		fileInput.addEventListener('tap', function(event) {
-			var self = this;
-			var index = (this.id).substr(-1);
-			
-			plus.gallery.pick(function(e) {
-//				console.log("event:"+e);
-				var name = e.substr(e.lastIndexOf('/') + 1);
-				console.log("name:"+name);
-					
-				plus.zip.compressImage({
-					src: e,
-					dst: '_doc/' + name,
-					overwrite: true,
-					quality: 50
-				}, function(zip) {
-					size += zip.size  
-					console.log("filesize:"+zip.size+",totalsize:"+size);
-					if (size > (10*1024*1024)) {
-						return mui.toast('文件超大,请重新选择~');
-					}
-					if (!self.parentNode.classList.contains('space')) { //已有图片
-						feedback.files.splice(index-1,1,{name:"images"+index,path:e});
-					} else { //加号
-						placeholder.classList.remove('space');
-						feedback.addFile(zip.target);
-						feedback.newPlaceholder();
-					}
-					up.classList.remove('image-up');
-					placeholder.style.backgroundImage = 'url(' + zip.target + ')';
-				}, function(zipe) {
-					mui.toast('压缩失败！')
-				});
-				
-
-				
-			}, function(e) {
-				mui.toast(e.message);
-			},{});
-		}, false);
-		placeholder.appendChild(closeButton);
-		placeholder.appendChild(up);
-		placeholder.appendChild(fileInput);
-		feedback.imageList.appendChild(placeholder);
-	};
-	feedback.newPlaceholder();
+	
 	feedback.submitBtn.addEventListener('tap', function(event) {
 		if (feedback.question.value == '' ||
 			(feedback.contact.value != '' &&

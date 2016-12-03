@@ -246,8 +246,8 @@
 													+ "<div class='task-price mui-pull-right'>"
 													+ "<i class='mui-icon iconfont icon-qian'></i> <span"
 											+"class='task-price-num'>"
-													+ data[i].mission_price
-													+ "</span>"
+													+ data[i].singlePrize
+													+ "/人</span>"
 													+ "</div>"
 													+ "<div class='task-detail'>"
 													+ "	<p class='task-title'>"
@@ -407,12 +407,16 @@
 							<li id="wode"><i class="mui-icon iconfont icon-wode"></i>我的信息</li>
 							<li id="mysend"><i class="mui-icon iconfont icon-plane"></i>我发布的</li>
 							<li id="myservice"><i class="mui-icon iconfont icon-service"></i>我服务的</li>
+							<li id="wealth2"><i class="mui-icon iconfont icon-service"></i>财富中心</li>
 							<li id="chat-list"><i class="mui-icon iconfont icon-service"></i>消息中心</li>
 							<li id="help"><i class="mui-icon mui-icon-help"></i>帮助联系</li>
 							<li id="about"><i class="mui-icon mui-icon-info"></i>关于我们</li>
 						</ul>
 						<script type="text/javascript">
 							$('#wealth').bind('tap',function(){
+								window.location.href="wealth/";
+							})
+							$('#wealth2').bind('tap',function(){
 								window.location.href="wealth/";
 							})
 							
@@ -432,6 +436,10 @@
 							
 							$('#help').bind('tap',function(){
 								window.location.href="feedback";
+							})
+							
+							$('#about').bind('tap',function(){
+								return mui.toast('加微信 5584861进行了解');  
 							})
 							
 							
@@ -460,10 +468,10 @@
 					<span class="tab-icon tab-me-cur"></span>
 					<span class="tab-name mui-tab-label">我有空</span>
 				</a>
-				<a class="mui-tab-item" id="ucoon-we" href="we">
+				<!-- <a class="mui-tab-item" id="ucoon-we" href="we">
 					<span class="tab-icon tab-we"></span>
 					<span class="tab-name mui-tab-label">都有空</span>
-				</a>
+				</a> -->
 				<a class="mui-tab-item" id="ucoon-who" href="javascript:void(0)">
 					<span class="tab-icon tab-who"></span>
 					<span class="tab-name mui-tab-label">谁有空</span>

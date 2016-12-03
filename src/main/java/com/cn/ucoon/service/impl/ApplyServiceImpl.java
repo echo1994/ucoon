@@ -161,11 +161,26 @@ public class ApplyServiceImpl implements ApplyService {
 		return applyOrdersMapper.selectDetailByMissionId(missionId);
 	}
 
+	@Override
+	public List<HashMap<String, Object>> selectDetailByMissionId2(
+			Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectDetailByMissionId2(missionId);
+	}
+
 
 	@Override
 	public List<HashMap<String, Object>> selectselectpeople(Integer missionId) {
 		// TODO Auto-generated method stub
 		return applyOrdersMapper.selectselectpeople(missionId);
+	}
+
+
+	@Override
+	public ApplyOrders selectApplybyUserIdAndMissionId(Integer userId,
+			Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectApplybyUserIdAndMissionId(userId, missionId);
 	}
 	
 	

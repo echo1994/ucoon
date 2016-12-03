@@ -16,5 +16,8 @@ public interface MissionOrdersMapper {
     
     MissionOrders selectByMissionId(Integer missionId);
     
+    MissionOrders selectByOrderNum(String OrderNum);
+    
     int updateMissionStatusbyOrdersId(MissionOrders record);
+    
 }

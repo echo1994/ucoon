@@ -165,6 +165,20 @@
 				ec++;
 				isprint = true;
 			}
+			
+			if ($('#peopleCount').val()>5 && isprint == false) {
+				alert("人数不能大于5人");
+				ec++;
+				isprint = true;
+			}
+			
+			if ((prize<1 && $('#peopleCount').val()>1) && isprint == false) {
+				alert("金额小于1元，填写的人数只能为1人");
+				ec++;
+				isprint = true;
+			}
+			
+			
 			if (!(/^1[3|4|5|7|8]\d{9}$/.test($('#telephone').val()))
 					&& isprint == false) {
 				alert("请填写正确手机号");

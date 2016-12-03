@@ -365,7 +365,7 @@ html,
 				</ul>
 			</div>
 			<div class="selected clearfix">
-				<div class="sp-tit fl">已选择:</div>
+				<div class="sp-tit fl">已选择（点击取消）:</div>
 					<ul class="clearfix fl" id="select">
 						<c:forEach items="${list2 }" var="info">
 							<li class="deletepeople">
@@ -451,7 +451,7 @@ html,
 						    		return;
 						    	
 						    	}
-						    	window.location.href = "mission/mysend-task-info/" + ${mdetails.mission_id};
+						    	window.location.href = "mission/order-info/" + ${mdetails.mission_id};
 						    	
 						    	
 						    }

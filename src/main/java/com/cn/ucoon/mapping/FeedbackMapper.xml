@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.FeedbackMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.ucoon.pojo.Feedback" >
+    <id column="feedback_id" property="feedbackId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="feedback_question" property="feedbackQuestion" jdbcType="VARCHAR" />
+    <result column="feedback_cantact" property="feedbackCantact" jdbcType="VARCHAR" />
+    <result column="pic_count" property="picCount" jdbcType="INTEGER" />
+    <result column="pictures" property="pictures" jdbcType="VARCHAR" />
+    <result column="feedback_time" property="feedbackTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from feedback
+    where feedback_id = #{feedbackId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cn.ucoon.pojo.Feedback" >
+    insert into feedback (feedback_id, user_id, feedback_question, 
+      feedback_cantact, pic_count, pictures, 
+      feedback_time)
+    values (#{feedbackId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{feedbackQuestion,jdbcType=VARCHAR}, 
+      #{feedbackCantact,jdbcType=VARCHAR}, #{picCount,jdbcType=INTEGER}, #{pictures,jdbcType=VARCHAR}, 
+      #{feedbackTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Feedback" >
+    update feedback
+    set user_id = #{userId,jdbcType=INTEGER},
+      feedback_question = #{feedbackQuestion,jdbcType=VARCHAR},
+      feedback_cantact = #{feedbackCantact,jdbcType=VARCHAR},
+      pic_count = #{picCount,jdbcType=INTEGER},
+      pictures = #{pictures,jdbcType=VARCHAR},
+      feedback_time = #{feedbackTime,jdbcType=TIMESTAMP}
+    where feedback_id = #{feedbackId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select feedback_id, user_id, feedback_question, feedback_cantact, pic_count, pictures, 
+    feedback_time
+    from feedback
+    where feedback_id = #{feedbackId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select feedback_id, user_id, feedback_question, feedback_cantact, pic_count, pictures, 
+    feedback_time
+    from feedback
+  </select>
+</mapper>

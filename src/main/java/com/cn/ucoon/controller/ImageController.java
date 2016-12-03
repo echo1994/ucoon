@@ -24,6 +24,8 @@ public class ImageController {
 
 	public static final String APPLYORDERS_IMAGE_LOCATION = "D:/ucoon/applyorders_image/";
 
+	public static final String FEEDBACK_IMAGE_LOCATION = "D:/ucoon/feedback_image/";
+
 	
 	@RequestMapping("/reqmImage/{category}/{num}")
 	public void getMissionImage(@PathVariable("category") String category,
@@ -77,6 +79,50 @@ public class ImageController {
 			category = "";
 		}
 		String path = APPLYORDERS_IMAGE_LOCATION + category;
+		FileFilter filefilter = new FileFilter() {
+			public boolean accept(File file) {
+				if (file.getName().startsWith(num.toString())) {
+					System.out.println(file.getName());
+					return true;
+
+				}
+				return false;
+			}
+		};
+		File file = new File(path);
+		System.out.println(path);
+		File[] files = file.listFiles(filefilter);
+		File tar = null;
+		if (files.length > 0) {
+			tar = files[0];
+		}
+		response.setContentType("image/png");
+		try {
+			FileInputStream inputStream = new FileInputStream(tar);
+			byte[] data = new byte[(int) tar.length()];
+			int length = inputStream.read(data);
+			inputStream.close();
+
+			response.setContentType("image/png");
+
+			OutputStream stream = response.getOutputStream();
+			stream.write(data);
+			stream.flush();
+			stream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping("/feedbackImage/{category}/{num}")
+	public void getMissionImage3(@PathVariable("category") String category,
+			@PathVariable("num") final Integer num, HttpServletRequest request,
+			HttpServletResponse response) {
+		if (StringUtils.isEmpty(category)) {
+			category = "";
+		}
+		String path = FEEDBACK_IMAGE_LOCATION + category;
 		FileFilter filefilter = new FileFilter() {
 			public boolean accept(File file) {
 				if (file.getName().startsWith(num.toString())) {

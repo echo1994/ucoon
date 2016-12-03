@@ -121,12 +121,18 @@
 		var st = getMonthDay2("${mdetails.start_time}");
 		var et = getMonthDay2("${mdetails.end_time}");
 		$("#pt").html('${mdetails.publish_time}'.substring(0,'${mdetails.publish_time}'.indexOf(".")));
-		$("#st").html('${mdetails.start_time}'.substring(0,'${mdetails.start_time}'.indexOf(".")));
-		$("#et").html('${mdetails.end_time}'.substring(0,'${mdetails.end_time}'.indexOf(".")));
-		$("#jd").html('${ou.take_time}'.substring(0,'${ou.take_time}'.indexOf(".")));
-		$("#wc").html('${ou.finish_time}' == "" ? "未完成" : getDateDiff('${ou.finish_time}'));
+		$("#jz").html('${mdetails.end_time}'.substring(0,'${mdetails.end_time}'.indexOf(".")));
+		$("#st").html('${ou.take_time}'.substring(0,'${ou.take_time}'.indexOf(".")));
+		$("#wc").html('${ou.finish_time}' == "" ? "未完成" : '${ou.finish_time}'.substring(0,'${ou.finish_time}'.indexOf(".")));
 		$("#note").html('${ou.note}' == ""? "<button onclick=\"note()\">留言</button>" : '${ou.note}');
-		$("#evaluate").html('${evaluate.executorScore}' == null?"未评价" : "评价时间：" + '${evaluate.epevaluateTime}' + "<br>评价分数：" + '${evaluate.executorScore}' + "<br>评价内容：" + ('${evaluate.executorEvaluate}' == "" ? "无":'${evaluate.executorEvaluate}'))
+		
+		if('${evaluate.executorScore}' == null || '${evaluate.executorScore}' == ""){
+			$(".user-score").html("未评价");
+		}else{
+			$(".fivestar").html('${evaluate.executorScore}');
+			$(".assessment").html('${evaluate.executorEvaluate}' == "" ? "无":'${evaluate.executorEvaluate}');
+		}
+		
 		
 		var state = ${ou.take_state};
 		var handle="";
@@ -134,8 +140,6 @@
 			case 0:
 				$("#zt").html("正在审核");
 				handle = "<button class=\"fl\" data-m='"+${ou.apply_id}+"'>联系ta</button><button class=\"fl cur cancelorder\" data-m='"+${ou.apply_id}+"'>取消任务</button>";
-				
-				$(".fix-btn").html(handle);
 				break;
 			case 1:
 				if(${mdetails.selectpeople} == ${mdetails.people_count}){
@@ -147,9 +151,6 @@
 					handle = "<button class=\"fl cur\" style=\"width:100%;\">联系ta</button>";
 				
 				}
-				
-				
-				$(".fix-btn").html(handle);
 				break;
 			case 2:
 				if(${ou.isEvaluate} > 0){
@@ -160,19 +161,22 @@
 					handle = "<button class=\"fl\">联系ta</button><button class=\"fl cur evaluate\" data-m='"+${ou.apply_id}+"'>评价</button>";
 				}								
 				//判断是否已评价
-				$(".fix-btn").html(handle);
 				break;
 			case 3:
 				$("#zt").html("已取消");
 				handle = "<button class=\"fl cur\"  style=\"width:100%;\">联系ta</button>";
-				$(".fix-btn").html(handle);
 				break;
 			case 4:
-				$("#zt").html("被拒绝");
-				handle = "<button class=\"fl cur\" style=\"width:100%;\">联系ta</button>";
-				$(".fix-btn").html(handle);
+				$("#zt").html("已发送给雇主，等待雇主审核通过");
+				handle = "<button class='fl cur'  style=\"width:100%;\">联系Ta</button>";
+				
 				break;
+			case 5:
+				$("#zt").html("被拒绝");
+				handle = "<button class='fl cur'  style=\"width:100%;\">联系Ta</button>";
+			break;
 		}
+		$(".fix-btn").html(handle);
 		
 		
 		
@@ -754,8 +758,8 @@
 				<i class="mui-icon iconfont icon-qian"></i>${mdetails.mission_price}
 			</p>
 			<div class="bottom clearfix">
-				<span id="remain">剩余2个名额</span><span>${mdetails.view_count}次浏览</span><span
-					id="pt">08月09日</span>
+				<span id="remain">剩余-个名额</span><span>${mdetails.view_count}次浏览</span><span
+					id="pt">00月00日</span>
 			</div>
 		</div>
 		<div class="task-info-sec2">
@@ -768,16 +772,20 @@
 					class="innertxt" id="missionplace">${mdetails.place}</span>
 			</p>
 			<p>
+				<i class="mui-icon iconfont icon-time"></i><span>截止</span><span
+					class="innertxt" id="jz">00-00 00:00</span>
+			</p>
+			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>开始</span><span
-					class="innertxt" id="st">08-09 17:00</span>
+					class="innertxt" id="st">00-00 00:00</span>
 			</p>
 			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>完成</span><span
-					class="innertxt" id="wc">08-09 19:00</span>
+					class="innertxt" id="wc">00-00 00:00</span>
 			</p>
 			<p>
 				<i class="mui-icon iconfont icon-time"></i><span>状态</span><span
-					class="innertxt" id="zt">待支付</span>
+					class="innertxt" id="zt"></span>
 			</p>
 		</div>
 		<div class="task-info-description">
@@ -795,26 +803,24 @@
 			<p>我对发布者的评价:</p>
 			<!--五星评分-->
 			<div class="user-score">
-			<span>评分：</span>								<span class="fivestar">
-									<i class="mui-icon iconfont icon-star"></i>
-									<i class="mui-icon iconfont icon-star"></i>
-									<i class="mui-icon iconfont icon-star"></i>
-									<i class="mui-icon iconfont icon-star-half"></i>
-									<i class="mui-icon iconfont icon-star-empty"></i>
-								</span>
+				<span>评分：</span>	<span class="fivestar">
+										<!-- <i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star"></i>
+										<i class="mui-icon iconfont icon-star-half"></i>
+										<i class="mui-icon iconfont icon-star-empty"></i> -->
+									</span>
 			</div>
 			<p class="assessment">
-				和客户端看教案上课就哈萨克就等哈看说句话打卡机山东矿机
-				和客户端看教案上课就哈萨克就等哈看说句话打卡机山东矿机
-				和客户端看教案上课就哈萨克就等哈看说句话打卡机山东矿机
+				
 			</p>
 
 		</div>
 		<br /> <br /> <br /> <br />
 
 		<div class="fix-btn">
-			<button class="fl">私聊</button>
-			<button class="fl cur">打电话</button>
+			<button class="fl"></button>
+			<button class="fl cur"></button>
 		</div>
 
 	</div>

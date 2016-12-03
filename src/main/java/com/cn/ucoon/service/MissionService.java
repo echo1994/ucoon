@@ -1,5 +1,6 @@
 package com.cn.ucoon.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,4 +52,6 @@ public interface MissionService {
 	public Integer countUnPaidMission(Integer userId);
 	
 	public Integer countMissionDoneByUserId(Integer userId);
+	
+	public void unPaidMissionScan(Date date);
 }

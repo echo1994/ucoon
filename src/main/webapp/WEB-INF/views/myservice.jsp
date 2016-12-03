@@ -207,14 +207,17 @@
 									handle = "<button class='fr cancelorder' data-m='"+data[i].apply_id+"'>取消任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
 									break;
 								case 1:
-									if(data[i].selectpeople == data[i].people_count){
+								
+									status = '可以开始执行任务';
+									handle = "<button class='fr done' data-m='"+data[i].apply_id+"'>完成任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
+									/* if(data[i].selectpeople == data[i].people_count){
 										status = '可以开始执行任务';
 										handle = "<button class='fr done' data-m='"+data[i].apply_id+"'>完成任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
 									}else{
 										status = '发布人已确认，等待通知任务开始';
 										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
 									
-									}
+									} */
 									break;
 								case 2:
 									if(data[i].isEvaluate > 0){
@@ -233,6 +236,11 @@
 									
 									break;
 								case 4:
+									status = '已发送给雇主，等待雇主审核通过';
+									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									
+									break;
+								case 5:
 									status = '被拒绝';
 									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
 									
@@ -345,7 +353,6 @@
         </div>
         
     </div>
-	
 	<script src="js/mui.min.js"></script>
 	<script>
 

@@ -13,6 +13,8 @@ public interface ApplyService {
 	
 	List<HashMap<String, Object>> selectDetailByMissionId(Integer missionId);
 	
+	List<HashMap<String, Object>> selectDetailByMissionId2(Integer missionId);
+	
 	List<HashMap<String, String>> selectApplyUser(Integer applyId);
 
 	
@@ -44,4 +46,6 @@ public interface ApplyService {
 	
 	
 	List<HashMap<String, Object>> selectselectpeople(Integer missionId);
+	
+	ApplyOrders selectApplybyUserIdAndMissionId(Integer userId,Integer missionId);
 }

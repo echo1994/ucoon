@@ -1,5 +1,7 @@
 package com.cn.ucoon.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ public class MissionServiceImpl implements MissionService {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public List<HashMap<String, Object>> getMissionLimited(Integer startIndex,
 			Integer endIndex,String latitude,String longitude,String type) {
@@ -50,21 +53,51 @@ public class MissionServiceImpl implements MissionService {
 			list = missionMapper.selectLimited(startIndex, endIndex);
 			
 
+			
+			
 			for (int i = 0; i < list.size(); i++) {
+				
+				BigDecimal count = new BigDecimal( (Integer)list.get(i).get("people_count"));
+				BigDecimal prize = (BigDecimal) list.get(i).get("mission_price");
+				BigDecimal singlePrize = prize.divide(count,2, BigDecimal.ROUND_FLOOR);//接近负无穷大的舍入
+				list.get(i).put("singlePrize", singlePrize);
+				
 				String lng = (String) list.get(i).get("mission_lng");
 				String lat = (String) list.get(i).get("mission_lat");
-				String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
-						longitude);
-				list.get(i).put("distance", distance);
+				if(latitude != null || latitude != ""){
+					String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
+							longitude);
+					list.get(i).put("distance", distance);
+					
+				}else{
+					
+					list.get(i).put("distance", "");
+				}
+				
 
 			}
+			
+			
 		}else {
+			if(latitude == null || latitude == ""){
+				
+				return null;
+			}
+			
 			Map<String, String> map = MapDistanceUtil.getAround(latitude,
 					longitude, "20000");
 			list = missionMapper.selectNearby(Double.valueOf(latitude),Double.valueOf(longitude) ,
 					map.get("minLat"), map.get("maxLat"), map.get("minLng"),
 					map.get("maxLng"), startIndex, endIndex);
 			for (int i = 0; i < list.size(); i++) {
+				
+				BigDecimal count = new BigDecimal( (Integer)list.get(i).get("people_count"));
+				BigDecimal prize = (BigDecimal) list.get(i).get("mission_price");
+				BigDecimal singlePrize = prize.divide(count,2, BigDecimal.ROUND_FLOOR);//接近负无穷大的舍入
+				list.get(i).put("singlePrize", singlePrize);
+				
+				
+				
 				Double distanceD =(Double) list.get(i).get("distance");
 				String distance = MapDistanceUtil.getStandardDistance(distanceD*1000 + "");
 				
@@ -78,6 +111,7 @@ public class MissionServiceImpl implements MissionService {
 		return list;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public List<HashMap<String, Object>> getMissionByKeyWord(String keyWord,
 			Integer startIndex, Integer endIndex,String latitude,String longitude) {
@@ -88,11 +122,26 @@ public class MissionServiceImpl implements MissionService {
 				endIndex);
 
 		for (int i = 0; i < list.size(); i++) {
+			
+			BigDecimal count = new BigDecimal( (Integer)list.get(i).get("people_count"));
+			BigDecimal prize = (BigDecimal) list.get(i).get("mission_price");
+			BigDecimal singlePrize = prize.divide(count,2, BigDecimal.ROUND_FLOOR);//接近负无穷大的舍入
+			list.get(i).put("singlePrize", singlePrize);
+			
+			
 			String lng = (String) list.get(i).get("mission_lng");
 			String lat = (String) list.get(i).get("mission_lat");
-			String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
-					longitude);
-			list.get(i).put("distance", distance);
+			
+			if(latitude != null || latitude != ""){
+				String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
+						longitude);
+				list.get(i).put("distance", distance);
+				
+			}else{
+				
+				list.get(i).put("distance", "");
+			}
+			
 
 		}
 		
@@ -130,7 +179,12 @@ public class MissionServiceImpl implements MissionService {
 	public HashMap<String, Object> selectForMissionDetails(
 			Integer missionId) {
 		// TODO Auto-generated method stub
-		return missionMapper.selectForMissionDetails(missionId);
+		HashMap<String, Object> detail = missionMapper.selectForMissionDetails(missionId);
+		BigDecimal count = new BigDecimal( (Integer)detail.get("people_count"));
+		BigDecimal prize = (BigDecimal) detail.get("mission_price");
+		BigDecimal singlePrize = prize.divide(count,2, BigDecimal.ROUND_FLOOR);
+		detail.put("singlePrize", singlePrize);
+		return detail;
 	}
 
 	@Override
@@ -220,5 +274,13 @@ public class MissionServiceImpl implements MissionService {
 	public List<MissionAddress> selectAllMissionAddressByUserId(Integer userId) {
 		// TODO Auto-generated method stub
 		return addressMapper.selectAllByUserId(userId);
+	}
+
+	@Override
+	public void unPaidMissionScan(Date date) {
+		// TODO Auto-generated method stub
+		int i = missionMapper.unPaidMissionScan(date);
+		
+		System.out.println("未支付订单列号 ： " + i);
 	}
 }

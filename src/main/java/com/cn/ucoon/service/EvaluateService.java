@@ -7,6 +7,7 @@ import com.cn.ucoon.pojo.Evaluate;
 
 public interface EvaluateService {
 	
+	public boolean updatePublishByMidAndPidAndEid(Evaluate evaluate);
 	
 	public Evaluate selectByMissionId(Integer missionId);
 	
@@ -19,4 +20,8 @@ public interface EvaluateService {
 	
 	public List<HashMap<String, Object>> selectLimitedbyPublishId(Integer publishId,
 			Integer startIndex, Integer endIndex);
+	
+	//根据missionId和publishId和executor 
+	public Evaluate selectByMidAndPidAndEid(Integer missionId,Integer piblishId,Integer executorId);
+	
 }

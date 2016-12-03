@@ -68,6 +68,7 @@
 				<p class="price"><fmt:formatNumber value="${sessionScope.mission.missionPrice }" type="currency"/></p>
 				<p class="task-name">${sessionScope.mission.missionTitle }</p>
 				<p class="order-id">订单编号：${sessionScope.orders.missionOrderNum }</p>
+				<p>请在15分钟内完成支付</p>
 			</div>
 			<ul class="pay-way">
 				<li class="payment"><i class="mui-icon iconfont icon-me fl"></i><span>余额支付</span><i class="circle fr me"></i></li>

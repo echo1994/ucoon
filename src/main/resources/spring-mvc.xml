@@ -54,6 +54,9 @@
         <property name="maxInMemorySize" value="40960" />  
     </bean> 
 
+
+
+ 	
 	<!-- <bean id="websocket" class="com.cn.ucoon.websocket.handler.WebsocketEndPoint" />
 	<websocket:handlers>
 		<websocket:mapping path="/websocket" handler="websocket" />
@@ -79,6 +82,7 @@
 	<mvc:view-controller path="/mysend" view-name="mysend" />
 	<mvc:view-controller path="/myservice" view-name="myservice" />
 	<mvc:view-controller path="/mission-pay" view-name="mission-pay" />
+	<mvc:view-controller path="/tip" view-name="tip" />
 	
 	
 	<!-- 静态界面过滤 -->
@@ -97,8 +101,12 @@
 	    	<mvc:mapping path="/mysend"/> 
 	    	<mvc:mapping path="/myservice"/> 
 	    	<mvc:mapping path="/mission-pay"/> 
+	    	<mvc:mapping path="/feedback"/> 
 	    	<mvc:mapping path="/mission/task-info/*"/> 
+	    	<mvc:mapping path="/mission/order-info/*"/>
+	    	<mvc:mapping path="/mission/evaluate_publish/*"/>
 	    	<mvc:mapping path="/wealth/"/> 
+	    	<mvc:mapping path="/applyOrders/evaluate/*"/>
 	    	<mvc:exclude-mapping path=""/>  <!-- 不包含的 -->
 	    	<bean class="com.cn.ucoon.interceptor.UserLoginInterceptor"></bean>   
 	  	</mvc:interceptor>   

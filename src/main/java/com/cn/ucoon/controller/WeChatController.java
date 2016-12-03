@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cn.ucoon.pojo.User;
+import com.cn.ucoon.service.SignService;
 import com.cn.ucoon.service.UserService;
 import com.cn.ucoon.service.WeChatService;
 import com.cn.ucoon.util.SignUtil;
@@ -34,6 +35,8 @@ public class WeChatController {
 
 	@Resource
 	private UserService userService;
+
+
 
 	/**
 	 * 1表示第一个链接上的公众号编号
@@ -67,6 +70,7 @@ public class WeChatController {
 		out = null;
 	}
 
+	
 	/**
 	 * 微信消息核心处理 1表示连接的公众号编号
 	 * 
@@ -80,13 +84,16 @@ public class WeChatController {
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-
-		// 微信消息核心处理
+		
+		
+    	// 微信消息核心处理,5秒内回复
 		String respMessage = weChatService.processRequest(request);
 
 		PrintWriter out = response.getWriter();
 		out.print(respMessage);
 		out.close();
+       
+		
 	}
 
 	// 网页授权登陆，服务器保存用户session

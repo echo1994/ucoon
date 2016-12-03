@@ -17,7 +17,7 @@ public class AccessTokenUtil {
     * @Description: //设置access_token 
      */  
     public static void initAndSetAccessToken() {  
-        log.info("execute initAndSetAccessToken Start : {}", System.currentTimeMillis());  
+        log.info("execute initAndSetAccessToken Start : {}", TimeUtil.timeStamp2Date(System.currentTimeMillis()/1000 + "", null));  
         
         String appid = WeixinUtil.appid;  
         String appsecret = WeixinUtil.appsecret;  
@@ -44,7 +44,7 @@ public class AccessTokenUtil {
         } else {  
             log.info("execute initAndSetAccessToken appid,appsecret 为空.{}");  
         }  
-        log.info("execute initAndSetAccessToken End   : {}", System.currentTimeMillis());  
+        log.info("execute initAndSetAccessToken End   : {}", TimeUtil.timeStamp2Date(System.currentTimeMillis()/1000 + "", null));  
     }  
 
 
