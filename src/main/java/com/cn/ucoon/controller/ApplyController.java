@@ -410,13 +410,13 @@ public class ApplyController {
 				
 				String openId = userService.getOpenIdbyUserId(userId);
 				
-				//如果为最后一个人，则任务状态改变为5
+				//-------------（目前不采用）如果为最后一个人，则任务状态改变为5
 				
-				//每个人获得的金额 = （任务总金额/总人数）*平台抽取的服务率
-				BigDecimal talmonney = mission.getMissionPrice();
-		        BigDecimal b2 = new BigDecimal(mission.getPeopleCount());
-		        BigDecimal result = new BigDecimal(talmonney.divide(b2,2,BigDecimal.
-		        		ROUND_HALF_UP).doubleValue());
+				//每个人获得的金额 = （任务单价）*平台抽取的服务率 平台抽取 8%
+				BigDecimal singleMonney = mission.getMissionPrice();
+				
+				//往上进位 BigDecimal.ROUND_HALF_UP
+		        BigDecimal result = singleMonney.multiply(new BigDecimal((1 - PayUtil.rate))).setScale(2, BigDecimal.ROUND_HALF_UP);
 				Balance orders = new Balance();
 				orders.setQuantity(result);
 				orders.setOrderNum(PayUtil.getOrdersNum(userId, userId));
@@ -450,7 +450,7 @@ public class ApplyController {
 				String date = TimeUtil.timeStamp2Date(
 						String.valueOf(timeStamp), "yyyy-MM-dd HH:mm:ss");
 				paras.add(new TemplateParam("keyword3", date, "#0044BB"));
-				paras.add(new TemplateParam("remark", "你的佣金" + result + "元已到达余额，在【个人中心】->【财富中心】中查看（没有转入的话，请联系客服）\\n点击对雇主进行评论", "#0044BB"));
+				paras.add(new TemplateParam("remark", "你的佣金" + result + "元已到达余额(平台服务费抽取8%)，在【个人中心】->【财富中心】中查看（没有转入的话，请联系客服）\\n点击对雇主进行评论", "#0044BB"));
 				tem.setTemplateParamList(paras);
 
 				boolean result2 = WeixinUtil.sendTemplateMsg(tem);
@@ -563,20 +563,19 @@ public class ApplyController {
 
 				boolean result = WeixinUtil.sendTemplateMsg(tem);
 				System.out.println("接单模板消息结果：" + result);
-				mv.addObject("msg", "已通知发布者，等待通过");
-				mv.addObject("url", "myservice");
-				mv.setViewName("/tip");
+				request.getSession().setAttribute("msg", "已通知发布者，等待通过");
+				request.getSession().setAttribute("url", "myservice");
+				mv.setViewName("redirect:/tip");
 				return mv;
 			}
-			mv.addObject("msg", "系统出错");
-			mv.addObject("url", "myservice");
-			
-			mv.setViewName("/tip");
+			request.getSession().setAttribute("msg", "系统出错");
+			request.getSession().setAttribute("url", "myservice");
+			mv.setViewName("redirect:/tip");
 			return mv;
 		}
-		mv.addObject("msg", "请勿重复提交");
-		mv.addObject("url", "myservice");
-		mv.setViewName("/tip");
+		request.getSession().setAttribute("msg", "请勿重复提交");
+		request.getSession().setAttribute("url", "myservice");
+		mv.setViewName("redirect:/tip");
 		return mv;
 	}
 

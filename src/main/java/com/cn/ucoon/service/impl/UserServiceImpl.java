@@ -11,10 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.dao.UserMapper;
-import com.cn.ucoon.pojo.Balance;
 import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.service.UserService;
-import com.cn.ucoon.util.TimeUtil;
 import com.cn.ucoon.util.WeixinUtil;
 
 @Service
@@ -44,8 +42,8 @@ public class UserServiceImpl implements UserService {
 			String openid = jsonObject.getString("openid");//用户openid
 			System.out.println(openid);
 			
-			//String unionid = jsonObject.getString("unionid");//微信开放云id
-			
+			String unionid = jsonObject.getString("unionid");//微信开放云id
+			System.out.println("unionid:" + unionid);
 			//通过openid判断用户是否已经拉取，即判断用户是否存在
 			user = userDao.selectByOpenId(openid);
 			if(user == null){

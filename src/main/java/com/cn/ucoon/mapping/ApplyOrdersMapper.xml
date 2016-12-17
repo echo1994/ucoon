@@ -110,7 +110,7 @@
 	<!-- 获取限制数量的order记录  myservice.jsp  state:0正在服务,1已完成-->
 	<select id="selectOrdersLimited" resultType="java.util.HashMap">
 		SELECT apply_id, order_num, apply_orders.user_id, apply_orders.mission_id, take_time,finish_time,
-		apply_orders.take_state ,mission_title ,mission_price,head_img_url,people_count,
+		apply_orders.take_state ,mission_title ,mission_price,head_img_url,people_count,mission_status,mission.user_id as m_user_id,
 		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople,
 		(select count(*) from evaluate where evaluate.mission_id=mission.mission_id and executor_evaluate IS NOT NULL and LENGTH(trim(executor_evaluate))>0) as isEvaluate 
 		FROM ((apply_orders left join

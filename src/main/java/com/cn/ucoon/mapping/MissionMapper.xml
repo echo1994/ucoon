@@ -108,6 +108,7 @@
 		mission_price ,view_count,mission_status,mission_lng,mission_lat,people_count,(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=0) as totalpeople,
 		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople,
 		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=2) as donepeople ,
+		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and (take_state=4 or take_state=2) ) as applydonepeople ,
 		(Select  count(*) FROM evaluate WHERE publish_evaluate IS NOT NULL and LENGTH(trim(publish_evaluate))>0 and evaluate.mission_id=mission.mission_id) as evlpeople
 		 FROM mission LEFT JOIN user ON user.user_id
 		= mission.user_id WHERE mission.user_id = #{userId} AND 

@@ -118,8 +118,12 @@
 
 </head>
 <script type="text/javascript">
+
+	var currentPage = 0;
+	var onePageNums = 10;
 	($(function() {
-		loaddata(0, 9, true);
+	
+		loaddata(currentPage, onePageNums, true);
 		
 		
 		$(".cancelorder").on('tap',function(){
@@ -151,7 +155,6 @@
 		    mui.confirm('请确认您的任务已完成', '有空ucoon', btnArray, function(e) 
 		    {
 		        if (e.index == 1) {
-		        	$("#applyID").val($(".done").attr("data-m"));
 		        	$("#myform").submit();
 				} else {
 		            
@@ -159,6 +162,7 @@
 		    })
 		});
 		$(".done").click(function () {
+			$("#applyID").val($(this).attr("data-m"));
             $("#bg").css({
 
                 display: "block", height: $(document).height()
@@ -180,16 +184,19 @@
 			window.location.href = "applyOrders/myservice-task-info/"
 							+ $(this).attr("data-m");
 		});
+		$(".contact").on('tap',function(){
+			window.location.href="chat/api-1/" + ${sessionScope.user_id } + "/" + $(this).attr("data-m");
+		});
+		
 		
 		
 	}))
 	function loaddata(startIndex, endIndex, clearable) {
-		$
-				.ajax({
+		$.ajax({
 					url : 'applyOrders/getOrdersLimited',
 					data : {
-						startIndex : 0,
-						endIndex : 9
+						startIndex : startIndex,
+						endIndex : endIndex
 					},
 					async : false,
 					type : 'post',
@@ -203,46 +210,47 @@
 							var handle = '';
 							switch (data[i].take_state) {
 								case 0:
-									status = '待确认';
-									handle = "<button class='fr cancelorder' data-m='"+data[i].apply_id+"'>取消任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
+									if(data[i].mission_status == 6){
+										status = '未被选上';
+										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
+									
+									} else if(data[i].mission_status == 3 || data[i].mission_status == 4){
+										status = '对方已取消任务';
+										handle = "<button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
+									
+									}else{
+										status = '待确认';
+										handle = "<button class='fr cancelorder' data-m='"+data[i].apply_id+"'>取消任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
+									}
 									break;
 								case 1:
-								
-									status = '可以开始执行任务';
-									handle = "<button class='fr done' data-m='"+data[i].apply_id+"'>完成任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
-									/* if(data[i].selectpeople == data[i].people_count){
-										status = '可以开始执行任务';
-										handle = "<button class='fr done' data-m='"+data[i].apply_id+"'>完成任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
+									if(data[i].mission_status == 6){
+										status = '正在进行';
+										handle = "<button class='fr done' data-m='"+data[i].apply_id+"'>完成任务</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
 									}else{
-										status = '发布人已确认，等待通知任务开始';
-										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact'>联系Ta</button>";
-									
-									} */
+										status = '等待通知开始';
+										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
+									}
 									break;
 								case 2:
 									if(data[i].isEvaluate > 0){
 										status = '已完成';
-										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+										handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
 									}else{
 										status = '待评价';
-										handle = "<button class='fr evaluate' data-m='"+data[i].mission_id+"'>评价</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+										handle = "<button class='fr evaluate' data-m='"+data[i].mission_id+"'>评价</button><button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
 									}								
 									//判断是否已评价
 									
 									break;
 								case 3:
 									status = '已取消';
-									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
 									
 									break;
 								case 4:
 									status = '已发送给雇主，等待雇主审核通过';
-									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
-									
-									break;
-								case 5:
-									status = '被拒绝';
-									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr'>联系Ta</button>";
+									handle = "<button class='fr order' data-m='"+data[i].mission_id+"'>查看任务</button><button class='fr contact' data-m='"+data[i].m_user_id+"'>联系Ta</button>";
 									
 									break;
 							}

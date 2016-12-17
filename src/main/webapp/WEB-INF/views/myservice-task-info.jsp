@@ -27,6 +27,94 @@
 <link href="css/mui.imageviewer.css" rel="stylesheet" />
 </head>
 <style>
+
+ #bg{
+    background-color:#000;
+    position:fixed;
+    z-index:99;
+    left:0;
+    top:0;
+    display:none;
+    width:100%;
+    height:100%;
+    opacity:0.3;
+    filter: alpha(opacity=30);
+    -moz-opacity: 0.3;
+}
+.pop-cot{
+    position: fixed;
+    text-align: center;
+    z-index: 9999;
+    top:50%;
+    left: 50%;
+    width: 270px;
+    margin-left: -135px;
+    margin-top: -150px;
+    height: 280px;
+    background: #fff;
+    border-radius: 10px;
+}
+.pop-cot .title{
+    margin: 20px auto 10px auto;
+    color: #c3d94f;
+    text-align: center;
+
+}
+.pop-cot textarea{
+    width: 200px;
+    height: 80px;
+    padding: 5px;
+    margin-bottom: 0;
+    font-size: 14px;
+    color: #555;
+}
+.pop-cot ul{
+    margin-left: 35px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.pop-cot ul li{
+    width: 50px;
+    height: 50px;
+    position: relative;
+    float: left;
+    margin-right: 10px;
+}
+.pop-cot ul li img{
+    width: 50px;
+    height: 50px;
+}
+.pop-cot ul li input{
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 0;
+    opacity: 0;
+
+}
+.pop-cot .tip{
+    font-size: 10px;
+    color: #999;
+    text-align: left;
+    padding-left: 35px;
+}
+.pop-cot .over-btn{
+    position: absolute;
+    bottom: 15px;
+    width: 200px;
+    left: 50%;
+    margin-left: -100px;
+}
+.pop-cot .over-btn button{
+    width: 80px;
+    margin: 0 10px;
+    background: #c3d94f;
+    color: #fff;
+}
+
 .basic-mes {
 	margin: 0;
 	padding: 15px 0;
@@ -135,46 +223,50 @@
 		
 		
 		var state = ${ou.take_state};
+		var missionState = ${mdetails.mission_status};
 		var handle="";
 		switch (state) {
 			case 0:
-				$("#zt").html("正在审核");
-				handle = "<button class=\"fl\" data-m='"+${ou.apply_id}+"'>联系ta</button><button class=\"fl cur cancelorder\" data-m='"+${ou.apply_id}+"'>取消任务</button>";
+			
+				if(missionState == 6){
+					$("#zt").html("未被选上");
+					handle = "<button class=\"fl chat\" data-m='"+${ou.apply_id}+"'>联系ta</button>";
+				
+				}else{
+					$("#zt").html("正在审核");
+					handle = "<button class=\"fl chat\" data-m='"+${ou.apply_id}+"'>联系ta</button><button class=\"fl cur cancelorder\" data-m='"+${ou.apply_id}+"'>取消任务</button>";
+				}
 				break;
 			case 1:
-				if(${mdetails.selectpeople} == ${mdetails.people_count}){
+				if(missionState == 6){
 					$("#zt").html("正在进行");
-					handle = "<button class=\"fl\">联系ta</button><button class=\"fl cur done\" data-m='"+${ou.apply_id}+"'>完成任务</button>";
+					handle = "<button class=\"fl chat\">联系ta</button><button class=\"fl cur done\" data-m='"+${ou.apply_id}+"'>完成任务</button>";
 				
 				}else{
 					$("#zt").html("等待系统通知任务开始");
-					handle = "<button class=\"fl cur\" style=\"width:100%;\">联系ta</button>";
+					handle = "<button class=\"fl cur chat\" style=\"width:100%;\">联系ta</button>";
 				
 				}
 				break;
 			case 2:
 				if(${ou.isEvaluate} > 0){
 					$("#zt").html("已完成");
-					handle = "<button class=\"fl cur\" style=\"width:100%\">联系ta</button>";
+					handle = "<button class=\"fl cur chat\" style=\"width:100%\">联系ta</button>";
 				}else{
 					$("#zt").html("待评价");
-					handle = "<button class=\"fl\">联系ta</button><button class=\"fl cur evaluate\" data-m='"+${ou.apply_id}+"'>评价</button>";
+					handle = "<button class=\"fl chat\">联系ta</button><button class=\"fl cur evaluate\" data-m='"+${ou.mission_id}+"'>评价</button>";
 				}								
 				//判断是否已评价
 				break;
 			case 3:
 				$("#zt").html("已取消");
-				handle = "<button class=\"fl cur\"  style=\"width:100%;\">联系ta</button>";
+				handle = "<button class=\"fl cur chat\"  style=\"width:100%;\">联系ta</button>";
 				break;
 			case 4:
 				$("#zt").html("已发送给雇主，等待雇主审核通过");
-				handle = "<button class='fl cur'  style=\"width:100%;\">联系Ta</button>";
+				handle = "<button class='fl cur chat'  style=\"width:100%;\">联系Ta</button>";
 				
 				break;
-			case 5:
-				$("#zt").html("被拒绝");
-				handle = "<button class='fl cur'  style=\"width:100%;\">联系Ta</button>";
-			break;
 		}
 		$(".fix-btn").html(handle);
 		
@@ -417,7 +509,9 @@
 			})
 		}); 
 		
-		
+		$(".chat").on('tap',function(){
+			window.location.href="chat/api-1/" + ${user.userId} + "/" + ${mdetails.user_id};
+		});
 		$(".cancelorder").on('tap',function(){
 			var btnArray = ['否', '是'];
 		    mui.confirm('是否取消订单，确认？', '有空ucoon', btnArray, function(e) 
@@ -440,29 +534,31 @@
 		    })
 		});
 		
-			
-		$(".done").on('tap',function(){
+		$(".done").click(function () {
+            $("#bg").css({
+
+                display: "block", height: $(document).height()
+            });
+            $('#pop').show();
+//            $('.close-bg').show();
+        });
+        $('.close-btn').click(function () {
+            $('#pop').hide();
+            $('#bg').hide();
+        })
+		$(".donesure").on('tap',function(){
 			
 			var btnArray = ['还未完成', '我已完成'];
 		    mui.confirm('请确认您的任务已完成', '有空ucoon', btnArray, function(e) 
 		    {
 		        if (e.index == 1) {
-					$.ajax({
-						url : 'applyOrders/finishOrder/' + $(".done").attr("data-m"),
-						data : {},
-						async : false,
-						type : 'post',
-						dataType : 'text',
-						success : function(data) {
-							alert(data);
-							window.history.go(0);
-						}
-					}) 
+		        	$("#applyID").val($(".done").attr("data-m"));
+		        	$("#myform").submit();
 				} else {
 		            
 		        }
 		    })
-		});
+		});	
 		
 		
 		$(".evaluate").on('tap',function(){
@@ -824,9 +920,124 @@
 		</div>
 
 	</div>
+	<!--弹窗遮罩层-->
+    <div id="bg"></div>
+    <div class="pop-cot" id="pop" style="display: none">
+        <div class="title">任务凭据</div>
+        <form id="myform" action="applyOrders/finishOrder" method="post" enctype="multipart/form-data">
+	        <textarea name="missionDoneDetail"   placeholder="输入任务完成情况"></textarea>
+	        <input type="hidden" name="applyId" id="applyID">
+	        <ul class="addimg-box clearfix">
+	            <li id="addimg">
+	                <img src="images/addimg.png"/>
+	                <input type="file" id="imgUpload" name="imgUpload" multiple="multiple"/>
+	            </li>
+	        </ul>
+	        <p class="tip">（最多可上传3张）</p>
+	    </form>
+        <div class="over-btn">
+            <button class="fl close-btn">取消</button>
+            <button class="fl donesure">提交</button>
+        </div>
+        
+    </div>
+	<script>
 
-</body>
-<script>
-	
+    /* 多图预览 */
+    filecount = 0;
+    
+    $(document)
+            .ready(
+                    function(e) {
+
+                        // 判断浏览器是否有FileReader接口
+                        if (typeof FileReader == 'undefined') {
+                            $(".addimg-box")
+                                    .css({
+                                        'background' : 'none'
+                                    })
+                                    .html(
+                                            '亲,您的浏览器还不支持HTML5的FileReader接口,无法使用图片本地预览,请更新浏览器获得最好体验');
+                            // 如果浏览器是ie
+                            
+                            if ($.browser.msie === true) {
+                                if ($.browser.version == 7
+                                        || $.browser.version == 8) {
+                                    $("#imgUpload")
+                                            .change(
+                                                    function(event) {
+                                                        $(event.target).select();
+                                                        var src = document.selection
+                                                                .createRange().text;
+                                                        var dom = document
+                                                                .getElementById('destination');
+                                                        // 使用滤镜 成功率高
+                                                        dom.filters
+                                                                .item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+                                                        dom.innerHTML = '';
+                                                        // 使用和ie6相同的方式 设置src为绝对路径的方式
+                                                        // 有些图片无法显示 效果没有使用滤镜好
+                                                        /*
+                                                         * var img = '<img
+                                                         * src="'+src+'"
+                                                         * width="200px"
+                                                         * height="200px" />';
+                                                         * $("#destination").empty().append(img);
+                                                         */
+                                                    });
+                                         if(filecount == 3){
+                                         	$("#addimg").remove();
+                                         }           
+                                }
+                            }
+                           
+                        } else {
+                            // 多图上传 input file控件里指定multiple属性 e.target是dom类型
+                            $("#imgUpload")
+                                    .change(
+                                            function(e) {
+                                            
+                                            	
+                                            
+                                                if (filecount
+                                                        + event.target.files.length > 3) {
+                                                    mui.alert("上传图片不能超过3张");
+                                                } else {
+                                                    for (var i = 0; i < e.target.files.length; i++) {
+                                                        var file = e.target.files
+                                                                .item(i);
+                                                        // 允许文件MIME类型
+                                                        // 也可以在input标签中指定accept属性
+                                                        // console.log(/^image\/.*$/i.test(file.type));
+                                                        if (!(/^image\/.*$/i
+                                                                        .test(file.type))) {
+                                                            continue; // 不是图片
+                                                            // 就跳出这一次循环
+                                                        }
+
+                                                        // 实例化FileReader API
+                                                        var freader = new FileReader();
+                                                        freader.readAsDataURL(file);
+                                                        freader.onload = function(e) {
+                                                            var img = '<li><img src="'
+                                                                    + e.target.result
+                                                                    + '"/></li>';
+                                                            $(".addimg-box")
+                                                                    .prepend(img);
+                                                        }
+                                                    }
+                                                    filecount += e.target.files.length;
+                                                    if(filecount == 3){
+			                                         	$("#addimg").remove();
+			                                         }   
+                                                }
+                                            });
+
+                        }
+                    });
+    /* 多图预览 */
+
 </script>
+</body>
+
 </html>

@@ -65,7 +65,7 @@
 		
 		<div class="mui-content">
 			<div class="order-mes">
-				<p class="price"><fmt:formatNumber value="${sessionScope.mission.missionPrice }" type="currency"/></p>
+				<p class="price"><fmt:formatNumber value="${sessionScope.mission.missionPrice * sessionScope.mission.peopleCount }" type="currency"/></p>
 				<p class="task-name">${sessionScope.mission.missionTitle }</p>
 				<p class="order-id">订单编号：${sessionScope.orders.missionOrderNum }</p>
 				<p>请在15分钟内完成支付</p>
@@ -76,7 +76,7 @@
 				<li class="payment"><i class="mui-icon iconfont icon-alipay fl"></i><span>支付宝</span><i class="circle fr alipay"></i></li>
 				<li class="payment"><i class="mui-icon iconfont icon-card fl"></i><span>银行卡</span><i class="circle fr card"></i></li>
 			</ul>
-			<button class="pay-btn" id="pay">确认支付<span><fmt:formatNumber value="${sessionScope.mission.missionPrice }" type="currency"/></span></button>
+			<button class="pay-btn" id="pay">确认支付<span><fmt:formatNumber value="${sessionScope.mission.missionPrice * sessionScope.mission.peopleCount  }" type="currency"/></span></button>
 		
 			
 		</div>
@@ -149,6 +149,7 @@
 						var str = args[1];
 						var arg1 = str.split("=");
 						var id = arg1[1];
+						alert(id);
 						payUrl = "pay/getPay/" + id;
 					}
 					

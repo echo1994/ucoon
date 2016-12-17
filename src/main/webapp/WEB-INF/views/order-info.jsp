@@ -328,19 +328,33 @@
 						</c:forEach>
 					</ul>
 					<div class="user-feedback">
-						
 						<c:forEach items="${list }" var="info" varStatus="status">
-							<div class="feedback-col" >
-								<div class="col">
-									<span class="label">TA的电话：</span><span>${info.phone }</span>
+							<c:if test="${status.first==true}">
+								<div class="feedback-col" >
+									<div class="col">
+										<span class="label">TA的电话：</span><span><a href="tel:${info.phone }">${info.phone }（点击拨打）</a></span>
+									</div>
+									<div class="col">
+										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
+									</div>
+									<div class="col">
+										<span  class="label">申请时间：</span><span>${info.take_time }</span>
+									</div>
 								</div>
-								<div class="col">
-									<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
+							</c:if>
+							<c:if test="${status.first!=true}">
+								<div class="feedback-col" style="display: none;">
+									<div class="col">
+										<span class="label">TA的电话：</span><span><a href="tel:${info.phone }">${info.phone }（点击拨打）</a></span>
+									</div>
+									<div class="col">
+										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
+									</div>
+									<div class="col">
+										<span  class="label">申请时间：</span><span>${info.take_time }</span>
+									</div>
 								</div>
-								<div class="col">
-									<span  class="label">申请时间：</span><span>${info.take_time }</span>
-								</div>
-							</div>
+							</c:if>
 						</c:forEach>
 					</div>
 			        	<div class="order-check">选人</div>
@@ -373,7 +387,7 @@
 							<c:if test="${status.first==true}">
 								<div class="feedback-col" >
 									<div class="col">
-										<span class="label">TA的电话：</span><span>${info.phone }</span>
+										<span class="label">TA的电话：</span><span><a href="tel:${info.phone }">${info.phone }（点击拨打）</a></span>
 									</div>
 									<div class="col">
 										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
@@ -401,7 +415,7 @@
 							<c:if test="${status.first!=true}">
 								<div class="feedback-col" style="display: none;">
 									<div class="col">
-										<span class="label">TA的电话：</span><span>${info.phone }</span>
+										<span class="label">TA的电话：</span><span><a href="tel:${info.phone }">${info.phone }（点击拨打）</a></span>
 									</div>
 									<div class="col">
 										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
@@ -461,7 +475,7 @@
 							<c:if test="${status.first==true}">
 								<div class="feedback-col" >
 									<div class="col">
-										<span class="label">TA的电话：</span><span>${info.phone }</span>
+										<span class="label">TA的电话：</span><span><a href="tel:${info.phone }">${info.phone }（点击拨打）</a></span>
 									</div>
 									<div class="col">
 										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>
@@ -545,7 +559,7 @@
 							<c:if test="${status.first!=true}">
 								<div class="feedback-col" style="display: none;">
 									<div class="col">
-										<span class="label">TA的电话：</span><span>${info.phone }</span>
+										<span class="label">TA的电话：</span><span><a href="tel:${info.phone }">${info.phone }（点击拨打）</a></span>
 									</div>
 									<div class="col">
 										<span  class="label">TA的微信：</span><span>${info.weixin_id }</span>

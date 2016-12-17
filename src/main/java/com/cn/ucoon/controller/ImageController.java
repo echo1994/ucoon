@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ImageController {
 	//"D:/ucoon/mission_image/";
 	//"D:/ucoon/applyorders_image/
+	//D:/ucoon/feedback_image/
 	//"/data/wwwroot/wx.ucoon.cn/mission_image/"
 	///data/wwwroot/wx.ucoon.cn/applyorders_image/
-	public static final String MISSION_IMAGE_LOCATION = "D:/ucoon/mission_image/";
+	///data/wwwroot/wx.ucoon.cn/feedback_image/
+	public static final String MISSION_IMAGE_LOCATION = "/data/wwwroot/wx.ucoon.cn/mission_image/";
 
-	public static final String APPLYORDERS_IMAGE_LOCATION = "D:/ucoon/applyorders_image/";
+	public static final String APPLYORDERS_IMAGE_LOCATION = "/data/wwwroot/wx.ucoon.cn/applyorders_image/";
 
-	public static final String FEEDBACK_IMAGE_LOCATION = "D:/ucoon/feedback_image/";
+	public static final String FEEDBACK_IMAGE_LOCATION = "/data/wwwroot/wx.ucoon.cn/feedback_image/";
 
 	
 	@RequestMapping("/reqmImage/{category}/{num}")

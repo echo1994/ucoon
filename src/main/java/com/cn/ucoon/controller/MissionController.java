@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alibaba.fastjson.JSONObject;
+import com.cn.ucoon.pojo.Balance;
 import com.cn.ucoon.pojo.Evaluate;
 import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionAddress;
@@ -34,6 +36,7 @@ import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.pojo.wx.Template;
 import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.service.ApplyService;
+import com.cn.ucoon.service.BalanceService;
 import com.cn.ucoon.service.EvaluateService;
 import com.cn.ucoon.service.MissionOrderService;
 import com.cn.ucoon.service.MissionService;
@@ -62,6 +65,8 @@ public class MissionController {
 	@Autowired
 	private ApplyService applyService;
 	
+	@Resource
+	private BalanceService balanceService;
 	/**
 	 * 发布任务
 	 * 
@@ -99,8 +104,6 @@ public class MissionController {
 		mission.setMissionLng(missionLng);
 		
 		
-		
-		
 		String path = ImageController.MISSION_IMAGE_LOCATION;
 		Integer userId = (Integer) request.getSession().getAttribute("user_id");
 		String timestamp = String.valueOf(System.currentTimeMillis());
@@ -121,7 +124,7 @@ public class MissionController {
 		}
 		
 		
-		System.out.println("wenjian:" + fileLength);
+		//System.out.println("wenjian:" + fileLength);
 		for (int i = 0; i < file.length; i++) {
 			if (!file[i].isEmpty()) {
 				String fileName = file[i].getOriginalFilename();// 文件原名称
@@ -171,7 +174,7 @@ public class MissionController {
 			
 			
 			
-			System.out.println("mission_id:" + mission.getMissionId());
+			//System.out.println("mission_id:" + mission.getMissionId());
 			
 			missionOrders.setMissionId(mission.getMissionId());
 			missionOrders.setMissionOrderNum(PayUtil.getOrdersNum(userId, mission.getMissionId()));
@@ -188,6 +191,21 @@ public class MissionController {
 		//任务发布，订单生成,跳转支付界面
 		return "redirect:/mission-pay";
 	}
+	
+	@RequestMapping(value = "/mission_pay/{missionId}")
+	public ModelAndView missionPay(@PathVariable("missionId") Integer missionId,
+			ModelAndView mv,HttpServletRequest request) {
+		//Integer user_id = (Integer) request.getSession().getAttribute("user_id");
+		Mission mission = missionService.selectByPrimaryKey(missionId);
+		MissionOrders missionOrders = missionOrderService.getOrdersbyMissionId(missionId);
+		
+		request.getSession().setAttribute("orders", missionOrders);
+		request.getSession().setAttribute("mission", mission);
+		mv.setViewName("redirect:/mission-pay");
+		
+		return mv;
+	}
+
 
 	/**
 	 * 分页查询
@@ -262,7 +280,7 @@ public class MissionController {
 			e.printStackTrace();
 			jsonfromList = "{}";
 		}
-		System.out.println(jsonfromList);
+		//System.out.println(jsonfromList);
 		return jsonfromList;
 	}
 
@@ -310,7 +328,7 @@ public class MissionController {
 			Mission mission = missionService.selectByPrimaryKey(missionId);
 			mission.setMissionStatus(2);
 			missionService.updateByPrimaryKey(mission);// 审核退款
-			return "管理员GG正在审核退款，24小时内将以红包的形式在有空ucoon平台上发给你，请注意查收。如有需要请拨打GG电话";
+			return "管理员GG正在审核退款，24小时内将退款至余额中，请注意查收。如有需要请拨打GG电话";
 		}
 		return "系统异常，请重试";
 	}
@@ -380,7 +398,7 @@ public class MissionController {
 	@ResponseBody
 	public String missionDoing(
 			@PathVariable(value = "missionId") Integer missionId,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws Exception {
 		// 1判断是否本人操作
 		// 2改变任务状态
 		Integer userId = missionService.selectUserIdByMissionId(missionId);
@@ -391,9 +409,106 @@ public class MissionController {
 			if(missionService.updateByPrimaryKey(mission) > 0){
 				//这里发模板消息
 				List<HashMap<String, Object>> selectselectedpeople = applyService.selectselectedpeople(missionId);
+				Integer allPeople = mission.getPeopleCount();
+				
+				if(allPeople != selectselectedpeople.size()){
+					//需要退款
+					//退款人数
+					Integer refundPeople = allPeople - selectselectedpeople.size();
+					/*
+					//订单总金额
+					Integer tolFee = mission.getMissionPrice()
+							.multiply(new BigDecimal(100))
+							.multiply(new BigDecimal(allPeople)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+					
+					//退款金额
+					Integer fee = mission.getMissionPrice()
+							.multiply(new BigDecimal(100))
+							.multiply(new BigDecimal(refundPeople)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+				
+					
+					//商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔
+					//微信支付退款支持单笔交易分多次退款，多次退款需要提交原支付订单的商户订单号和设置不同的退款单号。一笔退款失败后重新提交，要采用原来的退款单号。总退款金额不能超过用户实际支付金额。 
+					String out_refund_no = PayUtil.getOrdersNum(userId, userId);
+					
+					PayRefund payRefund = new PayRefund();
+					payRefund.setAppid(WeixinUtil.appid);
+					payRefund.setMch_id(PayUtil.MCH_ID);
+					payRefund.setNonce_str(PayUtil.makeUUID());
+					payRefund.setOut_refund_no(out_refund_no);
+					payRefund.setOut_trade_no(missionOrders.getMissionOrderNum());
+					payRefund.setRefund_fee(fee);
+					payRefund.setTotal_fee(tolFee); //订单总金额
+					payRefund.setOp_user_id(PayUtil.MCH_ID);
+					payRefund.setSign(PayUtil.createPayRefundOrderSign(payRefund));
+					PayRefundRespose respose = PayUtil.payRefund(payRefund);
+
+					// 根据微信文档return_code 和result_code都为SUCCESS的时候才会返回code_url
+					if (null != respose && "SUCCESS".equals(respose.getReturn_code())
+							&& "SUCCESS".equals(respose.getResult_code())) {*/
+					//MissionOrders missionOrders = missionOrderService.getOrdersbyMissionId(missionId);
+					String out_refund_no = PayUtil.getOrdersNum(userId, userId);	
+					Balance orders = new Balance();
+					orders.setQuantity(mission.getMissionPrice().multiply(new BigDecimal(refundPeople)).setScale(2, BigDecimal.ROUND_HALF_UP));
+					orders.setOrderNum(out_refund_no);
+					orders.setOrderState(4);// 退款
+					orders.setConsumingRecords("退款金额，任务编号:" + missionId);
+					orders.setUserId(userId);
+					orders.setPlusOrMinus("plus");
+					orders.setConsumingTime(new Date());;
+					String openId = userService.getOpenIdbyUserId(userId);
+					if(balanceService.insertBalanceOrder(orders)){
+						Template tem = new Template();
+						tem.setTemplateId("FrSuqhbz7PYYCpafyJoDVAf2li6js_R_wi3TIjeXztw");
+						tem.setTopColor("#00DD00");
+						tem.setToUser(openId);
+						tem.setUrl("http://wx.ucoon.cn/wealth"); //我服务的
+
+						List<TemplateParam> paras = new ArrayList<TemplateParam>();
+						paras.add(new TemplateParam("first", "您好，您的任务剩余名额" + refundPeople + "人的金额，已退款至你的余额中。",
+								"#FF3333"));
+						paras.add(new TemplateParam("reason","任务已达所需名额", "#0044BB"));
+						paras.add(new TemplateParam("refund", mission.getMissionPrice().multiply(new BigDecimal(refundPeople)).setScale(2, BigDecimal.ROUND_HALF_UP) + "元", "#0044BB"));
+						paras.add(new TemplateParam("remark", "点击查看详情 \\n\\n备注：如有疑问，请致电13063032247联系我们。", "#0044BB"));
+						tem.setTemplateParamList(paras);
+
+						boolean result = WeixinUtil.sendTemplateMsg(tem);
+						System.out.println("退款模板消息结果：" + result);
+					}else{
+						
+						Template tem = new Template();
+						tem.setTemplateId("FrSuqhbz7PYYCpafyJoDVAf2li6js_R_wi3TIjeXztw");
+						tem.setTopColor("#00DD00");
+						tem.setToUser(openId);
+						tem.setUrl("http://wx.ucoon.cn/wealth"); //我服务的
+
+						List<TemplateParam> paras = new ArrayList<TemplateParam>();
+						paras.add(new TemplateParam("first", "退款失败，请拨打电话13063032247，联系客服",
+								"#FF3333"));
+						paras.add(new TemplateParam("reason","退款失败", "#0044BB"));
+						paras.add(new TemplateParam("refund", mission.getMissionPrice().multiply(new BigDecimal(refundPeople)).setScale(2, BigDecimal.ROUND_HALF_UP) + "元", "#0044BB"));
+						paras.add(new TemplateParam("remark", "点击查看详情 \\n\\n备注：如有疑问，请致电13063032247联系我们。", "#0044BB"));
+						tem.setTemplateParamList(paras);
+
+						boolean result = WeixinUtil.sendTemplateMsg(tem);
+						System.out.println("退款模板消息结果：" + result);
+					
+					}
+						
+						
+						
+				}
+
+
+						
+				
 				for (int i = 0; i < selectselectedpeople.size(); i++) {
 					Integer toUserId = (Integer) selectselectedpeople.get(i).get("user_id");
 					String openId = userService.getOpenIdbyUserId(toUserId);
+					
+					SimpleDateFormat sdf=new SimpleDateFormat("MM月dd日HH点");
+					String sDate=sdf.format(mission.getEndTime());
+					
 					Template tem = new Template();
 					tem.setTemplateId("j0aLsa1V_oRpRP3qmkpy56JVrYyfRBvgS324LZK4CDA");
 					tem.setTopColor("#00DD00");
@@ -405,7 +520,7 @@ public class MissionController {
 							"#FF3333"));
 					paras.add(new TemplateParam("keyword1",
 							mission.getMissionTitle(), "#0044BB"));
-					paras.add(new TemplateParam("keyword2", "请在11月13日1点前完成任务", "#0044BB"));
+					paras.add(new TemplateParam("keyword2", "请在" + sDate + "前完成任务", "#0044BB"));
 					paras.add(new TemplateParam("remark", "点击查看详情", "#0044BB"));
 					tem.setTemplateParamList(paras);
 
@@ -619,6 +734,13 @@ public class MissionController {
 		
 		Integer publish_id = (Integer) request.getSession()
 				.getAttribute("user_id");
+		
+		if(content.length == 0){
+			request.getSession().setAttribute("msg", "请选择星星");
+			request.getSession().setAttribute("url", "mission/evaluate_publish/" + missionId);
+			return "redirect:/tip";
+		}
+		
 		for (int i = 0; i < content.length; i++) {
 			
 			Evaluate evaluate = new Evaluate();
@@ -629,14 +751,32 @@ public class MissionController {
 			evaluate.setMissionId(missionId);
 			evaluate.setPublishId(publish_id);
 			evaluate.setExecutorId(userId[i]);
+			
+			if(score[i] == 0){
+				request.getSession().setAttribute("msg", "请选择星星");
+				request.getSession().setAttribute("url", "mission/evaluate_publish/" + missionId);
+				return "redirect:/tip";
+			}
+			
+			
 			//更新评价表
 			Evaluate cEvaluate = evaluateService.selectByMidAndPidAndEid(missionId, publish_id, userId[i]);
 			if(cEvaluate == null){
 				
 				evaluateService.insertEvaluate(evaluate);
 			}else{
-				
-				evaluateService.updatePublishByMidAndPidAndEid(evaluate);
+				if(cEvaluate.getPublishScore() != null){
+					request.getSession().setAttribute("msg", "请勿重复评价");
+					request.getSession().setAttribute("url", "mission/order-info/" + missionId);
+					return "redirect:/tip";
+				}
+				if(!evaluateService.updatePublishByMidAndPidAndEid(evaluate)){
+					
+					
+					request.getSession().setAttribute("msg", "评价失败");
+					request.getSession().setAttribute("url", "mission/evaluate_publish/" + missionId);
+					return "redirect:/tip";
+				}
 			}
 			
 //			if () {
@@ -646,7 +786,6 @@ public class MissionController {
 //				return json;
 //			}
 		}
-		JSONObject json = new JSONObject();
 		
 		
 //		if(publish_id == null || publish_id == 0){
@@ -662,16 +801,9 @@ public class MissionController {
 //			return json;
 //			
 //		}
-		
-	
-
-
-		
-		
-		json.put("result", "error");
-		json.put("msg", "评价失败");
-
-		return "redirect:/mission/order-info/" + missionId;
+		request.getSession().setAttribute("msg", "评价成功");
+		request.getSession().setAttribute("url", "mission/order-info/" + missionId);
+		return "redirect:/tip";
 	}
 	
 	

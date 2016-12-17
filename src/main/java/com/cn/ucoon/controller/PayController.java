@@ -44,8 +44,6 @@ import com.cn.ucoon.util.WeixinUtil;
 @RequestMapping("/pay")
 public class PayController {
 
-	
-	
 	@Resource
 	private UserService userService;
 
@@ -55,20 +53,22 @@ public class PayController {
 	@Resource
 	private MissionOrderService missionOrdersService;
 
-	// 退款 ：  管理员操作
+	// 退款 ： 管理员操作
 	@ResponseBody
 	@RequestMapping(value = "/refund", method = RequestMethod.POST)
-	public JSONObject withdraw_cash(HttpServletRequest request, Model model,
+	public JSONObject withdraw_cash(
+			HttpServletRequest request,
+			Model model,
 			@RequestParam(value = "missionId", required = true) Integer missionId)
 			throws Exception {
 		JSONObject json = new JSONObject();
 		Integer userId = (Integer) request.getSession().getAttribute("user_id");
 
-		
 		Mission mission = missionService.selectByPrimaryKey(missionId);
-		MissionOrders orders = missionOrdersService.getOrdersbyMissionId(missionId);
+		MissionOrders orders = missionOrdersService
+				.getOrdersbyMissionId(missionId);
 
-		//判断订单状态是否是审核退款
+		// 判断订单状态是否是审核退款
 		if (mission.getMissionStatus() != 2) {
 			json.put("result_type", "error");
 			json.put("msg", "改订单状态错误");
@@ -76,7 +76,8 @@ public class PayController {
 
 		}
 		String openId = userService.getOpenIdbyUserId(userId);
-		int fee = mission.getMissionPrice().multiply(new BigDecimal(100)).intValue();
+		int fee = mission.getMissionPrice().multiply(new BigDecimal(100))
+				.intValue();
 
 		PayRefund payRefund = new PayRefund();
 		payRefund.setAppid(WeixinUtil.appid);
@@ -100,7 +101,7 @@ public class PayController {
 
 		// 修改订单状态
 		Mission record = new Mission();
-		//record.setOrderNum(orders.getOrderNum());
+		// record.setOrderNum(orders.getOrderNum());
 		// 根据微信文档return_code 和result_code都为SUCCESS的时候才会返回code_url
 		if (null != respose && "SUCCESS".equals(respose.getReturn_code())
 				&& "SUCCESS".equals(respose.getResult_code())) {
@@ -108,16 +109,16 @@ public class PayController {
 			json.put("msg", "退款成功");
 
 			// 改订单状态
-			//record.setOrderState(3);
+			// record.setOrderState(3);
 
 		} else {
 			json.put("result_type", "error");
 			json.put("msg", "退款失败");
 
 			// 改订单状态
-			//record.setOrderState(2);
+			// record.setOrderState(2);
 		}
-		//balanceService.changeOrderStateByOrderNum(record);
+		// balanceService.changeOrderStateByOrderNum(record);
 		return json;
 	}
 
@@ -171,8 +172,11 @@ public class PayController {
 				+ "==================");
 		String ip = getIpAddr(request);
 		String body = "有空ucoon-任务发布";
-		int fee = mission.getMissionPrice().multiply(new BigDecimal(100))
-				.intValue();
+		
+		Integer fee = mission.getMissionPrice()
+				.multiply(new BigDecimal(100))
+				.multiply(new BigDecimal(mission.getPeopleCount())).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+
 		System.out.println(fee);
 		String notify_url = "http://wx.ucoon.cn/pay/payresult";
 
@@ -227,11 +231,12 @@ public class PayController {
 				+ "==================");
 		String ip = getIpAddr(request);
 		String body = "有空ucoon-任务发布";
-		int fee = mission.getMissionPrice().multiply(new BigDecimal(100))
-				.intValue();
+		int fee = mission.getMissionPrice()
+				.multiply(new BigDecimal(100))
+				.multiply(new BigDecimal(mission.getPeopleCount())).intValue();
 		System.out.println(fee);
 		String notify_url = "http://wx.ucoon.cn/pay/payresult";
-		
+
 		String trade_type = "JSAPI";
 
 		// 这里如果没有登录，跳转到登录界面
@@ -284,19 +289,21 @@ public class PayController {
 				// 改订单状态,更新支付完成时间
 				record.setMissionOrderNum(orderId);
 				missionOrdersService.updateMissionStatusbyOrdersId(record);
-				
-				MissionOrders orderByOrderNum = missionOrdersService.getOrderByOrderNum(orderId);
+
+				MissionOrders orderByOrderNum = missionOrdersService
+						.getOrderByOrderNum(orderId);
 				orderByOrderNum.setFinishTime(new Date());
 				missionOrdersService.update(orderByOrderNum);
-				
+
 				System.out.println("收到支付结果订单：" + orderId);
 				String time = map.get("time_end");
 				String total_fee = map.get("total_fee");
 				String openid = map.get("openid");
 				if (map.get("is_subscribe").equalsIgnoreCase("Y")) {
-					
-					Mission mission = missionService.selectByPrimaryKey(orderByOrderNum.getMissionId());
-					
+
+					Mission mission = missionService
+							.selectByPrimaryKey(orderByOrderNum.getMissionId());
+
 					Template tem = new Template();
 					tem.setTemplateId("azcHIxhzpMgkzMvYM2kdmRxrf4ciwII2FTp9dRitoms");
 					tem.setTopColor("#00DD00");
@@ -308,7 +315,8 @@ public class PayController {
 							"#FF3333"));
 					paras.add(new TemplateParam("keyword1",
 							strToDateLong(time), "#0044BB"));
-					paras.add(new TemplateParam("keyword2", mission.getMissionTitle(), "#0044BB"));
+					paras.add(new TemplateParam("keyword2", mission
+							.getMissionTitle(), "#0044BB"));
 					paras.add(new TemplateParam("keyword3", (Double
 							.valueOf(total_fee) / 100) + "元", "#0044BB"));
 					paras.add(new TemplateParam("keyword4", "支付成功", "#0044BB"));

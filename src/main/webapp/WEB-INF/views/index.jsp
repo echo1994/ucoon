@@ -66,6 +66,9 @@
      .mui-popup-button{
          color: #C3D94F;
      }
+   	.task-price .icon-qian{
+		margin-right: -4px;
+	}
  </style>
 </head>
 <script type="text/javascript">
@@ -117,8 +120,6 @@
 	});
 	$(document).ready(
 			function() {
-			
-				
 				$(".mui-input-clear").bind(
 						"keyup",
 						function(e) {
@@ -131,12 +132,24 @@
 							window.location.href = "mission/task-info/"
 									+ $(this).attr("data-m");
 						})
-						
-						
-				
 				$('.task-select-title-col').on('tap', function() {
 					var li = this;
 					var classList = li.classList;
+					
+					if(true){
+						wx.getLocation({
+						    type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+						    success: function (res) {
+						        latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+						        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+						        var speed = res.speed; // 速度，以米/每秒计
+						        var accuracy = res.accuracy; // 位置精度
+						    },
+						    error : function (){
+						    	alert("获取地理位置失败");
+						    }
+						});
+					}
 					if (!classList.contains('title-active')) {
 						var active = li.parentNode.querySelector('.title-active');
 						active.classList.remove('title-active');
@@ -146,7 +159,7 @@
 					initIndex();
 					//加载数据
 					if(classList.contains('all')){
-						currentType = "nearby";
+						currentType = "all";
 						loaddata((currentPage-1) * onePageNums,
 							onePageNums,this.value, true,'all');
 					} else{
@@ -228,7 +241,7 @@
 					type : 'post',
 					dataType : 'json',
 					success : function(data) {
-						if (clearable == true) {
+						if (clearable == true && data.length != 0) {
 
 							$(".task").empty();
 						}
@@ -246,8 +259,8 @@
 													+ "<div class='task-price mui-pull-right'>"
 													+ "<i class='mui-icon iconfont icon-qian'></i> <span"
 											+"class='task-price-num'>"
-													+ data[i].singlePrize
-													+ "/人</span>"
+													+ data[i].mission_price
+													+ "</span><span class='m-unit'>/次</span>"
 													+ "</div>"
 													+ "<div class='task-detail'>"
 													+ "	<p class='task-title'>"
@@ -409,7 +422,7 @@
 							<li id="myservice"><i class="mui-icon iconfont icon-service"></i>我服务的</li>
 							<li id="wealth2"><i class="mui-icon iconfont icon-service"></i>财富中心</li>
 							<li id="chat-list"><i class="mui-icon iconfont icon-service"></i>消息中心</li>
-							<li id="help"><i class="mui-icon mui-icon-help"></i>帮助联系</li>
+							<li id="help"><i class="mui-icon mui-icon-help"></i>意见反馈</li>
 							<li id="about"><i class="mui-icon mui-icon-info"></i>关于我们</li>
 						</ul>
 						<script type="text/javascript">

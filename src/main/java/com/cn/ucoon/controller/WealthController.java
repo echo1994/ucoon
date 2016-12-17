@@ -189,7 +189,7 @@ public class WealthController {
 		Balance orders = new Balance();
 		orders.setQuantity(money);
 		orders.setOrderNum(PayUtil.getOrdersNum(userId, userId));
-		orders.setOrderState(0);// 未支付、未提现
+		orders.setOrderState(2);// 未支付、未提现
 		orders.setConsumingRecords("提现");
 		orders.setUserId(userId);
 		orders.setPlusOrMinus("minus");
@@ -237,7 +237,7 @@ public class WealthController {
 		
 
 			// 改订单状态
-			orders.setOrderState(1);
+			orders.setOrderState(3);
 			
 
 			
@@ -245,8 +245,7 @@ public class WealthController {
 			json.put("result_type", "error");
 			json.put("msg", "提现失败");
 			
-			// 改订单状态
-			orders.setOrderState(2);
+			
 		}
 		orders.setConsumingTime(new Date());
 		balanceService.changeOrderStateByOrderNum(orders);
@@ -277,6 +276,7 @@ public class WealthController {
 
 				Balance record = new Balance(); 
 
+				
 				// 改订单状态
 				record.setOrderState(1);
 				record.setOrderNum(orderId);

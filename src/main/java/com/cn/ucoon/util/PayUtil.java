@@ -51,7 +51,10 @@ public class PayUtil {
 	
 	//D:/certs/apiclient_cert.p12
 	///data/certs/apiclient_cert.p12
-	private static String file_url = "D:/certs/apiclient_cert.p12";
+	private static String file_url = "/data/certs/apiclient_cert.p12";
+	
+	// 平台抽取的费用
+	public final static float rate = 0.08f;
 	
 	// 密钥
 	private final static String Key = "350181199404211838malingkaiecho9";
@@ -245,17 +248,34 @@ public class PayUtil {
 	 * @return
 	 */
 	public static String createPayRefundOrderSign(PayRefund payRefund){
-        StringBuffer sign = new StringBuffer();
-        sign.append("appid=").append(payRefund.getAppid());
-        sign.append("&mch_id=").append(payRefund.getMch_id());
-        sign.append("&nonce_str=").append(payRefund.getNonce_str());
-        sign.append("&out_trade_no=").append(payRefund.getOut_trade_no());
-        sign.append("&out_refund_no=").append(payRefund.getOut_refund_no());
-        sign.append("&total_fee=").append(payRefund.getTotal_fee());
-        sign.append("&refund_fee=").append(payRefund.getRefund_fee());
-        sign.append("&op_user_id=").append(payRefund.getClass());
-        sign.append("&key=").append(Key);
-        return MD5Util.MD5Encode(sign.toString(),"UTF-8").toUpperCase();
+		SortedMap<String, String> refundParams = new TreeMap<String, String>();
+		refundParams.put("appid", payRefund.getAppid());
+		refundParams.put("mch_id", payRefund.getMch_id());
+		refundParams.put("nonce_str", payRefund.getNonce_str());
+		refundParams.put("out_trade_no", payRefund.getOut_trade_no());
+		refundParams.put("out_refund_no", payRefund.getOut_refund_no());
+		refundParams.put("total_fee", payRefund.getTotal_fee() + "");
+		refundParams.put("refund_fee", payRefund.getRefund_fee() + "");
+		refundParams.put("op_user_id", payRefund.getMch_id());
+		
+        
+        StringBuffer sb = new StringBuffer();
+		Set es = refundParams.entrySet();// 字典序
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			String v = (String) entry.getValue();
+			// 为空不参与签名、参数名区分大小写
+			if (null != v && !"".equals(v) && !"sign".equals(k)
+					&& !"key".equals(k)) {
+				sb.append(k + "=" + v + "&");
+			}
+		}
+        
+		sb.append("key=" + Key);
+		String sign = MD5Util.MD5Encode(sb.toString(), "UTF-8").toUpperCase();// MD5加密
+        return sign;
     }
 	
 	  /**

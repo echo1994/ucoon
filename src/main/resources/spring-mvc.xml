@@ -76,6 +76,8 @@
 	<mvc:resources mapping="/ueditor/**" location="/ueditor/" cache-period="31556926"/>
 	<mvc:resources mapping="/script/**" location="/script/" cache-period="31556926"/>
 	<mvc:resources mapping="/webuploader/**" location="/webuploader/" cache-period="31556926"/>
+	<mvc:resources mapping="/MP_verify_DXRyisOauSA8Zkp8.txt" location="/MP_verify_DXRyisOauSA8Zkp8.txt" cache-period="31556926"/>
+	
 	
 	<mvc:view-controller path="/index" view-name="index" />
 	<mvc:view-controller path="/who" view-name="who" />

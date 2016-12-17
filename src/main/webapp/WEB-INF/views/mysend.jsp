@@ -186,7 +186,7 @@
 		
 		
 		$(".pay").bind("tap", function() {
-			window.location.href = "mission-pay?id="
+			window.location.href = "mission/mission_pay/"
 							+ $(this).attr("data-m");
 		})
 		
@@ -273,8 +273,8 @@
 					data : {
 						startIndex : startIndex,
 						endIndex : endIndex,
-						userId : 0,
-						missionStatus : missionStatus
+						missionStatus : missionStatus,
+						userId :0
 					},
 					async : false,
 					type : 'post',
@@ -336,10 +336,15 @@
 							case 6:
 							
 								if(data[i].people_count == data[i].donepeople){
-									status = '任务完成';
-									handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+									if(data[i].people_count == data[i].evlpeople){
+										status = '任务完成';
+										handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
+									}else{
+										status = '待评价,还有' + (data[i].people_count - data[i].evlpeople) + '人未评价';
+										handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button><button class='fr evaluate' data-m='"+data[i].mission_id+"'>评价</button>";
+									}
 								}else{
-									status = "正在进行中," + data[i].donepeople + "人已完成";
+									status = "正在进行中," + data[i].applydonepeople + "人已完成";
 									handle = "<button class='fr detail' data-m='"+data[i].mission_id+"'>查看详情</button>";
 								}
 								break;

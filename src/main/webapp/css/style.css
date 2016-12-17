@@ -68,7 +68,10 @@
 			.mui-slider-indicator .mui-active.mui-indicator{
 				background-color: #C3D94F;
 			}
-			
+
+			.m-unit{
+				font-size: 10px;
+			}
 			
 			/*底部导航栏*/
 			.mui-bar .mui-tab-item .tab-icon{
@@ -176,7 +179,7 @@
 				color: #C3D94F;
 			}
 			.task-price .icon-qian{
-				font-size: 20px;
+				font-size: 16px;
 			}
 			.task-price-num{
 				font-size: 18px;
@@ -443,7 +446,7 @@
 	background-color: #fff;
 }
 .send-select .send-select-col{
-	width: 32%;
+	width: 25%;
 }
 .send-select .send-select-col span{
 	margin: 0 auto;

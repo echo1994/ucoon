@@ -38,7 +38,6 @@ public class MissionServiceImpl implements MissionService {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public List<HashMap<String, Object>> getMissionLimited(Integer startIndex,
 			Integer endIndex,String latitude,String longitude,String type) {
@@ -64,14 +63,15 @@ public class MissionServiceImpl implements MissionService {
 				
 				String lng = (String) list.get(i).get("mission_lng");
 				String lat = (String) list.get(i).get("mission_lat");
-				if(latitude != null || latitude != ""){
+				
+				if(latitude == null || latitude.trim() == ""){
+					list.get(i).put("distance", "");
+					
+				}else{
 					String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
 							longitude);
 					list.get(i).put("distance", distance);
 					
-				}else{
-					
-					list.get(i).put("distance", "");
 				}
 				
 
@@ -180,10 +180,6 @@ public class MissionServiceImpl implements MissionService {
 			Integer missionId) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> detail = missionMapper.selectForMissionDetails(missionId);
-		BigDecimal count = new BigDecimal( (Integer)detail.get("people_count"));
-		BigDecimal prize = (BigDecimal) detail.get("mission_price");
-		BigDecimal singlePrize = prize.divide(count,2, BigDecimal.ROUND_FLOOR);
-		detail.put("singlePrize", singlePrize);
 		return detail;
 	}
 

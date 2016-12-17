@@ -833,7 +833,7 @@ String basePath = request.getScheme() + "://"
 				<button class="task-name fr" onclick="report(${mdetails.mission_id},${user.userId});">举报</button>
 			</div>
 			<p>
-				<i class="mui-icon iconfont icon-qian"></i>${mdetails.singlePrize}/人
+				<i class="mui-icon iconfont icon-qian"></i>${mdetails.mission_price}<span class='m-unit'>/次</span>
 			</p>
 			<div class="bottom clearfix">
 				<span id="remain">剩余-个名额</span><span>${mdetails.view_count}次浏览</span><span

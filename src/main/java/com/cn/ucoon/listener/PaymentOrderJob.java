@@ -22,10 +22,8 @@ public class PaymentOrderJob extends QuartzJobBean{
 	@Override
 	protected void executeInternal(JobExecutionContext arg0)
 			throws JobExecutionException {
-		System.out.println("开始扫描15分钟内未支付订单");
 		
 		missionService.unPaidMissionScan(new DateTime().minusMinutes(15).toDate());
-		System.out.println("结束扫描");
 	}
 
 }

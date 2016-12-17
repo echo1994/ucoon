@@ -86,6 +86,36 @@
 	.publish-des .addimg li{
 		position: relative;
 	}
+	
+	/*修改的发布按钮样式*/
+	.fix-btn{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 50px;
+		font-size: 16px;
+		color: #555;
+	}
+	.fix-btn span{
+		display: inline-block;
+		background-color:#eee;
+		width: 60%;
+		height: 50px;
+		line-height: 50px;
+		text-align: center;
+	}
+	.fix-btn span i{
+		font-style: normal;
+	}
+	.fix-btn input{
+		float: right;
+		background-color: #C3D94F;
+		width: 40%;
+		height:  50px;
+		font-size: 16px;
+		border-radius: 0;
+		border: none;
+	}
 
 </style>
 </head>
@@ -112,8 +142,8 @@
 				</ul>
 			</div>
 			<div class="mui-input-row who-form">
-				<label>售价</label> <input type="number" name="missionPrice"
-					placeholder="价格" id="price">
+				<label>单价</label> <input type="number" name="missionPrice"
+					placeholder="一个人的价格" id="price">
 			</div>
 			<div class="mui-input-row who-form">
 				<label>需要人数</label> <input type="text" name="peopleCount" value="1"
@@ -124,7 +154,7 @@
 				<input class="tel" type="text" id="menu-btn" name="place" placeholder="点击选择地点"  value="">
 				<select class="select" id="sel" onchange="changeF()">
 					
-					<c:forEach items="${infos }" var="info">
+				  	<c:forEach items="${infos }" var="info">
 						<option value="${info.place }" data-m="${info.missionLng }" data-t="${info.missionLat }">${info.place }</option>
 					</c:forEach>	
 				</select>
@@ -141,7 +171,12 @@
 			<input type="hidden" name="missionLng" id="lng" placeholder="经度">
 			<input type="hidden" name="missionLat" id="lat" placeholder="纬度">
 		</form>
-		<button class="send-btn" id="send-btn">发布</button>
+		
+		<div class="fix-btn clearfix">
+			<span >需支付 <i id="payPrice">0</i>元</span>
+			<input type='submit' class="send-btn" id="send-btn" value="发布"/>
+		</div>
+		
 		<script type="text/javascript">
 		function toVaild() {
 			var ec = 0;
@@ -176,7 +211,7 @@
 				alert("金额小于1元，填写的人数只能为1人");
 				ec++;
 				isprint = true;
-			}
+			} 
 			
 			
 			if (!(/^1[3|4|5|7|8]\d{9}$/.test($('#telephone').val()))
@@ -214,6 +249,28 @@
 			return year + month + day + hour + minute;
 		}
 			
+			
+			 $(document).on("input", "#price", function(){
+		        var options=$(this).val().trim();
+		        var peopleCount = $("#peopleCount").val().trim();
+		        if(options != "" && peopleCount!=""){
+		        	options = parseFloat(options);
+		        	var price = parseFloat(options.toFixed(2)); //四舍五入保留两位小数
+		        	var count = parseInt(peopleCount); 
+		        	$("#payPrice").html(parseFloat(price*count).toFixed(2));
+		        }
+		    });
+		    
+		    $(document).on("input", "#peopleCount", function(){
+		        var options=$(this).val().trim();
+		        var price = $("#price").val().trim();
+		        if(options != "" && price !=""){
+		        	price = parseFloat(price);
+		        	var price = parseFloat(price.toFixed(2)); //四舍五入保留两位小数
+		        	var count = parseInt(options); 
+		        	$("#payPrice").html(parseFloat(price*count).toFixed(2));
+		        }
+		    });
 		</script>
 
 	</div>

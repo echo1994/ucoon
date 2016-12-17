@@ -145,7 +145,7 @@
 		                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
 		                </ul>
 		                <p class="star-info">点击星星，为Ta评价！</p>
-		                <input type="hidden" class="star-score" name="score">
+		                <input type="hidden" class="star-score" name="score" value="0">
 		                <input type="hidden" name="userId" value="${info.user_id }">
 		                <script>
 		                	starClick(people${info.apply_id });

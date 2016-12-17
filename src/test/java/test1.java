@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cn.ucoon.util.WeixinUtil;
@@ -11,38 +12,10 @@ public class test1 {
 	 * @date Nov 6, 2014 9:57:54 AM
 	 */
 	public static void main(String[] args) {
-		String filePath = "C:\\Users\\mlk\\Desktop\\龙腾烟行\\5443472423712b1faf2467e70ee96006.png";
-		JSONObject uploadJsonObj = testUploadMedia(filePath, "image");
-		if (uploadJsonObj == null) {
-			System.out.println("上传图片失败");
-			return;
-		}
-
-		int errcode = 0;
-		if (uploadJsonObj.containsKey("errcode")) {
-			errcode = uploadJsonObj.getIntValue("errcode");
-		}
-		if (errcode == 0) {
-			System.out.println("图片上传成功");
-
-			String mediaId = uploadJsonObj.getString("media_id");
-			long createAt = uploadJsonObj.getLong("created_at");
-			System.out.println("--Details:");
-			System.out.println("media_id:" + mediaId);
-			System.out.println("created_at:" + createAt);
-		} else {
-			System.out.println("图片上传失败！");
-
-			String errmsg = uploadJsonObj.getString("errmsg");
-			System.out.println("--Details:");
-			System.out.println("errcode:" + errcode);
-			System.out.println("errmsg:" + errmsg);
-		}
-
-		/*String mediaId = "6W-UvSrQ2hkdSdVQJJXShwtFDPLfbGI1qnbNFy8weZyb9Jac2xxxcAUwt8p4sYPH";
-		String filepath = testDownloadMedia(mediaId,
-				"d:/test");
-		System.out.println(filepath);*/
+		float rate = 0.08f;
+		 BigDecimal singleMonney = new BigDecimal("0.15");
+		BigDecimal result = singleMonney .multiply(new BigDecimal((1 - rate))).setScale(2, BigDecimal.ROUND_HALF_UP);
+			System.out.println(result);
 	}
 
 	/**

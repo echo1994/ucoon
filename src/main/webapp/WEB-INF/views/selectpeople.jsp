@@ -356,7 +356,7 @@ html,
 			<div class="joinin clearfix">
 				<div class="sp-tit fl">未选择:</div>
 				<ul class="clearfix fl" id="unselect">
-					<c:forEach items="${list }" var="info">
+					<c:forEach items="${list }" var="info"> 
 						<li  id="${info.apply_id }" class="detail">
 							<img src="${info.head_img_url }" />
 							<p>${info.nick_name }</p>
@@ -438,8 +438,14 @@ html,
 					return;
 				}
 				
+				var tip = '当前你已选择' + selectPeopleCount + '人，确认后将无法更改!';
+				if(selectPeopleCount < peopleCount){
+					tip = '当前你已选择' + selectPeopleCount + '人，确认后将无法更改，余下金额将退款余额中！';
+				}
+				
+				
 				var btnArray = ['取消', '确认'];
-                mui.confirm('当前你已选择' + selectPeopleCount + '人，确认后将无法更改！', '有空ucoon', btnArray, function(e) {
+                mui.confirm(tip, '有空ucoon', btnArray, function(e) {
                     if (e.index == 1) {
                         $.ajax({
 						    url: "mission/missionDoing/"+${mdetails.mission_id} ,
