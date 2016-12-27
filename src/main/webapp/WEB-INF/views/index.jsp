@@ -105,6 +105,7 @@
 	      'getLocation'
 	    ]
 	});
+	
 	wx.ready(function(){
 	
 		wx.getLocation({
@@ -114,12 +115,14 @@
 		        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
 		        var speed = res.speed; // 速度，以米/每秒计
 		        var accuracy = res.accuracy; // 位置精度
-		       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),300);
+		       	setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
 		    }
 		});
 	});
 	$(document).ready(
 			function() {
+			
+			
 				$(".mui-input-clear").bind(
 						"keyup",
 						function(e) {
@@ -144,9 +147,6 @@
 						        longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
 						        var speed = res.speed; // 速度，以米/每秒计
 						        var accuracy = res.accuracy; // 位置精度
-						    },
-						    error : function (){
-						    	alert("获取地理位置失败");
 						    }
 						});
 					}
@@ -169,7 +169,8 @@
 					}
 				});
 				
-	
+				setTimeout(loaddata(currentPage * onePageNums, (currentPage + 1) * onePageNums - 1, '', true,'all'),1000);
+		    
 				
 			})
 	function initIndex() {
@@ -241,10 +242,19 @@
 					type : 'post',
 					dataType : 'json',
 					success : function(data) {
+					
+						if(data == null){
+							$(".task").empty();
+							return;
+						}
+					
+						
 						if (clearable == true && data.length != 0) {
 
 							$(".task").empty();
 						}
+						
+						
 						if(data.length == 0){
 							flag = true;
 						}else{
@@ -471,9 +481,11 @@
 					class="mui-icon mui-action-menu mui-icon-bars mui-pull-right "></a>
 				<!--顶部搜索框-->
 				<!-- onkeyup="initIndex();loaddata(currentPage*onePageNums,(currentPage+1)*onePageNums-1,this.value,true);" -->
-				<div class="mui-input-row mui-search ">
-					<input type="search" class="mui-input-clear" placeholder="搜索内容、地点">
-				</div>
+				<form action="#">
+					<div class="mui-input-row mui-search ">
+						<input type="search" class="mui-input-clear" placeholder="搜索内容、地点">
+					</div>
+				</form>
 			</header>
 			<!--底部导航菜-->
 			<nav class="mui-bar mui-bar-tab" id="nav-tap-bar">

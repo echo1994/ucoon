@@ -42,13 +42,15 @@
   </update>
   
   <!-- 执行者评价更新 -->
-   <update id="updateExecutorByMissionId" parameterType="com.cn.ucoon.pojo.Evaluate" >
+   <update id="updateExecutorByMidAndPidAndEid" parameterType="com.cn.ucoon.pojo.Evaluate" >
     update evaluate
     set 
       executor_evaluate = #{executorEvaluate,jdbcType=VARCHAR},
       executor_score = #{executorScore,jdbcType=REAL},
       epevaluate_time = #{epevaluateTime,jdbcType=TIMESTAMP}
     where mission_id = #{missionId,jdbcType=INTEGER}
+      and publish_id = #{publishId,jdbcType=INTEGER}
+      and executor_id = #{executorId,jdbcType=INTEGER}
   </update>
 
 <!-- 发布者评价更新 -->

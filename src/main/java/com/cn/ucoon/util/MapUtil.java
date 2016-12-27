@@ -1,10 +1,22 @@
 package com.cn.ucoon.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.swing.event.UndoableEditListener;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -17,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -25,9 +38,9 @@ import com.alibaba.fastjson.JSONObject;
  * @author mlk
  *
  */
-public class MapDistanceUtil {
+public class MapUtil {
 
-	private static Logger log = LoggerFactory.getLogger(MapDistanceUtil.class);
+	private static Logger log = LoggerFactory.getLogger(MapUtil.class);
 	
 	private static double EARTH_RADIUS = 6378.137;
 	
@@ -209,18 +222,76 @@ public class MapDistanceUtil {
 		return map;
 	}
 	
+	
+	public static JSONArray getPois(String keyword,Integer limit) throws UnsupportedEncodingException{
+		keyword = URLEncoder.encode(keyword, "UTF-8");
+		String requestUrl = "https://mainsite-restapi.ele.me/v2/pois?extras[]=count&geohash=ws7gr0q5kr0z&keyword=" + keyword + "&limit=" + limit + "&type=nearby";
+		JSONArray jsonArray = null;
+		StringBuffer buffer = new StringBuffer();
+		try {
+			// 创建SSLContext对象，并使用我们指定的信任管理器初始化
+			TrustManager[] tm = { new MyX509TrustManager() };
+			SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+			sslContext.init(null, tm, new java.security.SecureRandom());
+			// 从上述SSLContext对象中得到SSLSocketFactory对象
+			SSLSocketFactory ssf = sslContext.getSocketFactory();
+
+			URL url = new URL(requestUrl);
+			HttpsURLConnection httpUrlConn = (HttpsURLConnection) url
+					.openConnection();
+			httpUrlConn.setSSLSocketFactory(ssf);
+
+			httpUrlConn.setDoOutput(true);
+			httpUrlConn.setDoInput(true);
+			httpUrlConn.setUseCaches(false);
+			// 设置请求方式（GET/POST）
+			httpUrlConn.setRequestMethod("GET");
+
+			if ("GET".equalsIgnoreCase("GET")) {
+				httpUrlConn.connect();
+			}
+
+		
+
+			InputStream inputStream = httpUrlConn.getInputStream();
+			InputStreamReader inputStreamReader = new InputStreamReader(
+					inputStream, "UTF-8");
+			BufferedReader bufferedReader = new BufferedReader(
+					inputStreamReader);
+
+			String str = null;
+			while ((str = bufferedReader.readLine()) != null) {
+				buffer.append(str);
+			}
+			bufferedReader.close();
+			inputStreamReader.close();
+			// 释放资源
+			inputStream.close();
+			inputStream = null;
+			httpUrlConn.disconnect();
+			jsonArray = JSONArray.parseArray(buffer.toString());
+		} catch (ConnectException ce) {
+			log.error("Weixin server connection timed out.");
+		} catch (Exception e) {
+			log.error("https request error:{}", e);
+		}
+		return jsonArray;
+	}
+	
+	
+	
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		// 济南国际会展中心经纬度：117.11811 36.68484
 		// 趵突泉：117.00999000000002 36.66123
 //		System.out.println(getDistance("24.556794","118.115669","24.569119","118.101997"));
 //		Double i = (double) 11100;
 //		System.out.println(Math.round(i/1000));
-		System.out.println(getAround("24.556794","118.115669", "20000"));
+		//System.out.println(getAround("24.556794","118.115669", "20000"));
 		// 117.01028712333508(Double), 117.22593287666493(Double),
 		// 36.44829619896034(Double), 36.92138380103966(Double)
 		
 //		System.out.println(getLatAndLngbyPlaceName("厦门市集美区集美学村"));
-
+		System.out.println(getPois("集美大学六社区", 10));
 	}
 
 }

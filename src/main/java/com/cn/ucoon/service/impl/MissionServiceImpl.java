@@ -15,7 +15,7 @@ import com.cn.ucoon.dao.MissionMapper;
 import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionAddress;
 import com.cn.ucoon.service.MissionService;
-import com.cn.ucoon.util.MapDistanceUtil;
+import com.cn.ucoon.util.MapUtil;
 
 @Service
 @Transactional
@@ -68,7 +68,7 @@ public class MissionServiceImpl implements MissionService {
 					list.get(i).put("distance", "");
 					
 				}else{
-					String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
+					String distance = MapUtil.getDistance(lat, lng, latitude,
 							longitude);
 					list.get(i).put("distance", distance);
 					
@@ -84,7 +84,7 @@ public class MissionServiceImpl implements MissionService {
 				return null;
 			}
 			
-			Map<String, String> map = MapDistanceUtil.getAround(latitude,
+			Map<String, String> map = MapUtil.getAround(latitude,
 					longitude, "20000");
 			list = missionMapper.selectNearby(Double.valueOf(latitude),Double.valueOf(longitude) ,
 					map.get("minLat"), map.get("maxLat"), map.get("minLng"),
@@ -99,7 +99,7 @@ public class MissionServiceImpl implements MissionService {
 				
 				
 				Double distanceD =(Double) list.get(i).get("distance");
-				String distance = MapDistanceUtil.getStandardDistance(distanceD*1000 + "");
+				String distance = MapUtil.getStandardDistance(distanceD*1000 + "");
 				
 				list.get(i).put("distance", distance);
 
@@ -111,7 +111,7 @@ public class MissionServiceImpl implements MissionService {
 		return list;
 	}
 
-	@SuppressWarnings("unused")
+	
 	@Override
 	public List<HashMap<String, Object>> getMissionByKeyWord(String keyWord,
 			Integer startIndex, Integer endIndex,String latitude,String longitude) {
@@ -132,14 +132,14 @@ public class MissionServiceImpl implements MissionService {
 			String lng = (String) list.get(i).get("mission_lng");
 			String lat = (String) list.get(i).get("mission_lat");
 			
-			if(latitude != null || latitude != ""){
-				String distance = MapDistanceUtil.getDistance(lat, lng, latitude,
+			if(latitude == null || latitude == ""){
+				list.get(i).put("distance", "");
+			}else{
+				String distance = MapUtil.getDistance(lat, lng, latitude,
 						longitude);
 				list.get(i).put("distance", distance);
 				
-			}else{
 				
-				list.get(i).put("distance", "");
 			}
 			
 

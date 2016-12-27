@@ -51,5 +51,7 @@ public interface ApplyOrdersMapper {
 	List<HashMap<String, Object>> selectselectedpeople(Integer missionId);
 	
 	List<HashMap<String, Object>> selectselectpeople(Integer missionId);
+	
+	List<HashMap<String, Object>> selectEvalueatepeople(Integer missionId);
 
 }

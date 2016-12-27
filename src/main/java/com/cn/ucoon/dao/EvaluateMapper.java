@@ -25,7 +25,7 @@ public interface EvaluateMapper {
     Evaluate selectByMidAndPidAndEid(Integer missionId,Integer publishId,Integer executorId);
     
     
-    int updateExecutorByMissionId(Evaluate evaluate);
+    int updateExecutorByMidAndPidAndEid(Evaluate evaluate);
     
     Integer selectExecutorScoreByUserId(Integer userId);
     

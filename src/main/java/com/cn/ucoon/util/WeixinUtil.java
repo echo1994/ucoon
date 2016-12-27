@@ -51,12 +51,12 @@ import com.cn.ucoon.pojo.wx.Template;
 public class WeixinUtil {
 
 	// 第三方用户唯一凭证
-	public static String appid = "wx14236620e0b8201e";
+	public static String appid = "wx3c29a389e5870fa9";
 	// 第三方用户唯一凭证密钥
-	public static String appsecret = "a1e573ee1d1e594ca062a9715dff2568";
+	public static String appsecret = "203b24a05343bf20d752c4be2fa0afb5";
 
 	// 域名
-	public static String domian = "wx.ucoon.cn";
+	public static String domian = "dq7kesuqpw.proxy.qqbrowser.cc";
 
 	// 菜单创建（POST） 限100（次/天）
 	public static String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";

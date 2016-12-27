@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -141,13 +139,15 @@ public class MissionController {
 			}
 		}
 		
-		String reg = "[\u4e00-\u9fa5]";  
+		/*String reg = "[\u4e00-\u9fa5]";  
         Pattern pat = Pattern.compile(reg);    
         Matcher mat = pat.matcher(time);   
-        String repickStr = mat.replaceAll(""); 
+        String repickStr = mat.replaceAll(""); */
+		String repickStr = time.replace("小时后", "");
 		Date date = new Date();
 		Calendar ca=Calendar.getInstance();
 		ca.setTime(date);
+		
 		ca.add(Calendar.HOUR_OF_DAY, Integer.valueOf(repickStr));
 		
 		mission.setPublishTime(date);
@@ -280,7 +280,7 @@ public class MissionController {
 			e.printStackTrace();
 			jsonfromList = "{}";
 		}
-		//System.out.println(jsonfromList);
+		System.out.println(jsonfromList);
 		return jsonfromList;
 	}
 
@@ -709,7 +709,7 @@ public class MissionController {
 		
 		
 		//取出被成功选择的人
-		List<HashMap<String, Object>> list = this.applyService.selectselectpeople(missionId);
+		List<HashMap<String, Object>> list = this.applyService.selectEvaluatepeople(missionId);
 		
 		System.out.println(list);
 		//User user = userService.getUserById(evaluate.getPublishId());
@@ -735,28 +735,26 @@ public class MissionController {
 		Integer publish_id = (Integer) request.getSession()
 				.getAttribute("user_id");
 		
-		if(content.length == 0){
+		if(score.length == 0){
 			request.getSession().setAttribute("msg", "请选择星星");
 			request.getSession().setAttribute("url", "mission/evaluate_publish/" + missionId);
 			return "redirect:/tip";
 		}
 		
-		for (int i = 0; i < content.length; i++) {
+		for (int i = 0; i < score.length; i++) {
 			
 			Evaluate evaluate = new Evaluate();
-			System.out.println(content[i]);
+			//System.out.println(content[i]);
 			evaluate.setPeevaluateTime(new Date());
-			evaluate.setPublishEvaluate(content[i]);
+			if(content.length != 0){
+				
+				evaluate.setPublishEvaluate(content[i]);
+			}
+			
 			evaluate.setPublishScore(score[i]);
 			evaluate.setMissionId(missionId);
 			evaluate.setPublishId(publish_id);
 			evaluate.setExecutorId(userId[i]);
-			
-			if(score[i] == 0){
-				request.getSession().setAttribute("msg", "请选择星星");
-				request.getSession().setAttribute("url", "mission/evaluate_publish/" + missionId);
-				return "redirect:/tip";
-			}
 			
 			
 			//更新评价表

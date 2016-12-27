@@ -545,3 +545,18 @@ Caused by: java.lang.IllegalStateException: No suitable default RequestUpgradeSt
 	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:166)
 	... 43 more
 [INFO] [2016-11-13 13:19:57][com.cn.ucoon.util.MenuManager]菜单创建成功！
+[INFO] [2016-12-23 16:26:33][com.cn.ucoon.util.MenuManager]菜单创建成功！
+[INFO] [2016-12-26 10:25:53][com.cn.ucoon.util.MenuManager]菜单创建成功！
+[INFO] [2016-12-26 10:47:15][com.cn.ucoon.util.MenuManager]菜单创建成功！
+[ERROR] [2016-12-26 12:22:47][com.cn.ucoon.util.WeixinUtil]https request error:{}
+java.lang.ClassCastException: com.alibaba.fastjson.JSONArray cannot be cast to com.alibaba.fastjson.JSONObject
+	at com.alibaba.fastjson.JSON.parseObject(JSON.java:169)
+	at com.cn.ucoon.util.WeixinUtil.httpsRequest(WeixinUtil.java:230)
+	at com.cn.ucoon.util.MapUtil.getPois(MapUtil.java:217)
+	at com.cn.ucoon.util.MapUtil.main(MapUtil.java:234)
+[ERROR] [2016-12-26 12:23:56][com.cn.ucoon.util.WeixinUtil]https request error:{}
+java.lang.ClassCastException: com.alibaba.fastjson.JSONArray cannot be cast to com.alibaba.fastjson.JSONObject
+	at com.alibaba.fastjson.JSON.parseObject(JSON.java:169)
+	at com.cn.ucoon.util.WeixinUtil.httpsRequest(WeixinUtil.java:230)
+	at com.cn.ucoon.util.MapUtil.getPois(MapUtil.java:218)
+	at com.cn.ucoon.util.MapUtil.main(MapUtil.java:235)

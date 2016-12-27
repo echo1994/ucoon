@@ -88,7 +88,7 @@
 </select>
 <select id="selectDetailByMissionId" resultType="java.util.HashMap">
 	select apply_id,user.user_id,nick_name,head_img_url,phone,weixin_id,apply_orders.mission_id,take_time,take_state,note,finish_time,order_num,
-	pic_count,pictures,fee,apply_detail,publish_evaluate,publish_score,(select count(*) from evaluate where evaluate.mission_id=#{0} and evaluate.executor_id=apply_orders.user_id and  publish_evaluate IS NOT NULL and LENGTH(trim(publish_evaluate))>0) as isEvaluate 
+	pic_count,pictures,fee,apply_detail,publish_evaluate,publish_score,(select count(*) from evaluate where evaluate.mission_id=#{0} and evaluate.executor_id=apply_orders.user_id and  publish_score IS NOT NULL and LENGTH(trim(publish_score))>0) as isEvaluate 
 	FROM apply_orders left join user on apply_orders.user_id = user.user_id left join evaluate on apply_orders.user_id = evaluate.executor_id and apply_orders.mission_id = evaluate.mission_id  
 	where apply_orders.mission_id
 	= #{0} and (take_state = 1 or take_state = 2 or take_state=4)
@@ -112,7 +112,7 @@
 		SELECT apply_id, order_num, apply_orders.user_id, apply_orders.mission_id, take_time,finish_time,
 		apply_orders.take_state ,mission_title ,mission_price,head_img_url,people_count,mission_status,mission.user_id as m_user_id,
 		(select count(*) from apply_orders where apply_orders.mission_id=mission.mission_id and take_state=1) as selectpeople,
-		(select count(*) from evaluate where evaluate.mission_id=mission.mission_id and executor_evaluate IS NOT NULL and LENGTH(trim(executor_evaluate))>0) as isEvaluate 
+		(select count(*) from evaluate where evaluate.mission_id=mission.mission_id and executor_score IS NOT NULL and LENGTH(trim(executor_score))>0) as isEvaluate 
 		FROM ((apply_orders left join
 		mission on apply_orders.mission_id = mission.mission_id) left join user on user.user_id
 		= mission.user_id) WHERE apply_orders.user_id = #{0} ORDER BY take_time desc LIMIT #{1},#{2}
@@ -128,7 +128,7 @@
 	
 	<select id="selectorderDetailsByUserIdAndMissionId" resultType="java.util.HashMap">
 		SELECT apply_id, user_id, mission_id, take_time, take_state, note, finish_time, order_num,
-		(select count(*) from evaluate where evaluate.mission_id=apply_orders.mission_id and executor_evaluate IS NOT NULL and LENGTH(trim(executor_evaluate))>0) as isEvaluate 
+		(select count(*) from evaluate where evaluate.mission_id=apply_orders.mission_id and executor_score IS NOT NULL and LENGTH(trim(executor_score))>0) as isEvaluate 
 		from apply_orders WHERE user_id=#{0}  and mission_id=#{1} 
 	</select>
 	
@@ -153,6 +153,13 @@
 		phone, latitude,longitude,take_time,note,order_num
 		FROM apply_orders left join user on user.user_id = apply_orders.user_id WHERE mission_id
 		= #{0} and take_state!=1
+	</select>
+	
+	<select id="selectEvalueatepeople" resultType="java.util.HashMap">
+		SELECT apply_id,mission_id,user.user_id,nick_name,head_img_url,sex,weixin_id,signature,
+		phone, latitude,longitude,take_time,note,order_num,(select count(*) from evaluate where evaluate.mission_id=#{0} and evaluate.executor_id=apply_orders.user_id and  publish_score IS NOT NULL and LENGTH(trim(publish_score))>0) as isEvaluate
+		FROM apply_orders left join user on user.user_id = apply_orders.user_id WHERE mission_id
+		= #{0} and take_state=2
 	</select>
 	
 </mapper>

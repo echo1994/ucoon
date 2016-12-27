@@ -672,8 +672,11 @@ public class ApplyController {
 			ModelAndView mv, HttpServletRequest request) {
 		Integer user_id = (Integer) request.getSession()
 				.getAttribute("user_id");
+		
+		Mission mission = missionService.selectByPrimaryKey(missionId);
+		
 		Evaluate evaluate = null;
-		evaluate = evaluateService.selectByMissionId(missionId);
+		evaluate = evaluateService.selectByMidAndPidAndEid(missionId, mission.getUserId(), user_id);
 		if (evaluate == null) {
 			// 生成对象
 			evaluate = new Evaluate();
@@ -720,24 +723,42 @@ public class ApplyController {
 
 		}
 
+		Mission mission = missionService.selectByPrimaryKey(missionId);
+		
 		Evaluate evaluate = new Evaluate();
 
 		evaluate.setEpevaluateTime(new Date());
 		evaluate.setExecutorEvaluate(content);
 		evaluate.setExecutorScore(score);
 		evaluate.setMissionId(missionId);
+		evaluate.setPublishId(mission.getUserId());
+		evaluate.setExecutorId(user_id);
 
 		// 更新评价表
 
-		if (evaluateService.updateExecutorByMissionId(evaluate)) {
-			json.put("result", "success");
-			json.put("msg", "评价成功");
+		Evaluate cEvaluate = evaluateService.selectByMidAndPidAndEid(missionId, mission.getUserId(), user_id);
+		if(cEvaluate == null){
+			
+			evaluateService.insertEvaluate(evaluate);
+		}else{
+			if(cEvaluate.getExecutorScore() != null){
+			
+				json.put("result", "success");
+				json.put("msg", "请勿重复评价");
 
-			return json;
+				return json;
+			}
+			
+			if(!evaluateService.updateExecutorByMidAndPidAndEid(evaluate)){
+				json.put("result", "error");
+				json.put("msg", "评价失败");
+				return json;
+			}
 		}
-
-		json.put("result", "error");
-		json.put("msg", "评价失败");
+		
+		json.put("result", "success");
+		json.put("msg", "评价成功");
+		
 
 		return json;
 	}

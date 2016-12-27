@@ -46,10 +46,13 @@
     from balance
     where balance_id = #{balanceId,jdbcType=INTEGER}
   </select>
-  <select id="selectByUserIdAndState" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByUserIdAndState" resultMap="BaseResultMap">
     select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id,order_state,order_num
     from balance
-    where user_id = #{0} and order_state = #{1}
+    where user_id = #{userId} and order_state in  
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
+       		#{item}  
+   	 	</foreach>  
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select balance_id, consuming_records, consuming_time, plus_or_minus, quantity, user_id,order_state,order_num

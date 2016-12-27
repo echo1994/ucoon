@@ -78,10 +78,27 @@ public class MenuManager {
 		btn13.setType("click");
 		btn13.setKey("13");
 
+		ViewButton btn14 = new ViewButton();
+		btn14.setName("财富中心");
+		btn14.setType("view");
+		btn14.setUrl("http://" + WeixinUtil.domian + "/wealth/");
+
+		
+		ViewButton btn16 = new ViewButton();
+		btn16.setName("我服务的");
+		btn16.setType("view");
+		btn16.setUrl("http://" + WeixinUtil.domian + "/myservice");
+
+		ViewButton btn17 = new ViewButton();
+		btn17.setName("我发布的");
+		btn17.setType("view");
+		btn17.setUrl("http://" + WeixinUtil.domian + "/mysend");
+
+		
 		
 		ComplexButton mainBtn1 = new ComplexButton();
-		mainBtn1.setName("");
-		mainBtn1.setSub_button(new Button[] { btn11 });
+		mainBtn1.setName("个人中心");
+		mainBtn1.setSub_button(new Button[] { btn13,btn16,btn17,btn14 });
 
 //		ComplexButton mainBtn2 = new ComplexButton();
 //		mainBtn2.setName("");
@@ -96,7 +113,7 @@ public class MenuManager {
 		 * menu.setButton(new Button[] { mainBtn1, mainBtn2, btn33 });
 		 */
 		Menu menu = new Menu();
-		menu.setButton(new Button[] {btn11,btn12,btn13});
+		menu.setButton(new Button[] {btn11,btn12,mainBtn1});
 
 		return menu;
 	}

@@ -3,6 +3,7 @@ package com.cn.ucoon.dao;
 import com.cn.ucoon.pojo.Balance;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BalanceMapper {
     int deleteByPrimaryKey(Integer balanceId);
@@ -11,7 +12,7 @@ public interface BalanceMapper {
 
     Balance selectByPrimaryKey(Integer balanceId);
 
-    List<Balance> selectByUserIdAndState(Integer userId,Integer state);
+    List<Balance> selectByUserIdAndState(Map<String, Object> map);
     
     List<Balance> selectAll();
 

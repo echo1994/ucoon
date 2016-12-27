@@ -535,8 +535,23 @@ function toggleMenu() {
 
 /* 自动定位 */
 $(function() {
-	/*alert(2);*/
-	navigator.geolocation.getCurrentPosition(translatePoint); // 定位
+	//navigator.geolocation.getCurrentPosition(translatePoint); // 定位
+	var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(r){
+		if(this.getStatus() == BMAP_STATUS_SUCCESS){
+			var mk = new BMap.Marker(r.point);
+			map.addOverlay(mk);
+			map.panTo(r.point);
+//			var currentLat = r.point.lat;
+//			var currentLon = r.point.lng;
+//			var gpsPoint = new BMap.Point(currentLon, currentLat);
+			BMap.Convertor.translate(r.point, 0, initLocation); // 转换坐标
+			//alert('您的位置：'+r.point.lng+','+r.point.lat);
+		}
+		else {
+			alert('failed'+this.getStatus());
+		}        
+	},{enableHighAccuracy: true})
 });
 function translatePoint(position) {
 	var currentLat = position.coords.latitude;
@@ -545,7 +560,6 @@ function translatePoint(position) {
 	BMap.Convertor.translate(gpsPoint, 0, initLocation); // 转换坐标
 }
 function initLocation(point) {
-	/*alert(1);*/
 	var gc = new BMap.Geocoder();
 	var s;
 	gc.getLocation(point, function(rs) {
@@ -557,7 +571,7 @@ function initLocation(point) {
 		lng_temp = point.lng;
 		lat_temp = point.lat;
 
-		// alert(s);
+//		alert(s);
 		$("#suggestId").val(s);
 		$("#menu-btn").val(s);
 		setPlace(s);

@@ -123,49 +123,73 @@
     <h2 class="title-who"><i class="mui-icon iconfont icon-star-empty"></i>评价</h2>
 	<form action="mission/addEvaluate" method="post" id="myform">
 		<input type="hidden" name="missionId" value="${missionId }">
-		<c:forEach items="${list}" var="info">
-		    <div class="m-people">
-		        <div class="line">
-		            ————————
-		            <span>对TA的评价</span>
-		            ————————
-		        </div>
-		        <div class="m-user-mes clearfix">
-		            <div class="basic-mes fl">
-		                <!--头像-->
-		                <img src="${info.head_img_url }">
-		                <span class="ucoon-user">${info.nick_name }</span >
-		            </div>
-		            <div class="five-star fr">
-		                <ul class="star-cot" id="people${info.apply_id }">
-		                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
-		                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
-		                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
-		                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
-		                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
-		                </ul>
-		                <p class="star-info">点击星星，为Ta评价！</p>
-		                <input type="hidden" class="star-score" name="score" value="0">
-		                <input type="hidden" name="userId" value="${info.user_id }">
-		                <script>
-		                	starClick(people${info.apply_id });
-		                </script>
-		            </div>
-		        </div>
-		        <div class="txtinput">
-		            <textarea placeholder="对Ta的服务满意吗？表扬下Ta或者给Ta点建议吧！" name="content"></textarea>
-		        </div>
-		    </div>
-	    </c:forEach>
+		
+		<div id="content">
+			<c:forEach items="${list}" var="info">
+				<c:if test="${info.isEvaluate == 0 }">
+				    <div class="m-people">
+				        <div class="line">
+				            ————————
+				            <span>对TA的评价</span>
+				            ————————
+				        </div>
+				        <div class="m-user-mes clearfix">
+				            <div class="basic-mes fl">
+				                <!--头像-->
+				                <img src="${info.head_img_url }">
+				                <span class="ucoon-user">${info.nick_name }</span >
+				            </div>
+				            <div class="five-star fr">
+				                <ul class="star-cot" id="people${info.apply_id }">
+				                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
+				                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
+				                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
+				                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
+				                    <li><i class="mui-icon iconfont icon-star-empty"></i></li>
+				                </ul>
+				                <p class="star-info">点击星星，为Ta评价！</p>
+				                <input type="hidden" class="star-score" name="score">
+				                <input type="hidden" name="userId" value="${info.user_id }">
+				                <script>
+				                	starClick(people${info.apply_id });
+				                </script>
+				            </div>
+				        </div>
+				        <div class="txtinput">
+				            <textarea placeholder="对Ta的服务满意吗？表扬下Ta或者给Ta点建议吧！" name="content"></textarea>
+				        </div>
+				    </div>
+				</c:if>
+		    </c:forEach>
+		   </div>
 	</form>
-    <button class="commit">提交评价</button>
+	
+		<!-- <button class="commit2">返回首页</button> -->
+	
+	<div id="control">
+		<button class="commit">提交评价</button>
+	</div>
+  
 </div>
 <script>
 	$(function(){
 	
+		var content = $("#content").text();
+		if(content.trim() == ""){
+			
+			$("#content").html("<p style='text-align:center;padding:10px;'>已评价</p>");
+			$("#control").html("<button style='display: block;margin-top: 20px; width: 100%;margin: 0 auto;' class='commit2'>返回首页</button>");
+		}
+	
 		$(".commit").click(function(){
 		
 			$("#myform").submit();
+			
+		});
+		
+		$(".commit2").click(function(){
+		
+			window.location.href="/"
 			
 		});
 	

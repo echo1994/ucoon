@@ -35,8 +35,8 @@ public class EvaluateServiceImpl implements EvaluateService{
 
 
 	@Override
-	public boolean updateExecutorByMissionId(Evaluate missionId) {
-		int i = evaluateMapper.updateExecutorByMissionId(missionId);
+	public boolean updateExecutorByMidAndPidAndEid(Evaluate missionId) {
+		int i = evaluateMapper.updateExecutorByMidAndPidAndEid(missionId);
 		if(i>0){
 			return true;
 		}

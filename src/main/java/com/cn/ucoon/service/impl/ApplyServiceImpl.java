@@ -182,6 +182,13 @@ public class ApplyServiceImpl implements ApplyService {
 		// TODO Auto-generated method stub
 		return applyOrdersMapper.selectApplybyUserIdAndMissionId(userId, missionId);
 	}
+
+
+	@Override
+	public List<HashMap<String, Object>> selectEvaluatepeople(Integer missionId) {
+		// TODO Auto-generated method stub
+		return applyOrdersMapper.selectEvalueatepeople(missionId);
+	}
 	
 	
 }

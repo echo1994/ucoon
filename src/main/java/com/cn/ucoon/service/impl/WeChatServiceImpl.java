@@ -263,7 +263,7 @@ public class WeChatServiceImpl implements WeChatService  {
 							//今天是否已签到
 							if(TimeUtil.isToday(sign.getLastmodifytime())){
 								//今天已签
-								textMessage.setContent("抱歉，你今天已签到！\n\n\n连续签到次数：" + sign.getSignSeriesCount() + "\n总签到次数：" + sign.getSignCount() + "\n当前空点数量：" + total + "\n\n<a href='http://wx.ucoon.cn/wealth/'>点击进入财富中心</a>");
+								textMessage.setContent("你今天已签到！\n\n\n连续签到次数：" + sign.getSignSeriesCount() + "\n总签到次数：" + sign.getSignCount() + "\n当前空点数量：" + total + "\n\n<a href='http://wx.ucoon.cn/wealth/'>点击进入财富中心</a>");
 								respMessage = MessageUtil.textMessageToXml(textMessage);
 							}else{
 								

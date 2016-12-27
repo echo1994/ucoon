@@ -23,7 +23,7 @@
 <link href="css/style.css" rel="stylesheet" />
 <link href="css/iconfont.css" rel="stylesheet" />
 <link href="css/create-aty.css" rel="stylesheet" />
-
+<script src="js/mui.min.js"></script>
 
 <script src="js/jquery-2.1.4.min.js"></script>
 
@@ -64,6 +64,10 @@
 	}
 	.mui-input-row .tel{
 		padding-right: 40px;
+	}
+	.mui-input-row input{
+		margin: 0;
+		height: 40px;
 	}
 	.tip{
 		position: absolute;
@@ -276,10 +280,12 @@
 	</div>
 	<div id="menu-wrapper" class="menu-wrapper hidden">
 		<div id="menu" class="menu">
-			<p class="add-input-box">
-				<input type="text" name="place" class="mui-input-clear"
-						placeholder="输入地址名即可" id="suggestId">
-			</p>
+			<div class="add-input-box">
+				<div class="mui-input-row">
+					<input type="text" name="place" class="mui-input-clear"
+							placeholder="输入地址名即可" id="suggestId">
+				</div>
+			</div>
 			<div id="l-map"></div>
 			<p class="add-btn-group">
 				<button id="cancel" type="button" class="mui-btn mui-btn-primary" style="padding: 10px;">
@@ -296,7 +302,7 @@
 		style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
 
 </body>
-<script src="js/mui.min.js"></script>
+
 <script src="js/mui.zoom.js"></script>
 <script src="js/mui.previewimage.js"></script>
 <script>
