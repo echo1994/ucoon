@@ -243,7 +243,7 @@
 					dataType : 'json',
 					success : function(data) {
 					
-						if(data == null){
+						if(data.length == 0 && currentType == "nearby"){
 							$(".task").empty();
 							return;
 						}

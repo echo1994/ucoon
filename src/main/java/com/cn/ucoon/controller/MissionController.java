@@ -183,6 +183,9 @@ public class MissionController {
 			missionOrders.setUserId(userId);
 			missionOrderService.makeOrders(missionOrders);
 		}
+		
+		BigDecimal balance = this.balanceService.countBalance(userId);
+		request.getSession().setAttribute("balance", balance);
 		//存order，mission，微信支付时取
 		request.getSession().setAttribute("orders", missionOrders);
 		request.getSession().setAttribute("mission", mission);
@@ -195,10 +198,20 @@ public class MissionController {
 	@RequestMapping(value = "/mission_pay/{missionId}")
 	public ModelAndView missionPay(@PathVariable("missionId") Integer missionId,
 			ModelAndView mv,HttpServletRequest request) {
-		//Integer user_id = (Integer) request.getSession().getAttribute("user_id");
+		Integer user_id = (Integer) request.getSession().getAttribute("user_id");
 		Mission mission = missionService.selectByPrimaryKey(missionId);
 		MissionOrders missionOrders = missionOrderService.getOrdersbyMissionId(missionId);
 		
+		if(user_id == null){
+			
+			mv.setViewName("redirect:/html/404.html");
+			
+			return mv;
+		}
+		
+		BigDecimal balance = this.balanceService.countBalance(user_id);
+		request.getSession().setAttribute("balance", balance);
+		request.getSession().setAttribute("orders", missionOrders);
 		request.getSession().setAttribute("orders", missionOrders);
 		request.getSession().setAttribute("mission", mission);
 		mv.setViewName("redirect:/mission-pay");
@@ -405,6 +418,11 @@ public class MissionController {
 		Integer cuserId = (Integer) request.getSession().getAttribute("user_id");
 		if (cuserId != null && cuserId == userId) {
 			Mission mission = missionService.selectByPrimaryKey(missionId);
+			if(mission.getMissionStatus() != 1){
+				
+				return "请勿重复操作！";
+			}
+			
 			mission.setMissionStatus(6);
 			if(missionService.updateByPrimaryKey(mission) > 0){
 				//这里发模板消息

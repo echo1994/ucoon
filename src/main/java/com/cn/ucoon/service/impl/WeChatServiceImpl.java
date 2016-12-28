@@ -1,5 +1,6 @@
 package com.cn.ucoon.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cn.ucoon.dao.BalanceMapper;
 import com.cn.ucoon.dao.CreditsMapper;
 import com.cn.ucoon.dao.SignHistoryMapper;
 import com.cn.ucoon.dao.SignMapper;
@@ -23,6 +25,8 @@ import com.cn.ucoon.pojo.SignHistory;
 import com.cn.ucoon.pojo.User;
 import com.cn.ucoon.pojo.wx.Template;
 import com.cn.ucoon.pojo.wx.TemplateParam;
+import com.cn.ucoon.pojo.wx.resp.Article;
+import com.cn.ucoon.pojo.wx.resp.NewsMessage;
 import com.cn.ucoon.pojo.wx.resp.TextMessage;
 import com.cn.ucoon.service.WeChatService;
 import com.cn.ucoon.util.MessageUtil;
@@ -37,7 +41,6 @@ import com.cn.ucoon.util.WeixinUtil;
 @Transactional
 public class WeChatServiceImpl implements WeChatService  {
 
-	
 
 	@Resource
 	private UserMapper userDao;
@@ -50,6 +53,9 @@ public class WeChatServiceImpl implements WeChatService  {
 	
 	@Resource
 	private CreditsMapper creditsMapper;
+	
+	@Resource
+	private BalanceMapper balanceMapper;
 	
 	
 	/**
@@ -167,11 +173,12 @@ public class WeChatServiceImpl implements WeChatService  {
 //					newsMessage.setArticleCount(articlelist.size());
 //					newsMessage.setArticles(articlelist);
 					//respMessage = MessageUtil.newsMessageToXml(newsMessage);
-					respContent = "欢迎关注有空ucoon";
-					textMessage.setContent(respContent);
-					respMessage = MessageUtil.textMessageToXml(textMessage);
+//					respContent = "欢迎关注有空ucoon";
+//					textMessage.setContent(respContent);
+//					respMessage = MessageUtil.textMessageToXml(textMessage);
 					User user = userDao.selectByOpenId(openID);
 					if(user == null){
+						//代表第一次注册
 						user = new User();
 						
 						Date regist_time  = new Date();
@@ -187,6 +194,44 @@ public class WeChatServiceImpl implements WeChatService  {
 						user.setRegistTime(regist_time);//根据当前时间戳更新
 						
 						userDao.regist(user);
+						
+						
+						//送红包 0~1之间  不包含1和0，活动时间2016/12/27~2016/1/13
+						BigDecimal money = new BigDecimal(Math.random() + 0.01).setScale(2,BigDecimal.ROUND_HALF_UP);
+						
+						Balance orders = new Balance();
+						orders.setQuantity(money);
+						orders.setOrderNum(PayUtil.getOrdersNum(user.getUserId(), user.getUserId()));
+						orders.setOrderState(1);// 未支付
+						orders.setConsumingRecords("关注送红包");
+						orders.setUserId(user.getUserId());
+						orders.setPlusOrMinus("plus");
+						orders.setConsumingTime(new Date());
+						balanceMapper.insert(orders);
+						
+						NewsMessage newsMessage = new NewsMessage();
+						newsMessage.setFromUserName(toUserName);
+						newsMessage.setToUserName(openID);
+						newsMessage.setCreateTime(new Date().getTime());
+						newsMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_NEWS);
+						newsMessage.setFuncFlag(0);
+						List<Article> articlelist = new ArrayList<Article>();
+	
+						Article article1 = new Article();
+						article1.setTitle(money + "元，望笑纳！");
+						article1.setDescription("虽不富裕，但‘有空’以礼相待");
+						article1.setPicUrl("http://www.jmutong.com/JMUTong/Images/welcome.jpg");
+						article1.setUrl("http://" + WeixinUtil.domian + "/");
+						articlelist.add(article1);
+						newsMessage.setArticleCount(articlelist.size());
+						newsMessage.setArticles(articlelist);
+						respMessage = MessageUtil.newsMessageToXml(newsMessage);
+					}else{
+						
+						
+						respContent = "胡汉三，你又回来了！！！\n\n<a href='http://" + WeixinUtil.domian + "/'>任务大厅</a>\n\n<a href='http://" + WeixinUtil.domian + "/who-new'>发任务</a>";
+						textMessage.setContent(respContent);
+						respMessage = MessageUtil.textMessageToXml(textMessage);
 					}
 				}
 				// 取消订阅

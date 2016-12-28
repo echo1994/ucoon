@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.ServiceMessageMapper" >
+  <resultMap type="com.cn.ucoon.pojo.ServiceMessage" id="ServiceMessage">
+  	<result column="service_message_id"  property="serviceMessageId" jdbcType="INTEGER"/>
+  	<result column="open_id" property="openId" jdbcType="INTEGER"/>
+  	<result column="service_message_content" property="serviceMessageContent" jdbcType="VARCHAR"/>
+  	<result column="send_time" property="sendTime" jdbcType="TIMESTAMP"/>
+  	<result column="nick_name" property="userName" jdbcType="VARCHAR"/>
+  	<result column="another_param" property="otherParam" jdbcType="VARCHAR"/>
+  	<result column="server_id" property="serverId" jdbcType="VARCHAR"/>
+  </resultMap>
+ <!--  
+  //查看所有
+	public List<ShortMessage> getAllShortMessage();
+	//单个发送
+	public Integer sendOneShortMessage();
+	//部分发送
+	//单个删除
+	public Integer delOneShortMessage();
+	//批量删除
+	public Integer delmoreShortMessage(); -->
+	<!-- 获取单发全部短信信息 -->
+	<select id="getAllServiceMessage" resultMap="ServiceMessage">
+		select service_message_id,
+				s.open_id as openId,
+				service_message_content,
+				send_time,
+				type,
+				another_param,
+				phone,
+				c.server_name as serverName
+		from serviceMessage as s,user as u,customserver as c
+		where u.open_id=s.open_id and c.server_id=s.server_id
+	</select>
+	<insert id="sendOneServiceMessage"  parameterType="com.cn.ucoon.pojo.ServiceMessage">
+		<!-- set @u_Id=(select user_id from user where phone = #{0}); -->
+ 		insert into serviceMessage(open_id,service_message_content,type,another_param,server_id)  
+ 		values(#{openId},#{serviceMessageContent},#{type},#{otherParam},#{serverId})
+	</insert>
+	<delete id="delOneServiceMessage" parameterType="java.lang.Integer">
+		 delete from serviceMessage where service_message_id=#{0}
+	</delete>
+	<delete id="delmoreServiceMessage" parameterType="map">
+		delete from serviceMessage where service_message_id in
+		 <foreach collection="shortmessageIds" index="index" item="item" open="(" separator="," close=")">   
+        	#{item}   
+     	 </foreach>
+	</delete>
+	<select id="getAllOpenId" resultType="java.lang.String">
+		select open_id from user
+	</select>
+</mapper>

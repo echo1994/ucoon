@@ -9,10 +9,12 @@ public interface AdminMapper {
     int insert(Admin record);
 
     Admin selectByPrimaryKey(Integer adminId);
+    
+    Admin selectByName(String adminName);
 
     List<Admin> selectAll();
 
-    int updateByPrimaryKey(Admin record);
+    int updateByName(Admin record);
     
     
     /**

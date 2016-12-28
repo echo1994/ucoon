@@ -94,11 +94,15 @@ public class MenuManager {
 		btn17.setType("view");
 		btn17.setUrl("http://" + WeixinUtil.domian + "/mysend");
 
+		ViewButton btn18 = new ViewButton();
+		btn18.setName("执行联盟");
+		btn18.setType("view");
+		btn18.setUrl("http://" + WeixinUtil.domian + "/team/apply_team");
 		
 		
 		ComplexButton mainBtn1 = new ComplexButton();
 		mainBtn1.setName("个人中心");
-		mainBtn1.setSub_button(new Button[] { btn13,btn16,btn17,btn14 });
+		mainBtn1.setSub_button(new Button[] { btn13,btn16,btn17,btn14,btn18 });
 
 //		ComplexButton mainBtn2 = new ComplexButton();
 //		mainBtn2.setName("");

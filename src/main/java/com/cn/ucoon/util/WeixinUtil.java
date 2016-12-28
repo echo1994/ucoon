@@ -82,6 +82,8 @@ public class WeixinUtil {
 	// 获取用户基本信息
 	public final static String user_info_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 
+	public final static String query_menu_url="https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";
+	
 	// 上传多媒体文件
 	public final static String upload_media_url = "http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
 
@@ -720,4 +722,16 @@ public class WeixinUtil {
 		}
 		return null;
 	};
+	
+	
+	/**
+	 * 查询菜单信息
+	 * @param token
+	 * @return
+	 */
+	public static JSONObject queryMenu(String token){
+		String url=query_menu_url.replace("ACCESS_TOKEN", token);
+		JSONObject jsonObject=httpRequest(url, "GET",null);
+		return jsonObject;
+	}
 }

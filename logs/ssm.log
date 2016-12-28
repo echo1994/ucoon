@@ -560,3 +560,4 @@ java.lang.ClassCastException: com.alibaba.fastjson.JSONArray cannot be cast to c
 	at com.cn.ucoon.util.WeixinUtil.httpsRequest(WeixinUtil.java:230)
 	at com.cn.ucoon.util.MapUtil.getPois(MapUtil.java:218)
 	at com.cn.ucoon.util.MapUtil.main(MapUtil.java:235)
+[INFO] [2016-12-28 14:13:46][com.cn.ucoon.util.MenuManager]菜单创建成功！

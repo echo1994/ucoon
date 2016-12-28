@@ -12,7 +12,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta charset="UTF-8">
-<title></title>
+<title>聊天列表</title>
 <meta name="viewport"
 	content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">

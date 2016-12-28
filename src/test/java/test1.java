@@ -12,6 +12,12 @@ public class test1 {
 	 * @date Nov 6, 2014 9:57:54 AM
 	 */
 	public static void main(String[] args) {
+		
+		
+		for(int i = 0;i<100; i ++){
+			System.out.println(new BigDecimal(Math.random() + 0.01).setScale(2,BigDecimal.ROUND_HALF_UP));
+			
+		}
 		float rate = 0.08f;
 		 BigDecimal singleMonney = new BigDecimal("0.15");
 		BigDecimal result = singleMonney .multiply(new BigDecimal((1 - rate))).setScale(2, BigDecimal.ROUND_HALF_UP);

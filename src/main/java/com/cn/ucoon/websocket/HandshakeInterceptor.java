@@ -23,14 +23,14 @@ public class HandshakeInterceptor implements
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request,
 			ServerHttpResponse serverHttpResponse,
-			WebSocketHandler webSocketHandler, Map<String, Object> map)
-			throws Exception {
+			WebSocketHandler webSocketHandler, Map<String, Object> map){
 		System.out.println("握手前");
 		if (request instanceof ServletServerHttpRequest) {
 			HttpServletRequest servletRequest = ((ServletServerHttpRequest) request)
 					.getServletRequest();
 
 			// 进入聊天
+			System.out.println("进入聊天");
 			String fromuserid = servletRequest.getParameter("fromuserid");
 			String touserid = servletRequest.getParameter("touserid");
 			// 使用userName区分WebSocketHandler，以便定向发送消息

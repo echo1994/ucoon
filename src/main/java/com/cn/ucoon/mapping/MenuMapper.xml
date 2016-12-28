@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.MenuMapper" >
+ 
+  
+  <select id="getParentMenu" resultType="com.cn.ucoon.pojo.Menu" parameterType="java.lang.Integer" >
+     select p.permission_id as MenuId,p.permission_name as MenuName,p.permission_parent as ParentMenu,p.permission_url as Url
+    from admin as a,admin_group as g,group_permission as gp,permission as p
+    where admin_id=#{0} and a.admin_group_id=g.group_id 
+		and g.group_id=gp.group_id and gp.permission_id = p.permission_id 
+  </select>
+  
+   <select id="getChildMenu" resultType="com.cn.ucoon.pojo.Menu" parameterType="java.lang.Integer" >
+     select p.permission_id as MenuId,p.permission_name as MenuName,p.permission_parent as ParentMenu,p.permission_url as Url
+    from permission as p
+    where  p.permission_parent = #{0}
+  
+  </select>
+   <select id="getMenu" resultType="com.cn.ucoon.pojo.Menu" parameterType="java.lang.Integer" >
+     select p.permission_id as MenuId,p.permission_name as MenuName,p.permission_url as Url
+    from admin as a,admin_group as g,group_permission as gp,permission as p
+    where admin_id=#{0} and a.admin_group_id=g.group_id 
+		and g.group_id=gp.group_id and gp.permission_id = p.permission_id
+  </select>
+  <!--  <select id="getMenu" resultType="com.cn.ucoon.pojo.Menu" parameterType="java.lang.Integer" >
+     select p.permission_id as MenuId,p.permission_name as MenuName,p.permission_parent as ParentMenu,p.permission_url as Url
+    from admin as a,admin_group as g,group_permission as gp,permission as p
+    where admin_id=#{0} and a.admin_group_id=g.group_id 
+		and g.group_id=gp.group_id and (gp.permission_id = p.permission_id or p.permission_parent = gp.permission_id)
+  </select> -->
+</mapper>

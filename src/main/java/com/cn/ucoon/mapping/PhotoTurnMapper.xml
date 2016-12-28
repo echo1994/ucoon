@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.PhotoTurnMapper" >
+ <!-- //添加图片
+	public Integer addPhoto(PhotoTurn photoTurn);
+	//修改图片状态，包括 可用状态，位置，是否跳转
+	public Integer changePhoto(PhotoTurn photoTurn);
+	//删除图片
+	public Integer deletePhoto(PhotoTurn photoTurn); 
+	//查看图片
+	public List<PhotoTurn> getPhoto();-->
+	
+
+	<resultMap type="com.cn.ucoon.pojo.PhotoTurn" id="photoMapper">
+		<result column="photo_id" property="photoId" jdbcType="INTEGER"/>
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR"/>
+		<result column="photo_go_url" property="photoGoUrl" jdbcType="VARCHAR"/>
+		<result column="is_go" property="isGo" jdbcType="INTEGER"/>
+		<result column="local" property="local" jdbcType="INTEGER"/>
+		<result column="photo_name" property="photoName" jdbcType="VARCHAR"/>
+	</resultMap>
+	<!-- 查看所有图片信息 -->
+	<select id="getPhoto" resultMap="photoMapper">
+		select * from photo
+	</select>
+	<!-- 查看单个图片信息 -->
+	<select id="getOnePhoto" resultMap="photoMapper" parameterType="java.lang.Integer">
+		select * from photo where photo_id = #{0}
+	</select>
+	<!-- 增加图片 -->
+	<insert id="addPhoto" parameterType="com.cn.ucoon.pojo.PhotoTurn">
+			insert into photo(photo_url,photo_go_url,is_go,local,photo_name)  
+			values(#{photoUrl},#{photoGoUrl},#{isGo},#{local},#{photoName})
+	</insert>
+	
+	<!-- 修改图片信息 -->
+	<update id="changePhoto" parameterType="com.cn.ucoon.pojo.PhotoTurn">
+		update photo
+		<trim prefix="set" suffixOverrides=","> 
+			<if test="photoGoUrl != null">photo_go_url=#{photoGoUrl},</if>
+			<if test="isGo != null">is_go=#{isGo},</if>
+			<if test="local != null">local=#{local},</if>
+			<if test="photoName != null">photo_name=#{photoName},</if>
+		</trim>
+		where photo_id=#{photoId}
+	</update>
+	<!-- 单个删除图片 -->
+	<delete id="deletePhoto" parameterType="java.lang.Integer">
+		delete from photo where photo_id=#{0}
+	</delete>
+	<!-- 批量删除图片 -->
+	<delete id="deleteGroupPhoto" parameterType="map">
+      delete from photo where photo_id in
+      <foreach collection="photoIds" index="index" item="item" open="(" separator="," close=")">   
+        #{item}   
+      </foreach>  
+  	</delete>
+  	<select id="getOutPic" resultMap="photoMapper">
+  		select * from photo
+		ORDER BY local asc
+		LIMIT 0,4
+  	</select> 
+</mapper>

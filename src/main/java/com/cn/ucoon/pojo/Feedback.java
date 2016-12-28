@@ -20,11 +20,11 @@ public class Feedback {
     public Integer getFeedbackId() {
         return feedbackId;
     }
-
+    
     public void setFeedbackId(Integer feedbackId) {
         this.feedbackId = feedbackId;
     }
-
+    
     public Integer getUserId() {
         return userId;
     }

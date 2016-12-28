@@ -5,24 +5,24 @@
     <id column="admin_id" property="adminId" jdbcType="INTEGER" />
     <result column="admin_name" property="adminName" jdbcType="VARCHAR" />
     <result column="admin_psw" property="adminPsw" jdbcType="VARCHAR" />
-    <result column="admin_group_id" property="adminGroupId" jdbcType="INTEGER" />
+    <result column="admin_group_id" property="adminGroup.groupId" jdbcType="INTEGER" />
+    <result column="group_name" property="adminGroup.groupName" jdbcType="VARCHAR"/>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from admin
     where admin_id = #{adminId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.cn.ucoon.pojo.Admin" >
-    insert into admin (admin_id, admin_name, admin_psw, 
+    insert into admin ( admin_name, admin_psw, 
       admin_group_id)
-    values (#{adminId,jdbcType=INTEGER}, #{adminName,jdbcType=VARCHAR}, #{adminPsw,jdbcType=VARCHAR}, 
-      #{adminGroupId,jdbcType=INTEGER})
+    values ( #{adminName,jdbcType=VARCHAR}, #{adminPsw,jdbcType=VARCHAR}, 
+      (select group_id from admin_group where group_name= #{adminGroup.groupName,jdbcType=VARCHAR} ))
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.cn.ucoon.pojo.Admin" >
+  <update id="updateByName" parameterType="com.cn.ucoon.pojo.Admin" >
     update admin
-    set admin_name = #{adminName,jdbcType=VARCHAR},
-      admin_psw = #{adminPsw,jdbcType=VARCHAR},
-      admin_group_id = #{adminGroupId,jdbcType=INTEGER}
-    where admin_id = #{adminId,jdbcType=INTEGER}
+    set admin_psw = #{adminPsw,jdbcType=VARCHAR},
+      admin_group_id = (select group_id from admin_group where group_name= #{adminGroup.groupName,jdbcType=VARCHAR} )
+    where admin_name = #{adminName,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select admin_id, admin_name, admin_psw, admin_group_id
@@ -35,7 +35,12 @@
     where admin_name = #{adminName,jdbcType=VARCHAR} and admin_psw = #{adminPsw,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select admin_id, admin_name, admin_psw, admin_group_id
-    from admin
+    select admin_id, admin_name, admin_psw, admin_group_id, group_name
+    from admin,admin_group where admin_group_id = group_id
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select admin_id,admin_name, admin_psw, admin_group_id
+  	from admin
+  	where admin_name=#{adminName,jdbcType=VARCHAR}
   </select>
 </mapper>

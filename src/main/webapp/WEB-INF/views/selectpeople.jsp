@@ -208,7 +208,6 @@ html,
 	//
 	$(document).on('tap',".detail",function(){
 
-		
 		$.ajax({
 		    url: "mission/selectpeopledetail/" + missionId,
 		    success: function(result){
@@ -217,7 +216,7 @@ html,
 			    	var sexHtml = result[i].sex == 2?"<i class=\"mui-icon iconfont icon-woman\"></i>":"<i class=\"mui-icon iconfont icon-man\"></i>";
 			   	 	var note = result[i].note == null?"无": result[i].note;
 			    	$(".mui-slider-group").append("<div class=\"mui-slider-item\">"
-						+"<div class=\"basic-mes\" id=\"" + result[i].apply_id + "\">"
+						+"<div class=\"basic-mes\" id=\"" + result[i].user_id + "\">"
 							+"<img src=\"" + result[i].head_img_url + "\">"
 							+"<div class=\"ucoon-user\">"
 								+ result[i].nick_name
@@ -241,7 +240,7 @@ html,
 							+"已帮助他人 <span>" + result[i].helpCount + "</span>次"
 						+"</p>"
 						+"<div class=\"link-way\">"
-							+"<a href=\"user/detailWithEvaluate/" + result[i].apply_id + "\">查看详情</a>"
+							+"<a href=\"user/detailWithEvaluate/" + result[i].user_id + "\">查看详情</a>"
 						+"</div>"
 						+"<div class=\"ly\">"
 							+"<p class=\"tit\">他的留言:</p>"
@@ -290,7 +289,13 @@ html,
 	
 	$(document).on('tap',".choose-btn",function(){
 		$(this).parent().remove();
-		
+		if($(".mui-slider-group").children().length == 0 ){
+			$(".close-bg").click();
+			$(".close-bg").hide();
+		/* 	$('#slider').hide();
+			$('#bg').hide();
+			$(this).hide(); */
+		}
 		var i = 0;
 		var p = '${mdetails.people_count }';
 		$(".deletepeople").each(function(index,item){
@@ -481,7 +486,7 @@ html,
 										+ "<p>" + nickNameVal + "</p>"
 									+ "</li>");
 				    	}else if(result == 'error'){
-				    		alert("选人失败");
+				    		alert("取消失败");
 				    	}else{
 				    		alert(result);
 				    	}

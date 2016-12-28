@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.ucoon.dao.MobileMapper" >
+  <resultMap id="getMobilesMap" type="com.cn.ucoon.pojo.Mobile" > 
+  	<result column="mobile_id" property="mobileId" jdbcType="VARCHAR" />
+    <result column="mobile_title" property="mobileTitle" jdbcType="VARCHAR" />
+    <result column="mobile_firstParam" property="mobileFirstParam" jdbcType="VARCHAR" />
+    <result column="mobile_remark" property="mobileRemark" jdbcType="VARCHAR" />
+    <result column="mobile_contents" property="mobileContents" jdbcType="VARCHAR"/>
+  </resultMap>
+  <!-- 
+  	private Integer id;
+	private String mobileId;
+	private String mobileTitle;
+	private String mobileFirstParam;
+	private String mobileRemark;
+	private String mobileContents;
+mobile_id
+mobile_title
+mobile_firstParam
+mobile_remark
+mobile_contents
+  		//获取模板信息
+		public List<Mobile> getMobiles();
+	
+		//保存模板信息
+		//修改模板信息
+		//删除模板信息
+   -->
+   <select id="getMobiles" resultMap="getMobilesMap">
+   		select * from mobile
+   </select>
+   <select id="getOneMobile" resultMap="getMobilesMap" parameterType="java.lang.String">
+   		select * from mobile where mobile_id=#{0}
+   </select>
+   <insert id="addMobile" parameterType="com.cn.ucoon.pojo.Mobile">
+   	insert into mobile(
+		mobile_id,
+		mobile_title,
+		mobile_firstParam,
+		mobile_remark,
+		mobile_contents) values(
+		#{mobileId},
+		#{mobileTitle},
+		#{mobileFirstParam},
+		#{mobileRemark},
+		#{mobileContents}
+		)
+   </insert>
+   
+   
+	<!-- public Integer delOneMobile(String MobileId);
+	public Integer delMoreMobile(Map map); -->
+	<delete id="delOneMobile" parameterType="java.lang.Integer">
+		delete from mobile where id=#{0}
+	</delete>
+	<delete id="delMoreMobile" parameterType="map">
+	      delete from mobile where id in
+	      <foreach collection="mobileids" index="index" item="item" open="(" separator="," close=")">   
+	        #{item}   
+	      </foreach>  
+  	</delete>
+</mapper>

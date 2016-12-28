@@ -71,10 +71,17 @@
 				<p>请在15分钟内完成支付</p>
 			</div>
 			<ul class="pay-way">
-				<li class="payment"><i class="mui-icon iconfont icon-me fl"></i><span>余额支付</span><i class="circle fr me"></i></li>
+				<li class="payment"><i class="mui-icon iconfont icon-me fl"></i><span>
+				<c:if test="${(sessionScope.mission.missionPrice * sessionScope.mission.peopleCount) > sessionScope.balance }">
+					余额支付(余额不足)
+				</c:if>
+				<c:if test="${(sessionScope.mission.missionPrice * sessionScope.mission.peopleCount) <= sessionScope.balance }">
+					余额支付(${sessionScope.balance }元)
+				</c:if>
+				</span><i class="circle fr me"></i></li>
 				<li class="payment"><i class="mui-icon iconfont icon-wechat-pay fl"></i><span>微信支付</span><i class="circle fr wechat circle-active"></i></li>
-				<li class="payment"><i class="mui-icon iconfont icon-alipay fl"></i><span>支付宝</span><i class="circle fr alipay"></i></li>
-				<li class="payment"><i class="mui-icon iconfont icon-card fl"></i><span>银行卡</span><i class="circle fr card"></i></li>
+				<!-- <li class="payment"><i class="mui-icon iconfont icon-alipay fl"></i><span>支付宝</span><i class="circle fr alipay"></i></li>
+				<li class="payment"><i class="mui-icon iconfont icon-card fl"></i><span>银行卡</span><i class="circle fr card"></i></li> -->
 			</ul>
 			<button class="pay-btn" id="pay">确认支付<span><fmt:formatNumber value="${sessionScope.mission.missionPrice * sessionScope.mission.peopleCount  }" type="currency"/></span></button>
 		
@@ -93,8 +100,11 @@
 					      alert(JSON.stringify(res));
 					    }
 					 }); */
+					 //判断是否绑定手机
 				});		
 			
+				
+				
 				$.init({
 					gestureConfig: {
 						tap: true, //默认为true
@@ -181,8 +191,23 @@
 						  	dataType: "json",
 						  	async:true
 						}); 
+					}else if(payWay == "me"){
+						$.ajax({
+						    url: "pay/getBalancePay",
+						    success: function(result){
+						    	if(result.result_type == "error"){
+						    		alert(result.msg);
+						    		return;
+						    	}
+						    	alert("支付成功");
+								window.location.href="mysend";
+						    	
+						    },
+						  	dataType: "json",
+						  	async:true
+						}); 
 					}else{
-						alert("暂时只支持微信支付");
+						alert("不支持其他支付方式");
 					}
 					
 				  
@@ -190,6 +215,7 @@
 				})
 				
 			}(mui, document));
+			
 		</script>
 	</body>
 

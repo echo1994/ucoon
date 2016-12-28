@@ -31,4 +31,27 @@
     select group_id, group_name, group_rights
     from admin_group
   </select>
+  <select id="selectByName" resultMap="BaseResultMap">
+  	select group_id, group_name, group_rights
+    from admin_group
+    where group_name=#{name,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAllPemission" resultType="com.cn.ucoon.pojo.Pemission">
+    select permission_id,permission_name
+    from permission
+  </select>
+  <insert id="insertPemission_group" parameterType="java.lang.Integer">
+  	insert into group_permission(group_id,permission_id)
+  	values (#{0,jdbcType=INTEGER},#{1,jdbcType=INTEGER})
+  </insert>
+  <delete id="deletePemission_group" parameterType="java.lang.Integer">
+  	delete from group_permission
+  	where group_id=#{groupId,jdbcType=INTEGER}
+  </delete>
+  <select id="selectPemissionByGroupId" parameterType="java.lang.Integer" resultType="java.lang.String">
+  	select permission_name 
+  	from permission 
+  	where permission_id in(select permission_id from group_permission where group_id=#{groupId,jdbcType=INTEGER})
+  </select>
 </mapper>

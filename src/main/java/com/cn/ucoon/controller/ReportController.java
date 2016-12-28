@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cn.ucoon.service.CommentsService;
 import com.cn.ucoon.service.ReportService;
 
 

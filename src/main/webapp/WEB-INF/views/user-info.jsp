@@ -11,7 +11,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta charset="UTF-8">
-<title>选人个人详情</title>
+<title>个人详情</title>
 <meta name="viewport"
 	content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -154,25 +154,6 @@
 								<p class="discus-content">${info.publish_evaluate }</p>
 							</div>
 						</div>
-						<div class="son clearfix">
-		                    <div class="s-r fr">
-		                        <p class="discus-time">08-08 13:36</p>
-		                    </div>
-		                    <div class="s-m fl">
-		                        <p><span>Toad</span>@<span>满血复活大魔王</span></p>
-		
-		                        <p class="discus-content discus-content-son">睡觉干吗？</p>
-		                    </div>
-		                </div>
-		                <div class="son clearfix">
-		                    <div class="s-r fr">
-		                        <p class="discus-time">08-08 13:52</p>
-		                    </div>
-		                    <div class="s-m fl">
-		                        <p><span>满血复活大魔王</span>@<span>Toad</span></p>
-		                        <p class="discus-content discus-content-son">都说了有钱就干！！！</p>
-		                    </div>
-		                </div>
 					</li>
 				</c:forEach>
 			</ul>

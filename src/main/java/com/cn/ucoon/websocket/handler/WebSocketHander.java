@@ -97,7 +97,7 @@ public class WebSocketHander implements WebSocketHandler {
 	@Override
 	public void handleMessage(WebSocketSession webSocketSession,
 			WebSocketMessage<?> webSocketMessage) throws Exception {
-		// System.out.println("接受消息处理");
+		System.out.println("接受消息处理");
 
 		System.out.println(webSocketMessage.getPayload());
 
@@ -184,10 +184,12 @@ public class WebSocketHander implements WebSocketHandler {
 			System.out.println(user);
 			if (user.getAttributes().get("FROMUSERID").equals(userID)) {
 				try {
-					if (user.isOpen()) {
+					System.out.println(11111);
+					user.sendMessage(message);
+				/*	if (user.isOpen()) {
 						user.sendMessage(message);
 
-					}
+					}*/
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

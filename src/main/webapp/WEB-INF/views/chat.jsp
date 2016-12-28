@@ -44,7 +44,7 @@
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script src="js/mui.imageViewer.js"></script>
-		<script src="http://cdn.bootcss.com/sockjs-client/1.1.1/sockjs.min.js"></script>
+		<script src="js/sockjs.min.js"></script>
 		<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 		<script src="js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
@@ -55,11 +55,10 @@
 			var onePageNums = 10;
 			var URL = window.location.href.split('#')[0]; //获取当前页面的url
 			URL = encodeURIComponent(URL);
-			
 			var appid,nonceStr,signature,timestamp;
 			//ajax同步更新全局变量，异步无法更新
 			$.ajax({
-			    url: "/wx/sign?url="+URL,
+			    url: "wx/sign?url="+URL,
 			    success: function(result){
 			    	appid = result.appId;
 			    	timestamp=result.timestamp;
@@ -173,27 +172,30 @@
 				GetHeadUrl(fromuserid);
 				var websocket;
 				var domain = window.location.host;
+				alert(domain); 
 				var initWebSocket = function() {
 					if ('WebSocket' in window) {  
-						//mui.alert('连接方式：WebSocket', '系统消息', function() {});
+						mui.alert('连接方式：WebSocket', '系统消息', function() {});
 						websocket = new WebSocket("ws://" + domain + "/echo?fromuserid=" + fromuserid + "&touserid=" + touserid);
 					} else if ('MozWebSocket' in window) {
-						//mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
+						mui.alert('连接方式：MozWebSocket', '系统消息', function() {});
 						websocket = new MozWebSocket("ws://echo?fromuserid=" + fromuserid + "&touserid=" + touserid);
 					} else {
-						//mui.alert('连接方式：SockJS', '系统消息', function() {});
+						mui.alert('连接方式：SockJS', '系统消息', function() {});
 						websocket = new SockJS("http://" + domain + "/sockjs/echo?fromuserid=" + fromuserid + "&touserid=" + touserid);
 					}
 				}
 				
 				initWebSocket();
+				
+				
 				websocket.onopen = function(evnt) {
 					/* ui.areaMsgList.innerHTML = template('msg-template', {
 						"record": record
 					}); */
-					//mui.alert('连接服务器成功!' + evnt.data, '系统消息', function() {});
+					mui.alert('连接服务器成功!' + evnt.data, '系统消息', function() {});
 				};
-				
+				alert(websocket.readyState);
 				var bindMsgList = function() {
 					//绑定数据:
 					/* ui.areaMsgList.innerHTML = template('msg-template', {
@@ -214,7 +216,7 @@
 							    success: function (res) {
 							   	 	var localId = res.localId;
 							    	item.querySelectorAll('.msg-content-image')[0].src=localId;
-							   		
+							   		//alert(localId);
 							   		ui.areaMsgList.scrollTop = ui.areaMsgList.scrollHeight + ui.areaMsgList.offsetHeight;
 							   		
 							    }
@@ -250,8 +252,8 @@
 					
 					//mui.alert('收到消息：' + evnt.data, '提示', function() {});
 					var str = evnt.data;
-					
-					var obj = eval('(' + str + ')');
+					//alert(str);
+					var data = eval('(' + str + ')');
 					//alert(obj.message_detail);
 					//接收消息
 					/* 
@@ -269,21 +271,42 @@
 				
 					 
 					try{
-						for(var i = 0;i<obj.length;i++){
+						for(var i = 0;i<data.length;i++){
 							
-							var json = {
+							/* var json = {
 								sender: obj[i].sender,
 								type: obj[i].message_type,
 								headImgUrl: obj[i].head_img_url,
 								content: obj[i].message_detail
-							};
-							record.push(json);
+							}; */
+							var html = "";
+							if(data[i].sender == "self"){
+								html += "<div class='msg-item  msg-item-self' msg-type='" + data[i].message_type + "' msg-content='" + data[i].message_detail + "'>"
+								 + "<i class='msg-user mui-icon'><img class='msg-user-img' src='" + data[i].head_img_url + "' alt='' /></i>";
+							}else{
+								html += "<div class='msg-item' msg-type='" + data[i].message_type + "' msg-content='" + data[i].message_detail + "'>"
+								 + "<img class='msg-user-img' src='" + data[i].head_img_url + "' alt='' />";
+							}
+							html += "<div class='msg-content'><div class='msg-content-inner'>";
+							if(data[i].message_type == 'text'){
+								html += ( data[i].message_detail || '&nbsp;&nbsp;');
+							}else if(data[i].message_type == 'image'){
+								html += "<img class='msg-content-image' src='' style='max-width: 100px;' />";
+							}else if(data[i].message_type == 'sound'){
+								html += "<span class='mui-icon mui-icon-mic' style='font-size: 18px;font-weight: bold;'></span>"
+									+ "<span class='play-state'>点击播放</span>";
+							}
 							
+							html += "</div><div class='msg-content-arrow'></div></div><div class='mui-item-clear'></div></div>";
+							var newNode = document.createElement("div"); 
+							newNode.innerHTML = html; 
+							document.getElementById("msg-list"). appendChild(newNode);
+							bindMsgList();	
 							
 						}
 					}catch(e){
 					}
-					bindMsgList();	
+					
 					
 				};
 				
@@ -643,7 +666,10 @@
 									content: voice.localId,
 									serverId :res.serverId
 								})
-						    }
+						    },
+						      fail: function (res) {
+						        alert(JSON.stringify(res));
+						      }
 						});
 				    }
 				});

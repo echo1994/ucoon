@@ -254,19 +254,17 @@ public class UserController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/detailWithEvaluate/{aid}")
+	@RequestMapping(value = "/detailWithEvaluate/{uid}")
 	public ModelAndView detail(
-			@PathVariable(value = "aid") Integer apply,ModelAndView mv) {
+			@PathVariable(value = "uid") Integer uid,ModelAndView mv) {
 
 		
-		ApplyOrders orders = applyService.selectByPrimaryKey(apply);
 		
-		User user = this.userService.getUserById(orders.getUserId());
-		List<HashMap<String, Object>> infos = this.userService.selectDetailWithEvabyUserId(orders.getUserId());
+		User user = this.userService.getUserById(uid);
+		List<HashMap<String, Object>> infos = this.userService.selectDetailWithEvabyUserId(uid);
 		System.out.println(infos);
 		mv.addObject("infos", infos);
 		mv.addObject("user", user);
-		mv.addObject("orders", orders);
 		mv.addObject("size", infos.size());
 		mv.setViewName("user-info");
 		return mv;

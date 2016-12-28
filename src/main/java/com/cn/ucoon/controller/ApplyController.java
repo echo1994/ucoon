@@ -589,16 +589,26 @@ public class ApplyController {
 				.selectByPrimaryKey(applyId);
 		Integer missionId = selectByPrimaryKey.getMissionId();
 		Mission mission = missionService.selectByPrimaryKey(missionId);
-		Integer cuserId = (Integer) request.getSession()
-				.getAttribute("user_id");
-		if (cuserId != null && cuserId == mission.getUserId()) {
-			selectByPrimaryKey.setTakeState(1);
-			if (applyService.updateStateByApplyId(selectByPrimaryKey)) {
-
-				return "success";
+		switch (mission.getMissionStatus()) {
+		case 1:
+			Integer cuserId = (Integer) request.getSession()
+					.getAttribute("user_id");
+			if (cuserId != null && cuserId == mission.getUserId()) {
+				selectByPrimaryKey.setTakeState(1);
+				if (applyService.updateStateByApplyId(selectByPrimaryKey)) {
+		
+					return "success";
+				}
+				return "error";
 			}
-			return "error";
+			break;
+		case 6:
+			return "任务已开始，操作失败";
+		default:
+			return "操作违规";
 		}
+		
+		
 		return "操作违规";
 	}
 
@@ -613,17 +623,28 @@ public class ApplyController {
 				.selectByPrimaryKey(applyId);
 		Integer missionId = selectByPrimaryKey.getMissionId();
 		Mission mission = missionService.selectByPrimaryKey(missionId);
-		Integer cuserId = (Integer) request.getSession()
-				.getAttribute("user_id");
-		if (cuserId != null && cuserId == mission.getUserId()) {
-			selectByPrimaryKey.setTakeState(0);
-			if (applyService.updateStateByApplyId(selectByPrimaryKey)) {
-
-				return "success";
-			}
-			return "error";
+		
+		switch (mission.getMissionStatus()) {
+			case 1:
+				Integer cuserId = (Integer) request.getSession()
+					.getAttribute("user_id");
+				if (cuserId != null && cuserId == mission.getUserId()) {
+					selectByPrimaryKey.setTakeState(0);
+					if (applyService.updateStateByApplyId(selectByPrimaryKey)) {
+			
+						return "success";
+					}
+					return "error";
+				}
+		
+				break;
+			case 6:
+				return "任务已开始，操作失败";
+			default:
+				return "操作违规";
 		}
-		return "操作违规";
+		return null;
+		
 	}
 
 	@RequestMapping(value = "/saveNote", method = RequestMethod.POST)

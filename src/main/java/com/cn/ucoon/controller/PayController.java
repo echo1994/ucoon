@@ -25,6 +25,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.cn.ucoon.pojo.Balance;
 import com.cn.ucoon.pojo.Mission;
 import com.cn.ucoon.pojo.MissionOrders;
 import com.cn.ucoon.pojo.wx.JsAPIConfig;
@@ -33,6 +34,7 @@ import com.cn.ucoon.pojo.wx.PayRefundRespose;
 import com.cn.ucoon.pojo.wx.Template;
 import com.cn.ucoon.pojo.wx.TemplateParam;
 import com.cn.ucoon.pojo.wx.UnifiedOrderRespose;
+import com.cn.ucoon.service.BalanceService;
 import com.cn.ucoon.service.MissionOrderService;
 import com.cn.ucoon.service.MissionService;
 import com.cn.ucoon.service.UserService;
@@ -44,12 +46,16 @@ import com.cn.ucoon.util.WeixinUtil;
 @RequestMapping("/pay")
 public class PayController {
 
+
 	@Resource
 	private UserService userService;
 
 	@Resource
 	private MissionService missionService;
 
+	@Resource
+	private BalanceService balanceService;
+	
 	@Resource
 	private MissionOrderService missionOrdersService;
 
@@ -172,10 +178,10 @@ public class PayController {
 				+ "==================");
 		String ip = getIpAddr(request);
 		String body = "有空ucoon-任务发布";
-		
-		Integer fee = mission.getMissionPrice()
-				.multiply(new BigDecimal(100))
-				.multiply(new BigDecimal(mission.getPeopleCount())).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+
+		Integer fee = mission.getMissionPrice().multiply(new BigDecimal(100))
+				.multiply(new BigDecimal(mission.getPeopleCount()))
+				.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
 
 		System.out.println(fee);
 		String notify_url = "http://wx.ucoon.cn/pay/payresult";
@@ -205,6 +211,75 @@ public class PayController {
 		return json;
 	}
 
+	// 余额支付
+	@ResponseBody
+	@RequestMapping("/getBalancePay")
+	public JSONObject payBalance() throws Exception {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+				.getRequestAttributes()).getRequest();
+
+		JSONObject json = new JSONObject();
+		// String pre_prepay_id = (String)
+		// request.getSession().getAttribute("prepayid");
+		/*
+		 * if(pre_prepay_id==null||prepay_id ==
+		 * null||!prepay_id.equals(pre_prepay_id)){ json.put("result_type",
+		 * "error"); json.put("msg", "支付失败"); return json; }
+		 */
+		Mission mission = (Mission) request.getSession()
+				.getAttribute("mission");
+		MissionOrders orders = (MissionOrders) request.getSession()
+				.getAttribute("orders");
+		// 判断是都已支付，防止重复支付
+		if (missionService.isPaid(mission.getMissionId())) {
+
+			json.put("result_type", "error");
+			json.put("msg", "请勿重复支付！");
+			return json;
+		}
+		
+		Integer user_id = (int) request.getSession().getAttribute("user_id");
+		
+		
+		if(user_id == null){
+			json.put("result_type", "error");
+			json.put("msg", "请重新发布");
+			return json;
+			
+		}
+		//支付金额
+		BigDecimal fee = mission.getMissionPrice()
+				.multiply(new BigDecimal(mission.getPeopleCount()))
+				.setScale(2, BigDecimal.ROUND_HALF_UP);
+		//余额
+		BigDecimal balance = this.balanceService.countBalance(user_id);
+		if(fee.compareTo(balance) == 1){
+			json.put("result_type", "error");
+			json.put("msg", "余额不足");
+			return json;
+		}else{
+			Balance balance2 = new Balance();
+			balance2.setQuantity(fee);
+			balance2.setOrderNum(PayUtil.getOrdersNum(user_id, mission.getMissionId()));
+			balance2.setOrderState(1);// 未支付、未提现
+			balance2.setConsumingRecords("任务支付");
+			balance2.setUserId(user_id);
+			balance2.setPlusOrMinus("minus");
+			balance2.setConsumingTime(new Date());
+			if (!balanceService.insertBalanceOrder(balance2)) {
+				json.put("result_type", "error");
+				json.put("msg", "支付失败");
+				return json;
+			}
+			orders.setFinishTime(new Date());
+			missionOrdersService.update(orders);
+			missionOrdersService.updateMissionStatusbyOrdersId(orders);
+			json.put("result_type", "success");
+			
+		}
+		return json;
+	}
+
 	// 用于“我发布的”中支付
 	@ResponseBody
 	@RequestMapping("/getPay/{missionId}")
@@ -231,8 +306,7 @@ public class PayController {
 				+ "==================");
 		String ip = getIpAddr(request);
 		String body = "有空ucoon-任务发布";
-		int fee = mission.getMissionPrice()
-				.multiply(new BigDecimal(100))
+		int fee = mission.getMissionPrice().multiply(new BigDecimal(100))
 				.multiply(new BigDecimal(mission.getPeopleCount())).intValue();
 		System.out.println(fee);
 		String notify_url = "http://wx.ucoon.cn/pay/payresult";

@@ -64,13 +64,21 @@ public class MissionServiceImpl implements MissionService {
 				String lng = (String) list.get(i).get("mission_lng");
 				String lat = (String) list.get(i).get("mission_lat");
 				
-				if(latitude == null || latitude.trim() == ""){
+				if(latitude == null || latitude.trim().equals("")){
 					list.get(i).put("distance", "");
 					
 				}else{
-					String distance = MapUtil.getDistance(lat, lng, latitude,
-							longitude);
-					list.get(i).put("distance", distance);
+					
+					if(lat==null || lat.trim().equals("")){
+						
+						list.get(i).put("distance", "");
+					}else{
+						
+						String distance = MapUtil.getDistance(lat, lng, latitude,
+								longitude);
+						list.get(i).put("distance", distance);
+					}
+					
 					
 				}
 				
@@ -79,7 +87,7 @@ public class MissionServiceImpl implements MissionService {
 			
 			
 		}else {
-			if(latitude == null || latitude == ""){
+			if(latitude == null || latitude.trim().equals("")){
 				
 				return null;
 			}
@@ -217,7 +225,7 @@ public class MissionServiceImpl implements MissionService {
 	public boolean isPaid(Integer missionId) {
 		Integer status = missionMapper.selectStatusByMissionId(missionId);
 		
-		if(status == 1){
+		if(status != 0){
 			
 			//表示已支付
 			return true;
